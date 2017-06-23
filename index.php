@@ -4,14 +4,74 @@ $pathToDB=__DIR__.'/DB/';$ext='.dat';$crypt='1234567812345678';$cryptEnabled=fal
 //
 //PHP Variables
 
+//Global Functions
+function getNumber($PhoneNumber = 0) { //Return Data and UID of number provided. Return false on failure to find.
+	foreach(listDB('numbers') as $uid) {
+		$data = loadDB('numbers\\'.$uid);
+		if($data['phonenumber'] == $PhoneNumber) {
+			return array('uid' => $uid, 'data' => $data);
+		}
+	}
+	return false;
+}
+function setNumber($PhoneNumber = 0, $description = '') { //Set the description on a number.
+	$number = getNumber($PhoneNumber);
+	if(!$number) {
+		$number = array('uid' => uniqid(), 'data' => array('phonenumber' => $PhoneNumber)); //Create number if it does not exist
+	}
+	$number['data']['description'] = $description; //Set description
+	putDB($number['data'], 'numbers\\'.$number['uid']);
+}
+function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
+	$db = loadDB('tags');
+	foreach($db as $tag => $uids) { //Remove number from all tags. And remove any empty tags.
+		foreach($uids as $k => $tuid) { //Remove number's UID from tag.
+			if($tuid == $uid) {
+				unset($db[$tag][$k]);
+			}
+		}
+		if(empty($uids)) { //Remove tag if empty.
+			unset($db[$tag]);
+		}
+	}
+	foreach($tags as $tag) { //Push number to tags, and create any tag that doesnt exist.
+		if(!isset($db[$tag])) { //Create tag if it doesnt exist.
+			$db[$tag] = array();
+		}
+		array_push($db[$tag], $uid); //Push number's UID to the tag.
+	}
+	putDB($db, 'tags'); //Push to database.
+}
 
 //API Methods
-if(isset($_GET['api'])) {
-
+if(isset($_POST['api'])) {
+	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
+		
+	}
+	if($_POST['api'] == 'import' && isset($_POST['import'])) { //Recieve JSON string and import data to database.
+		$postJson = json_decode($_POST['import'], true);
+		if($postJson !== false) { //JSON is valid
+			foreach($postJson as $phoneNumber => $numArray) { //Each post object by number and array data.
+				if(!empty($numArray)) { //If data is provided
+					if(isset($numArray['description'])) { //Change description
+						setNumber($phoneNumber, $numArray['description']);
+					}
+					if(isset($numArray['tags'])) {
+						
+					}
+				} else { //No data provided, delete number.
+					//Delete number
+				}
+			}
+		} else { //Exit program, json invalid.
+			echo 'Invalid json.';
+		}
+	}
 exit;	
 }
 ?>
 <!DOCTYPE>
+<!-- Written by Dylan Bickerstaff -->
 <html>
 	<head>
 		<title>Phone Book</title>
