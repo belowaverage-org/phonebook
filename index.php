@@ -30,7 +30,7 @@ function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
 				unset($db[$tag][$k]);
 			}
 		}
-		if(empty($uids)) { //Remove tag if empty.
+		if(empty($db[$tag])) { //Remove tag if empty.
 			unset($db[$tag]);
 		}
 	}
@@ -42,7 +42,10 @@ function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
 	}
 	putDB($db, 'tags'); //Push to database.
 }
-
+function deleteNumber($uid) {
+	dropDB('numbers\\'.$uid);
+	setTags($uid);
+}
 //API Methods
 if(isset($_POST['api'])) {
 	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
@@ -57,10 +60,10 @@ if(isset($_POST['api'])) {
 						setNumber($phoneNumber, $numArray['description']);
 					}
 					if(isset($numArray['tags'])) {
-						
+						setTags(getNumber($phoneNumber)['uid'], $numArray['tags']);
 					}
 				} else { //No data provided, delete number.
-					//Delete number
+					deleteNumber(getNumber($phoneNumber)['uid']);
 				}
 			}
 		} else { //Exit program, json invalid.
