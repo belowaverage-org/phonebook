@@ -20,7 +20,7 @@ PhoneNumber(String)
 Json Import Schema (POST) / Json Search Schema (Response)
 ------------------
 {
-    PhoneNumber(Number): {
+    PhoneNumber(String): {
         "description": Description(String),
         "tags": [
             Tag(String)
