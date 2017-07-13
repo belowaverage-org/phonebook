@@ -145,6 +145,7 @@ exit;
 		$(document).on("keydown", function (e) {
 			if(e.key == ' ') { //On Space
 				var allFull = true;
+				$('#input .type').html($('#input .type').text());
 				$.each($('#input span'), function() { //For every bubble
 					if($(this).text() == '') { //If has no text
 						selectBubble($(this)); //Select this
@@ -174,10 +175,15 @@ exit;
 				selectBubble($('#input .type').next());
 			} else {
 				$('#input .type').append(e.key);
+				$('#input .type .autofill').remove();
 				if($('#input span:first').text().match(/^\d+$/)) {
 					$('#input span:first').addClass('number');
 				} else {
 					$('#input span:first').removeClass('number');
+				}
+				var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), ''));
+				if(autoFill !== '') {
+					$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type');
 				}
 			}
 		});
@@ -204,7 +210,7 @@ exit;
 			animation:blink 1s infinite;
 			vertical-align:-2px;
 		}
-		#input span {
+		#input > span {
 			background-color:lightgray;
 			margin:5px;
 			height:32px;
@@ -216,6 +222,9 @@ exit;
 			display:inline-block;
 			vertical-align:top;
 			animation:whew .3s;
+		}
+		#input span .autofill {
+			color:gray;
 		}
 		#input .number {
 			background-color:skyblue;
