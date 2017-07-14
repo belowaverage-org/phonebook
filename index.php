@@ -117,7 +117,7 @@ exit;
 					},
 					success: function(data) {
 						mem.tags = $.makeArray(data).sort(function(a, b) { //Create an array from data object, then sort it by string length
-							return a.length - b.length;
+							return b.length - a.length;
 						});
 						mem.cache = time(); //Update cache timestamp
 					}
