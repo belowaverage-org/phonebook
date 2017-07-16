@@ -100,6 +100,7 @@ exit;
 			tags: {},
 			cache: 0
 		};
+		var numberMode = false;
 		//Functions
 		function time() { //Return unix timestamp
 			return Math.round((new Date()).getTime() / 1000);
@@ -138,14 +139,17 @@ exit;
 			}
 		}
 		function selectBubble(jqueryBubble) {
-			$('#input span').removeClass('type'); //remove type from any bubble
-			jqueryBubble.addClass('type'); //Add type to bubble.
+			if(jqueryBubble.is('#input span')) { //If next bubble is a bubble
+				$('#input span').removeClass('type'); //remove type from any bubble
+				jqueryBubble.addClass('type'); //Add type to bubble.
+			}
 		}
 		//Keypress action
 		$(document).on("keydown", function (e) {
+			e.preventDefault(); //Disable any default key press actions
 			if(e.key == ' ') { //On Space
 				var allFull = true;
-				$('#input .type').html($('#input .type').text());
+				$('#input .type').html($('#input .type').text()); //Capture autofill
 				$.each($('#input span'), function() { //For every bubble
 					if($(this).text() == '') { //If has no text
 						selectBubble($(this)); //Select this
@@ -157,6 +161,8 @@ exit;
 					$('#input span').removeClass('type');
 					$('<span></span>').appendTo('#input').addClass('type');
 				}
+			} else if(e.key == 'Tab') {
+				$('#input .type').html($('#input .type').text()); //Capture autofill
 			} else if(e.key == 'Delete') {
 				var prev = $('#input .type').prev(); //Select previous bubble
 				$('#input .type').text(''); //Clear selected bubble.
@@ -173,10 +179,12 @@ exit;
 				selectBubble($('#input .type').prev());
 			} else if(e.key == 'ArrowRight') {
 				selectBubble($('#input .type').next());
-			} else {
+			} else if(e.key == 'End') {
+				$('#input').html('<span class="type"></span>'); //Erase all content and reset
+			} else { //Any other key pressed
 				$('#input .type').append(e.key);
 				$('#input .type .autofill').remove();
-				if($('#input span:first').text().match(/^\d+$/)) {
+				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 					$('#input span:first').addClass('number');
 				} else {
 					$('#input span:first').removeClass('number');
