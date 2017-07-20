@@ -44,14 +44,31 @@ function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
 	}
 	putDB($db, 'tags'); //Push to database.
 }
-function deleteNumber($uid) {
+function deleteNumber($uid) { //Deletes a number using ID
 	dropDB('numbers\\'.$uid);
 	setTags($uid);
 }
 //API Methods
 if(isset($_POST['api'])) {
 	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
-		
+		$postJson = json_decode($_POST['search'], true);
+		if($postJson !== false) { //JSON is valid
+			$tags = loadDB('tags');
+			$score = array();
+			foreach($postJson as $k => $v) {
+				$searchTag = strtolower($v);
+				if(isset($tags[$searchTag]) && !empty($tags[$searchTag])) {
+					foreach($tags[$searchTag] as $id) {
+						if(isset($score[$id])) {
+							$score[$id] = $score[$id] + 1;
+						} else {
+							$score[$id] = 1;
+						}
+					}
+				}
+			}
+			print_r($score);
+		}
 	}
 	if($_POST['api'] == 'import' && isset($_POST['import'])) { //Recieve JSON string and import data to database.
 		$postJson = json_decode($_POST['import'], true);
@@ -72,8 +89,8 @@ if(isset($_POST['api'])) {
 			echo 'Invalid json.';
 		}
 	}
-	if($_POST['api'] == 'export' && isset($_POST['export'])) {
-		if($_POST['export'] == 'tags') {
+	if($_POST['api'] == 'export' && isset($_POST['export'])) { //Export JSON from database
+		if($_POST['export'] == 'tags') { //If export is tags
 			$db = loadDB('tags');
 			$tags = array();
 			foreach($db as $tag => $v) {
