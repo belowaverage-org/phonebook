@@ -1,0 +1,22 @@
+{
+    "2418": {
+        "description": "The IT helpdesk",
+        "tags": [
+            "IT",
+			"Helpdesk",
+			"Techs",
+			"Computer",
+			"Micros"
+        ]
+    },
+	"5952": {
+        "description": "Kyle Upton",
+        "tags": [
+            "Kyle",
+			"Upton",
+			"IT",
+			"Helpdesk",
+			"Supervisor"
+        ]
+    }
+}
