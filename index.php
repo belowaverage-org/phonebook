@@ -53,13 +53,14 @@ if(isset($_POST['api'])) {
 	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
 		$postJson = json_decode($_POST['search'], true);
 		if($postJson !== false) { //JSON is valid
-			$tags = loadDB('tags');
-			$score = array();
-			foreach($postJson as $k => $v) {
-				$searchTag = strtolower($v);
-				if(isset($tags[$searchTag]) && !empty($tags[$searchTag])) {
-					foreach($tags[$searchTag] as $id) {
-						if(isset($score[$id])) {
+			$tags = loadDB('tags');// Load tags from database
+			$score = array(); //Define arrays
+			$result = array(); 
+			foreach($postJson as $k => $v) { //Foreach search term recieved
+				$searchTag = strtolower($v); //Change caps to lower case
+				if(isset($tags[$searchTag]) && !empty($tags[$searchTag])) { //If search tag exists in database and has a value
+					foreach($tags[$searchTag] as $id) { //Then for every tag add a score of +1 to all the numbers that are associated with the tag
+						if(isset($score[$id])) { 
 							$score[$id] = $score[$id] + 1;
 						} else {
 							$score[$id] = 1;
@@ -67,7 +68,14 @@ if(isset($_POST['api'])) {
 					}
 				}
 			}
-			print_r($score);
+			arsort($score); //Sort the score array by the score big to small
+			foreach($score as $k => $v) { //For every number found in the search tags
+				if(isset($_POST['filter']) && count($postJson) !== $v) { //If filter is set and score does not equal the amount of tags submitted
+					break; //Skip
+				}
+				array_push($result, $k); //Otherwise add number to the result
+			}
+			echo json_encode($result); //Output result in json
 		}
 	}
 	if($_POST['api'] == 'import' && isset($_POST['import'])) { //Recieve JSON string and import data to database.
