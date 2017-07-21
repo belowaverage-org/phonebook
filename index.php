@@ -106,6 +106,16 @@ if(isset($_POST['api'])) {
 			}
 			echo json_encode($tags);
 		}
+		if($_POST['export'] == 'numbers') {
+			if(isset($_POST['numbers'])) {
+				$postJson = json_decode($_POST['numbers'], true);
+				if($postJson !== false) { //JSON is valid
+					
+				}
+			} else {
+				
+			}
+		}
 	}
 exit;
 }
