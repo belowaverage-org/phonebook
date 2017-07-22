@@ -48,6 +48,16 @@ function deleteNumber($uid) { //Deletes a number using ID
 	dropDB('numbers\\'.$uid);
 	setTags($uid);
 }
+function exportNumber($uid) {
+	$tags = loadDB('tags');
+	$numb = loadDB('numbers\\'+$uid);
+	$return = array();
+	foreach($tags as $tag => $nums) {
+		if(in_array($uid, $tags[$tag])) {
+			
+		}
+	}
+}
 //API Methods
 if(isset($_POST['api'])) {
 	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
@@ -107,14 +117,21 @@ if(isset($_POST['api'])) {
 			echo json_encode($tags);
 		}
 		if($_POST['export'] == 'numbers') {
+			$result = array();
 			if(isset($_POST['numbers'])) {
 				$postJson = json_decode($_POST['numbers'], true);
 				if($postJson !== false) { //JSON is valid
-					
+					foreach($postJson as $v) {
+						if(is_numeric($v)) {
+							$v = getNumber($v);
+						}
+						
+					}
 				}
-			} else {
+			} else { //Else dump all numbers
 				
 			}
+			echo json_encode($result);
 		}
 	}
 exit;
