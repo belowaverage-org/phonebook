@@ -6,14 +6,24 @@ $pathToDB=__DIR__.'/DB/';$ext='.dat';$crypt='1234567812345678';$cryptEnabled=fal
 //PHP Variables
 
 //Global Functions
-function getNumber($PhoneNumber = 0) { //Return Data and UID of number provided. Return false on failure to find.
+function getUID($PhoneNumber) { //Return UID of number provided. Return false on failure to find.
 	foreach(listDB('numbers') as $uid) {
 		$data = loadDB('numbers\\'.$uid);
 		if($data['phonenumber'] == $PhoneNumber) {
-			return array('uid' => $uid, 'data' => $data);
+			return $uid;
 		}
 	}
 	return false;
+}
+function getTags($uid) { //Get list of tags from number UID
+	$tags = loadDB('tags');
+	$result = array();
+	foreach($tags as $tag => $nums) {
+		if(in_array($uid, $nums)) {
+			array_push($result, $tag);
+		}
+	}
+	return $result;
 }
 function setNumber($PhoneNumber = 0, $description = '') { //Set the description on a number.
 	$number = getNumber($PhoneNumber);
@@ -48,21 +58,11 @@ function deleteNumber($uid) { //Deletes a number using ID
 	dropDB('numbers\\'.$uid);
 	setTags($uid);
 }
-function exportNumber($uid) {
-	$tags = loadDB('tags');
-	$numb = loadDB('numbers\\'+$uid);
-	$return = array();
-	foreach($tags as $tag => $nums) {
-		if(in_array($uid, $tags[$tag])) {
-			
-		}
-	}
-}
 //API Methods
 if(isset($_POST['api'])) {
 	if($_POST['api'] == 'search' && isset($_POST['search'])) { //Search the numbers list for any matches using provided string.
 		$postJson = json_decode($_POST['search'], true);
-		if($postJson !== false) { //JSON is valid
+		if($postJson !== null) { //JSON is valid
 			$tags = loadDB('tags');// Load tags from database
 			$score = array(); //Define arrays
 			$result = array(); 
@@ -90,17 +90,17 @@ if(isset($_POST['api'])) {
 	}
 	if($_POST['api'] == 'import' && isset($_POST['import'])) { //Recieve JSON string and import data to database.
 		$postJson = json_decode($_POST['import'], true);
-		if($postJson !== false) { //JSON is valid
+		if($postJson !== null) { //JSON is valid
 			foreach($postJson as $phoneNumber => $numArray) { //Each post object by number and array data.
 				if(!empty($numArray)) { //If data is provided
 					if(isset($numArray['description'])) { //Change description
 						setNumber($phoneNumber, $numArray['description']);
 					}
 					if(isset($numArray['tags'])) {
-						setTags(getNumber($phoneNumber)['uid'], $numArray['tags']);
+						setTags(getNumber($phoneNumber), $numArray['tags']);
 					}
 				} else { //No data provided, delete number.
-					deleteNumber(getNumber($phoneNumber)['uid']);
+					deleteNumber(getNumber($phoneNumber));
 				}
 			}
 		} else { //Exit program, json invalid.
@@ -116,20 +116,30 @@ if(isset($_POST['api'])) {
 			}
 			echo json_encode($tags);
 		}
-		if($_POST['export'] == 'numbers') {
+		if($_POST['export'] == 'numbers') { //If export is numbers
 			$result = array();
 			if(isset($_POST['numbers'])) {
-				$postJson = json_decode($_POST['numbers'], true);
-				if($postJson !== false) { //JSON is valid
-					foreach($postJson as $v) {
+				$numbers = json_decode($_POST['numbers'], true);
+				if($numbers !== null) {
+					foreach($numbers as $k => $v) {
 						if(is_numeric($v)) {
-							$v = getNumber($v);
+							$numbers[$k] = getUID($v);
 						}
-						
 					}
+				} else {
+					$numbers = array();
 				}
 			} else { //Else dump all numbers
-				
+				$numbers = listDB('numbers');
+			}
+			foreach($numbers as $uid) {
+				$data = loadDB('numbers\\'.$uid);
+				if(!empty($data)) {
+					$result[$data['phonenumber']] = array(
+						'description' => $data['description'],
+						'tags' => getTags($uid)
+					);
+				}
 			}
 			echo json_encode($result);
 		}
@@ -185,31 +195,69 @@ exit;
 			});
 			return ret;
 		}
-		function deleteSelectedBubble() {
+		function deleteSelectedBubble() { //Delete the type bubble
 			if($('#input span').length !== 1) { //If not last bubble
 				$('#input .type').remove(); //Remove it
 			}
 		}
-		function selectBubble(jqueryBubble) {
+		function selectBubble(jqueryBubble) { //Make jquery selected bubble the type bubble
 			if(jqueryBubble.is('#input span')) { //If next bubble is a bubble
 				$('#input span').removeClass('type'); //remove type from any bubble
 				jqueryBubble.addClass('type'); //Add type to bubble.
 			}
 		}
+		function allFilled() { //Check bubbles to see if they all contain text
+			var result = true;
+			$.each($('#input span'), function() { //For every bubble
+				if($(this).text() == '') { //If bubble is empty
+					selectBubble($(this)); //Select the bubble and return false
+					result = false;
+					return false;
+				}
+			});
+			return result;
+		}
+		function allValid() { //Check all bubbles to see if they are all valid
+			var result = true;
+			$.each($('#input > span'), function() {
+				if(!$(this).hasClass('valid')) { //If is valid
+					selectBubble($(this)); //Select this
+					result = false;
+					return;
+				}
+			});
+			return result;
+		}
+		function typeFilled() { //Check if type is filled
+			if($('#input span.type').text() == '') {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		function typeValid() { //Check if type is a valid tag
+			if(typeFilled() && mem.tags.indexOf($('#input span.type').text()) !== -1) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		function typeUnique() { //Check if type is unique to all other bubbles
+			var result = true;
+			$.each($('#input > span'), function() {
+				if(!$(this).hasClass('type') && $(this).text() == $('#input span.type').text()) { //If bubble is not type and equal to type
+					result = false;
+					return;
+				}
+			});
+			return result;
+		}
 		//Keypress action
 		$(document).on("keydown", function (e) {
 			e.preventDefault(); //Disable any default key press actions
 			if(e.key == ' ') { //On Space
-				var allFull = true;
 				$('#input .type').html($('#input .type').text()); //Capture autofill
-				$.each($('#input span'), function() { //For every bubble
-					if($(this).text() == '') { //If has no text
-						selectBubble($(this)); //Select this
-						allFull = false;
-						return;
-					}
-				});
-				if(allFull) { //If all bubbles contain text create new bubble
+				if(allValid() || numberMode && allFilled() && typeUnique()) { //Create new bubble
 					$('#input span').removeClass('type');
 					$('<span></span>').appendTo('#input').addClass('type');
 				}
@@ -234,17 +282,26 @@ exit;
 			} else if(e.key == 'End') {
 				$('#input').html('<span class="type"></span>'); //Erase all content and reset
 			} else { //Any other key pressed
-				$('#input .type').append(e.key);
-				$('#input .type .autofill').remove();
-				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
-					$('#input span:first').addClass('number');
-				} else {
-					$('#input span:first').removeClass('number');
+				if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
+					$('#input .type').append(e.key); //Type the key
 				}
-				var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), ''));
+				$('#input .type .autofill').remove(); //Remove autofill
+				var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
 				if(autoFill !== '') {
-					$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type');
+					$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
 				}
+			}
+			if($('#input span:first').text().match(/^\d+$/)) { // If only a number
+				$('#input span:first').addClass('number');
+				numberMode = true;
+			} else {
+				$('#input span:first').removeClass('number');
+				numberMode = false;
+			}
+			if(typeValid() && typeUnique()) { //If type is valid, and unique
+				$('#input span.type').addClass('valid');
+			} else {
+				$('#input span.type').removeClass('valid');
 			}
 		});
 		</script>
@@ -271,7 +328,7 @@ exit;
 			vertical-align:-2px;
 		}
 		#input > span {
-			background-color:lightgray;
+			background-color:whitesmoke;
 			margin:5px;
 			height:32px;
 			padding-left:10px;
@@ -284,10 +341,13 @@ exit;
 			animation:whew .3s;
 		}
 		#input span .autofill {
-			color:gray;
+			color:rgba(0,0,0,.25);
+		}
+		#input span.valid {
+			background-color:#dfffdf;
 		}
 		#input .number {
-			background-color:skyblue;
+			background-color:#e1f6ff;
 		}
 		@keyframes whew {
 			0% {
