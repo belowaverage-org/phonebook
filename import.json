@@ -1,22 +1,14 @@
 {
-    "2418": {
-        "description": "The IT helpdesk",
-        "tags": [
-            "IT",
-			"Helpdesk",
-			"Techs",
-			"Computer",
-			"Micros"
-        ]
-    },
-	"5952": {
-        "description": "Kyle Upton",
-        "tags": [
-            "Kyle",
-			"Upton",
-			"IT",
-			"Helpdesk",
-			"Supervisor"
-        ]
-    }
+   "2418" : {
+      "description" : "The IT helpdesk",
+      "tags" : [ "IT", "Helpdesk", "Techs", "Computer", "Micros" ]
+   },
+   "5952" : {
+      "description" : "Kyle Upton",
+      "tags" : [ "Upton", "kyle", "IT", "Helpdesk", "Supervisor" ]
+   },
+   "2207" : {
+      "description" : "McClure, Jason - Vice President & General Manager",
+      "tags" : [ "Jason", "McClure", "Manager", "President", "Administration" ]
+   }
 }

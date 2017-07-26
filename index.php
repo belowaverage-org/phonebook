@@ -164,6 +164,7 @@ exit;
 			cache: 0
 		};
 		var numberMode = false;
+		var descriptionMode = false;
 		//Functions
 		function time() { //Return unix timestamp
 			return Math.round((new Date()).getTime() / 1000);
@@ -269,12 +270,15 @@ exit;
 					$.each(numbers, function(k) {
 						$('#input span:first').text(k);
 						$.each(this.tags, function() {
-							$('<span class="valid">'+this+'</span>').appendTo('#input');
+							$('<span class="valid saved">'+this+'</span>').appendTo('#input');
 						});
 						return;
 					});
 				}
 			});
+		}
+		function sendTagsAndDescription() {
+			
 		}
 		//On doc ready
 		$(document).ready(function() {
@@ -285,60 +289,62 @@ exit;
 		});
  		//Keypress action
 		$(document).on("keydown", function (e) {
-			e.preventDefault(); //Disable any default key press actions
-			if(e.key == ' ') { //On Space
-				$('#input .type').html($('#input .type').text()); //Capture autofill
-				if(!typeUnique()) {
-					$('#input .type').remove();
-				}
-				if(allValid() || numberMode && allFilled()) { //Create new bubble
-					$('#input span').removeClass('type');
-					$('<span></span>').appendTo('#input').addClass('type');
-				}
-			} else if(e.key == 'Tab') {
-				$('#input .type').html($('#input .type').text()); //Capture autofill
-			} else if(e.key == 'Delete') {
-				var prev = $('#input .type').prev(); //Select previous bubble
-				$('#input .type').text(''); //Clear selected bubble.
-				deleteSelectedBubble();
-				prev.addClass('type'); //Make previous bubble typeable
-			} else if(e.key == 'Backspace') {
-				if($('#input .type').text() == '') { //If selected bubble has not text
+			if(!descriptionMode) {
+				e.preventDefault(); //Disable any default key press actions
+				if(e.key == ' ') { //On Space
+					$('#input .type').html($('#input .type').text()); //Capture autofill
+					if(!typeUnique()) {
+						$('#input .type').remove();
+					}
+					if(allValid() || numberMode && allFilled()) { //Create new bubble
+						$('#input span').removeClass('type');
+						$('<span></span>').appendTo('#input').addClass('type');
+					}
+				} else if(e.key == 'Tab') {
+					$('#input .type').html($('#input .type').text()); //Capture autofill
+				} else if(e.key == 'Delete') {
+					var prev = $('#input .type').prev(); //Select previous bubble
+					$('#input .type').text(''); //Clear selected bubble.
 					deleteSelectedBubble();
-					$('#input span:last').addClass('type'); //Make the last one typeable
+					prev.addClass('type'); //Make previous bubble typeable
+				} else if(e.key == 'Backspace') {
+					if($('#input .type').text() == '') { //If selected bubble has not text
+						deleteSelectedBubble();
+						$('#input span:last').addClass('type'); //Make the last one typeable
+					} else {
+						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
+					}
+				} else if(e.key == 'ArrowLeft') {
+					selectBubble($('#input .type').prev());
+				} else if(e.key == 'ArrowRight') {
+					selectBubble($('#input .type').next());
+				} else if(e.key == 'End') {
+					$('#input').html('<span class="type"></span>'); //Erase all content and reset
+				} else { //Any other key pressed
+					if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
+						$('#input .type').append(e.key); //Type the key
+					}
+					$('#input .type .autofill').remove(); //Remove autofill
+					var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
+					if(autoFill !== '') {
+						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+					}
+				}
+				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
+					$('#input span:first').addClass('number');
+					numberMode = true;
 				} else {
-					$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
+					$('#input span:first').removeClass('number');
+					numberMode = false;
 				}
-			} else if(e.key == 'ArrowLeft') {
-				selectBubble($('#input .type').prev());
-			} else if(e.key == 'ArrowRight') {
-				selectBubble($('#input .type').next());
-			} else if(e.key == 'End') {
-				$('#input').html('<span class="type"></span>'); //Erase all content and reset
-			} else { //Any other key pressed
-				if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
-					$('#input .type').append(e.key); //Type the key
+				if(typeValid() && typeUnique()) { //If type is valid, and unique
+					$('#input span.type').addClass('valid');
+				} else {
+					$('#input span.type').removeClass('valid');
 				}
-				$('#input .type .autofill').remove(); //Remove autofill
-				var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
-				if(autoFill !== '') {
-					$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+				if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
+					loadNumberTags($('#input .type').text());
 				}
-			}
-			if($('#input span:first').text().match(/^\d+$/)) { // If only a number
-				$('#input span:first').addClass('number');
-				numberMode = true;
-			} else {
-				$('#input span:first').removeClass('number');
-				numberMode = false;
-			}
-			if(typeValid() && typeUnique()) { //If type is valid, and unique
-				$('#input span.type').addClass('valid');
-			} else {
-				$('#input span.type').removeClass('valid');
-			}
-			if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
-				loadNumberTags($('#input .type').text());
 			}
 		});
 		</script>
@@ -352,9 +358,10 @@ exit;
 			margin-right:auto;
 			width:500px;
 		}
-		#input {
+		#input, textarea {
 			text-align:center;
 			font-size:20px;
+			font-family:arial;
 		}
 		#input .type::after {
 			content:'';
@@ -383,8 +390,11 @@ exit;
 		#input span.valid {
 			background-color:#dfffdf;
 		}
-		#input .number {
+		#input span.number {
 			background-color:#e1f6ff;
+		}
+		#input span.saved {
+			background-color:#feffbd;
 		}
 		@keyframes blink {
 			0% {
@@ -457,18 +467,31 @@ exit;
 		#legend .leg.yellow::before {
 			background-color:#feffbd;
 		}
+		textarea {
+			background-color:whitesmoke;
+			outline:none;
+			border:0px;
+			width:100%;
+			resize:none;
+			height:40px;
+			padding:0px;
+			line-height:40px;
+			border-radius:20px;
+			margin-top:30px;
+		}
 		</style>
 	</head>
 	<body>
 		<div id="main">
 			<h1>Phone Book</h1>
 			<div id="input"><span class="type"></span></div>
+			<textarea></textarea>
 		</div>
 		<div style="display:none;" id="legend">
 			<h1>Phone Book Guide</h1>
 			<div class="leg blue"> - Phone number</div>
-			<div class="leg green"> - Valid / existing tag</div>
-			<div class="leg yellow"> - Valid / existing / saved tag</div>
+			<div class="leg green"> - Existing tag</div>
+			<div class="leg yellow"> - Saved tag</div>
 			<div class="leg gray"> - Non existing tag</div>
 		</div>
 		<div id="info">i</div>
