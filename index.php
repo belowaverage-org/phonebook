@@ -203,7 +203,10 @@ exit;
 			}
 		}
 		function selectBubble(jqueryBubble) { //Make jquery selected bubble the type bubble
-			if(jqueryBubble.is('#input span')) { //If next bubble is a bubble
+			if(jqueryBubble.is('#input > span')) { //If next bubble is a bubble
+				if(!typeUnique()) { //If type is not unique remove it
+					$('#input .type').remove();
+				}
 				$('#input span').removeClass('type'); //remove type from any bubble
 				jqueryBubble.addClass('type'); //Add type to bubble.
 			}
@@ -212,7 +215,6 @@ exit;
 			var result = true;
 			$.each($('#input span'), function() { //For every bubble
 				if($(this).text() == '') { //If bubble is empty
-					selectBubble($(this)); //Select the bubble and return false
 					result = false;
 					return false;
 				}
@@ -223,7 +225,6 @@ exit;
 			var result = true;
 			$.each($('#input > span'), function() {
 				if(!$(this).hasClass('valid')) { //If is valid
-					selectBubble($(this)); //Select this
 					result = false;
 					return;
 				}
@@ -256,6 +257,7 @@ exit;
 		}
 		function loadNumberTags(num) {
 			$('#input span:not(.type)').remove();
+			$('textarea').val('');
 			$.ajax({ //Request tags
 				type: 'post',
 				async: true,
@@ -269,6 +271,7 @@ exit;
 				success: function(numbers) {
 					$.each(numbers, function(k) {
 						$('#input span:first').text(k);
+						$('textarea').val(this.description);
 						$.each(this.tags, function() {
 							$('<span class="valid saved">'+this+'</span>').appendTo('#input');
 						});
@@ -278,13 +281,43 @@ exit;
 			});
 		}
 		function sendTagsAndDescription() {
-			
+			var tags = [];
+			var number = [];
+			$.each($('#input > span:not(:first)'), function() {
+				tags.push($(this).text());
+			});
+			number[$('#input > span:first').text()] = {
+				'description': $('textarea').val(),
+				'tags': tags
+			};
+			$.ajax({ //Request tags
+				type: 'post',
+				async: true,
+				dataType: 'json',
+				url: apiURI,
+				data: {
+					api: 'import',
+					import: JSON.stringify(number)
+				},
+				success: function() {
+					loadNumberTags(num);
+				}
+			});
 		}
 		//On doc ready
 		$(document).ready(function() {
 			$('#info').click(function() { //On click info button
 				$('#legend').toggle();
 				$('#main').toggleClass('blur');
+			});
+			$('textarea').click(function() {
+				descriptionMode = true;
+			});
+			$('#input').click(function() {
+				descriptionMode = false;
+			});
+			$('#input').on('mousedown', 'span', function() {
+				selectBubble($(this));
 			});
 		});
  		//Keypress action
@@ -293,12 +326,10 @@ exit;
 				e.preventDefault(); //Disable any default key press actions
 				if(e.key == ' ') { //On Space
 					$('#input .type').html($('#input .type').text()); //Capture autofill
-					if(!typeUnique()) {
-						$('#input .type').remove();
-					}
 					if(allValid() || numberMode && allFilled()) { //Create new bubble
-						$('#input span').removeClass('type');
-						$('<span></span>').appendTo('#input').addClass('type');
+						selectBubble($('<span></span>').appendTo('#input'));
+	 				} else {
+						selectBubble($('#input > span:last'));
 					}
 				} else if(e.key == 'Tab') {
 					$('#input .type').html($('#input .type').text()); //Capture autofill
@@ -329,15 +360,18 @@ exit;
 					if(autoFill !== '') {
 						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
 					}
+					$('#input .type').removeClass('saved');
 				}
 				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 					$('#input span:first').addClass('number');
+					$('textarea').show();
 					numberMode = true;
 				} else {
 					$('#input span:first').removeClass('number');
+					$('textarea').hide();
 					numberMode = false;
 				}
-				if(typeValid() && typeUnique()) { //If type is valid, and unique
+				if(typeValid()) { //If type is valid, and unique
 					$('#input span.type').addClass('valid');
 				} else {
 					$('#input span.type').removeClass('valid');
@@ -485,7 +519,7 @@ exit;
 		<div id="main">
 			<h1>Phone Book</h1>
 			<div id="input"><span class="type"></span></div>
-			<textarea></textarea>
+			<textarea style="display:none;"></textarea>
 		</div>
 		<div style="display:none;" id="legend">
 			<h1>Phone Book Guide</h1>
