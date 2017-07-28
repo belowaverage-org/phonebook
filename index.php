@@ -98,7 +98,7 @@ if(isset($_POST['api'])) {
 		$postJson = json_decode($_POST['import'], true);
 		if($postJson !== null) { //JSON is valid
 			foreach($postJson as $phoneNumber => $numArray) { //Each post object by number and array data.
-				if(!empty($numArray)) { //If data is provided
+				if(!empty($numArray['description']) || !empty($numArray['tags'])) { //If data is provided
 					if(isset($numArray['description'])) { //Change description
 						setNumber($phoneNumber, $numArray['description']);
 					}
@@ -262,8 +262,9 @@ exit;
 			return result;
 		}
 		function loadNumberTags(num) {
-			$('#input span:not(.type)').remove();
-			$('textarea').val('');
+			$('#input span').remove();
+			$('<span class="number type">'+num+'</span>').appendTo('#input');
+			$('input[type=text]').val('');
 			$.ajax({ //Request tags
 				type: 'post',
 				async: true,
@@ -276,8 +277,7 @@ exit;
 				},
 				success: function(numbers) {
 					$.each(numbers, function(k) {
-						$('#input span:first').text(k);
-						$('textarea').val(this.description);
+						$('input[type=text]').val(this.description);
 						$.each(this.tags, function() {
 							$('<span class="valid saved">'+this+'</span>').appendTo('#input');
 						});
@@ -286,23 +286,43 @@ exit;
 				}
 			});
 		}
+		function alertToSend() {
+			descriptionMode = true;
+			$('#question').show().siblings('#main').addClass('blur');
+			$('#question > span').click(function() {
+				if($(this).hasClass('yes')) {
+					sendTagsAndDescription();
+				}
+				closeAlert();
+			});
+			$('#question').on('keypress', function(e) {
+				if(e.key == 'Enter') {
+					sendTagsAndDescription();
+				}
+				closeAlert();
+			}).focus();
+		}
+		function closeAlert() {
+			$('#question').hide().unbind().siblings('#main').removeClass('blur');
+			descriptionMode = false;
+		}
 		function sendTagsAndDescription() {
 			var tags = [];
 			var number = {};
+			var num = $('#input > span:first').text();
 			$.each($('#input > span:not(:first)'), function() {
 				selectBubble($(this));
 				if(typeFilled()) {
 					tags.push($(this).text());
 				}
 			});
-			number[$('#input > span:first').text()] = {
-				'description': $('textarea').val(),
+			number[num] = {
+				'description': $('input[type=text]').val(),
 				'tags': tags
 			};
 			$.ajax({ //Request tags
 				type: 'post',
 				async: true,
-				dataType: 'json',
 				url: apiURI,
 				data: {
 					api: 'import',
@@ -319,7 +339,7 @@ exit;
 				$('#legend').toggle();
 				$('#main').toggleClass('blur');
 			});
-			$('textarea').click(function() {
+			$('input[type=text]').click(function() {
 				descriptionMode = true;
 			});
 			$('#input').click(function() {
@@ -328,9 +348,15 @@ exit;
 			$('#input').on('mousedown', 'span', function() {
 				selectBubble($(this));
 			});
+			$('input[type=text]').on('keydown', function (e) {
+				if(numberMode && descriptionMode && e.key == 'Enter') {
+					e.preventDefault();
+					alertToSend();
+				}
+			});
 		});
  		//Keypress action
-		$(document).on("keydown", function (e) {
+		$(document).on('keydown', function (e) {
 			if(!descriptionMode) {
 				e.preventDefault(); //Disable any default key press actions
 				if(e.key == ' ') { //On Space
@@ -342,6 +368,10 @@ exit;
 					}
 				} else if(e.key == 'Tab') {
 					$('#input .type').html($('#input .type').text()); //Capture autofill
+				} else if(e.key == 'Enter') {
+					if(numberMode) {
+						alertToSend();
+					}
 				} else if(e.key == 'Delete') {
 					var prev = $('#input .type').prev(); //Select previous bubble
 					$('#input .type').text(''); //Clear selected bubble.
@@ -354,13 +384,20 @@ exit;
 					} else {
 						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
 					}
+					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
+						loadNumberTags($('#input .type').text());
+					}
+					$('#input .type').removeClass('saved');
 				} else if(e.key == 'ArrowLeft') {
 					selectBubble($('#input .type').prev());
 				} else if(e.key == 'ArrowRight') {
 					selectBubble($('#input .type').next());
+				} else if(e.key == 'ArrowDown' && numberMode) {
+					descriptionMode = true;
+					$('input[type=text]').focus();
 				} else if(e.key == 'End') {
 					$('#input').html('<span class="type"></span>'); //Erase all content and reset
-				} else { //Any other key pressed
+				} else if(e.key.length == 1) { //Any other key pressed
 					if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
 						$('#input .type').append(e.key); //Type the key
 					}
@@ -370,17 +407,18 @@ exit;
 						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
 					}
 					$('#input .type').removeClass('saved');
+					if($('#input span:first').text().match(/^\d+$/)) { // If only a number
+						$('#input span:first').addClass('number');
+						$('input[type=text]').show();
+						numberMode = true;
+					}
 					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
 						loadNumberTags($('#input .type').text());
 					}
 				}
-				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
-					$('#input span:first').addClass('number');
-					$('textarea').show();
-					numberMode = true;
-				} else {
+				if(!$('#input span:first').text().match(/^\d+$/)) {
 					$('#input span:first').removeClass('number');
-					$('textarea').hide();
+					$('input[type=text]').hide();
 					numberMode = false;
 				}
 				if(typeValid()) { //If type is valid, and unique
@@ -388,6 +426,11 @@ exit;
 				} else {
 					$('#input span.type').removeClass('valid');
 				}
+			}
+			if(e.key == 'ArrowUp') {
+				e.preventDefault();
+				$('input[type=text]').blur();
+				descriptionMode = false;
 			}
 		});
 		</script>
@@ -401,7 +444,7 @@ exit;
 			margin-right:auto;
 			width:500px;
 		}
-		#input, textarea {
+		#input, input[type=text] {
 			text-align:center;
 			font-size:20px;
 			font-family:arial;
@@ -462,7 +505,7 @@ exit;
 			font-weight:bold;
 			cursor:pointer;
 			z-index:10;
-		}
+		}			
 		#info:hover {
 			background-color:gray;
 			color:white;
@@ -473,7 +516,7 @@ exit;
 			right:10px;
 			z-index:10;
 		}
-		#legend {
+		#legend, #question {
 			position:fixed;
 			width:100%;
 			height:100%;
@@ -481,6 +524,7 @@ exit;
 			left:0px;
 			z-index:9;
 			background-color:rgba(255,255,255,.8);
+			outline:none;
 		}
 		#main.blur {
 			filter:blur(5px);
@@ -510,17 +554,26 @@ exit;
 		#legend .leg.yellow::before {
 			background-color:#feffbd;
 		}
-		textarea {
+		input[type=text] {
 			background-color:whitesmoke;
 			outline:none;
 			border:0px;
 			width:100%;
-			resize:none;
 			height:40px;
 			padding:0px;
 			line-height:40px;
 			border-radius:20px;
 			margin-top:30px;
+		}
+		#question span {
+			font-size:20px;
+			margin:20px;
+			margin-top:40px;
+			display:inline-block;
+			background-color:whitesmoke;
+			padding:10px;
+			border-radius:20px;
+			cursor:pointer;
 		}
 		</style>
 	</head>
@@ -528,7 +581,7 @@ exit;
 		<div id="main">
 			<h1>Phone Book</h1>
 			<div id="input"><span class="type"></span></div>
-			<textarea placeholder="Enter a description" style="display:none;"></textarea>
+			<input type="text" placeholder="Enter a description" style="display:none;">
 		</div>
 		<div style="display:none;" id="legend">
 			<h1>Phone Book Guide</h1>
@@ -536,6 +589,11 @@ exit;
 			<div class="leg green"> - Existing tag</div>
 			<div class="leg yellow"> - Saved tag</div>
 			<div class="leg gray"> - Non existing tag</div>
+		</div>
+		<div style="display:none;" id="question" tabindex="1">
+			<h1>Warning</h1>
+			<h2>You are about to make changes, proceed?</h2>
+			<span class="yes"><b>Yes</b> [Enter]</span><span class="no"><b>No</b> [Space]</span>
 		</div>
 		<div id="info">i</div>
 		<img src="data:image/png;base64,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">
