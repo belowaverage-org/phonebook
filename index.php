@@ -7,11 +7,15 @@ $pathToDB=__DIR__.'/DB/';$ext='.dat';$crypt='1234567812345678';$cryptEnabled=fal
 
 //Global Functions
 function getUID($PhoneNumber) { //Return UID of number provided. Return false on failure to find.
-	foreach(listDB('numbers') as $uid) {
-		$data = loadDB('numbers\\'.$uid);
-		if($data['phonenumber'] == $PhoneNumber) {
-			return $uid;
+	if(is_numeric($PhoneNumber)) {
+		foreach(listDB('numbers') as $uid) {
+			$data = loadDB('numbers\\'.$uid);
+			if($data['phonenumber'] == $PhoneNumber) {
+				return $uid;
+			}
 		}
+	} else {
+		return $PhoneNumber;
 	}
 	return false;
 }
@@ -25,13 +29,15 @@ function getTags($uid) { //Get list of tags from number UID
 	}
 	return $result;
 }
-function setNumber($PhoneNumber = 0, $description = '') { //Set the description on a number.
-	$number = getNumber($PhoneNumber);
-	if(!$number) {
-		$number = array('uid' => uniqid(), 'data' => array('phonenumber' => $PhoneNumber)); //Create number if it does not exist
+function setNumber($PhoneNumber = 0, $description = '') { //Set/Create the description on a number.
+	$uid = getUID($PhoneNumber);
+	if(!$uid) {
+		$uid = uniqid();
 	}
-	$number['data']['description'] = $description; //Set description
-	putDB($number['data'], 'numbers\\'.$number['uid']);
+	$number = loadDB('numbers\\'.$uid);
+	$number['phonenumber'] = $PhoneNumber; //Set number
+	$number['description'] = $description; //Set description
+	putDB($number, 'numbers\\'.$uid);
 }
 function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
 	$db = loadDB('tags');
@@ -97,10 +103,10 @@ if(isset($_POST['api'])) {
 						setNumber($phoneNumber, $numArray['description']);
 					}
 					if(isset($numArray['tags'])) {
-						setTags(getNumber($phoneNumber), $numArray['tags']);
+						setTags(getUID($phoneNumber), $numArray['tags']);
 					}
 				} else { //No data provided, delete number.
-					deleteNumber(getNumber($phoneNumber));
+					deleteNumber(getUID($phoneNumber));
 				}
 			}
 		} else { //Exit program, json invalid.
@@ -207,7 +213,7 @@ exit;
 				if(!typeUnique()) { //If type is not unique remove it
 					$('#input .type').remove();
 				}
-				$('#input span').removeClass('type'); //remove type from any bubble
+				$('#input .type').removeClass('type'); //remove type from any bubble
 				jqueryBubble.addClass('type'); //Add type to bubble.
 			}
 		}
@@ -282,9 +288,12 @@ exit;
 		}
 		function sendTagsAndDescription() {
 			var tags = [];
-			var number = [];
+			var number = {};
 			$.each($('#input > span:not(:first)'), function() {
-				tags.push($(this).text());
+				selectBubble($(this));
+				if(typeFilled()) {
+					tags.push($(this).text());
+				}
 			});
 			number[$('#input > span:first').text()] = {
 				'description': $('textarea').val(),
@@ -361,6 +370,9 @@ exit;
 						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
 					}
 					$('#input .type').removeClass('saved');
+					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
+						loadNumberTags($('#input .type').text());
+					}
 				}
 				if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 					$('#input span:first').addClass('number');
@@ -375,9 +387,6 @@ exit;
 					$('#input span.type').addClass('valid');
 				} else {
 					$('#input span.type').removeClass('valid');
-				}
-				if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
-					loadNumberTags($('#input .type').text());
 				}
 			}
 		});
@@ -519,7 +528,7 @@ exit;
 		<div id="main">
 			<h1>Phone Book</h1>
 			<div id="input"><span class="type"></span></div>
-			<textarea style="display:none;"></textarea>
+			<textarea placeholder="Enter a description" style="display:none;"></textarea>
 		</div>
 		<div style="display:none;" id="legend">
 			<h1>Phone Book Guide</h1>
