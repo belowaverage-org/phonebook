@@ -17,7 +17,7 @@ function getUID($PhoneNumber) { //Return UID of number provided. Return false on
 	return false;
 }
 function getNumber($uid) {
-	$numbers = loadDB('numbers');
+	$numbers = loadDB('numbers'); //Load numbers index
 	if(array_key_exists($uid, $numbers)) {
 		return $numbers[$uid];
 	}
@@ -136,29 +136,29 @@ if(isset($_POST['api'])) {
 		if($_POST['export'] == 'numbers') { //If export is numbers
 			$result = array();
 			if(isset($_POST['numbers'])) {
-				$numbers = json_decode($_POST['numbers'], true);
+				$numbers = json_decode($_POST['numbers'], true); //Decode post data
 				if($numbers !== null) {
-					foreach($numbers as $k => $v) {
-						if(is_numeric($v)) {
-							$numbers[$k] = getUID($v);
+					foreach($numbers as $k => $v) { //For each number
+						if(is_numeric($v)) { //If is number
+							$numbers[$k] = getUID($v); //Place UID in temp array for processing later
 						}
 					}
 				} else {
-					$numbers = array();
+					$numbers = array(); //Blank out / Do nothing
 				}
 			} else { //Else dump all numbers
 				$numbers = listDB('numbers');
 			}
 			foreach($numbers as $uid) {
-				$data = loadDB('numbers\\'.$uid);
-				if(!empty($data)) {
-					$result[getNumber($uid)] = array(
+				$data = loadDB('numbers\\'.$uid); //Load number
+				if(!empty($data)) { //If contains data / exists
+					$result[getNumber($uid)] = array( //Put in array for result
 						'description' => $data['description'],
 						'tags' => getTags($uid)
 					);
 				}
 			}
-			echo json_encode($result);
+			echo json_encode($result); //Return result
 		}
 		if($_POST['export'] == 'number') { //If export is number
 			if(isset($_POST['number']) && !empty($_POST['number'])) {
@@ -304,16 +304,16 @@ exit;
 				}
 			});
 		}
-		function alertToSend() {
+		function alertToSend() { //Show alert before sending data
 			descriptionMode = true;
 			$('#question').show().siblings('#main').addClass('blur');
-			$('#question > span').click(function() {
+			$('#question > span').click(function() { //Listen for click on yes.
 				if($(this).hasClass('yes')) {
 					sendTagsAndDescription();
 				}
 				closeAlert();
 			});
-			$('#question').on('keypress', function(e) {
+			$('#question').on('keypress', function(e) { //Listen for key press enter.
 				if(e.key == 'Enter') {
 					sendTagsAndDescription();
 				}
@@ -321,24 +321,24 @@ exit;
 			}).focus();
 		}
 		function closeAlert() {
-			$('#question').hide().unbind().siblings('#main').removeClass('blur');
+			$('#question').hide().unbind().siblings('#main').removeClass('blur'); //Unbind all events and remove alert
 			descriptionMode = false;
 		}
-		function sendTagsAndDescription() {
+		function sendTagsAndDescription() { //Send all tags to database
 			var tags = [];
 			var number = {};
 			var num = $('#input > span:first').text();
-			$.each($('#input > span:not(:first)'), function() {
+			$.each($('#input > span:not(:first)'), function() { //Each bubble
 				selectBubble($(this));
 				if(typeFilled()) {
-					tags.push($(this).text());
+					tags.push($(this).text()); //Push data to array
 				}
 			});
 			number[num] = {
-				'description': $('input[type=text]').val(),
+				'description': $('input[type=text]').val(), //Push description to array
 				'tags': tags
 			};
-			$.ajax({ //Request tags
+			$.ajax({ //Send data
 				type: 'post',
 				async: true,
 				url: apiURI,
@@ -347,20 +347,20 @@ exit;
 					import: JSON.stringify(number)
 				},
 				success: function() {
-					loadNumberTags(num);
+					loadNumberTags(num); //Reload tag to display updated data
 				}
 			});
 		}
-		function searchTags() {
+		function searchTags() { //grab all tags and search the database and return the result on screen.
 			var tags = [];
 			$('#numbers').html('');
-			$.each($('#input > span'), function() {
+			$.each($('#input > span'), function() { //For each bubble
 				selectBubble($(this));
 				if(typeFilled()) {
-					tags.push($(this).text());
+					tags.push($(this).text()); //push to array to send later
 				}
 			});
-			$.ajax({ //Request tags
+			$.ajax({ //Send search query
 				type: 'post',
 				async: true,
 				url: apiURI,
@@ -370,9 +370,9 @@ exit;
 					filter: true,
 					search: JSON.stringify(tags)
 				},
-				success: function(numbers) {
+				success: function(numbers) { //On success
 					$.each(numbers, function() {
-						var num = $('<div><span class="number">'+this+'</span><span class="description">...</span></div>').appendTo('#numbers');
+						var num = $('<div><span class="number">'+this+'</span><span class="description">...</span></div>').appendTo('#numbers'); //Show each number on screen
 						$.ajax({ //Request tags
 							type: 'post',
 							async: true,
@@ -384,20 +384,20 @@ exit;
 								number: this
 							},
 							success: function(data) {
-								num.find('.description').text(data.description);
+								num.find('.description').text(data.description); //Grab description and place on number
 							}
 						});
 					});
 				}
 			});
 		}
-		function numberModeOff() {
+		function numberModeOff() { //Turns number mode off
 			$('#input').html('<span class="type"></span>');
 			$('input[type=text]').hide();
 			$('#numbers').show();
 			numberMode = false;
 		}
-		function numberModeOn() {
+		function numberModeOn() { //Turns number mode on
 			$('#input span:first').addClass('number');
 			$('input[type=text]').show();
 			$('#numbers').hide();
@@ -409,28 +409,29 @@ exit;
 				$('#legend').toggle();
 				$('#main').toggleClass('blur');
 			});
-			$('input[type=text]').click(function() {
+			$('input[type=text]').click(function() { //If description input is clicked
 				descriptionMode = true;
 			});
-			$('#input').click(function() {
+			$('#input').click(function() { //If main input is clicked
 				descriptionMode = false;
 			});
-			$('#input').on('mousedown', 'span', function() {
+			$('#input').on('mousedown', 'span', function() { //If a bubble is clicked
 				selectBubble($(this));
 			});
-			$('input[type=text]').on('keydown', function (e) {
+			$('input[type=text]').on('keydown', function (e) { //If enter key is pressed in description input
 				if(numberMode && descriptionMode && e.key == 'Enter') {
 					e.preventDefault();
 					alertToSend();
 				}
 			});
-			$('#numbers').on('click', 'div .description', function() {
-				$(this).parent('div').toggleClass('expand');
+			$('#numbers').on('click', 'div .description', function() { //If description is clicked in number list
+				$(this).parent('div').toggleClass('expand'); //Expand the description in case it overflows
 			});
-			$('#numbers').on('click', 'div .number',function() {
+			$('#numbers').on('click', 'div .number',function() { //If number is clicked
 				numberModeOn();
-				loadNumberTags($(this).text());
-			});		});
+				loadNumberTags($(this).text()); // Load number into editor
+			});
+		});
  		//Keypress action
 		$(document).on('keydown', function (e) {
 			if(!descriptionMode) {
@@ -444,7 +445,7 @@ exit;
 					}
 				} else if(e.key == 'Tab') {
 					$('#input .type').html($('#input .type').text()); //Capture autofill
-				} else if(e.key == 'Enter') {
+				} else if(e.key == 'Enter') { //If enter is pressed
 					if(numberMode) {
 						alertToSend();
 					} else {
@@ -468,7 +469,7 @@ exit;
 					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
 						loadNumberTags($('#input .type').text());
 					}
-					$('#input .type').removeClass('saved');
+					$('#input .type').removeClass('saved'); //Remove edited color
 					if(!numberMode) {
 						searchTags();
 					}
@@ -479,12 +480,12 @@ exit;
 				} else if(e.key == 'ArrowDown' && numberMode) {
 					descriptionMode = true;
 					$('input[type=text]').focus();
-				} else if(e.key == 'End') {
+				} else if(e.key == 'End' || e.key == 'Escape') {
 					$('#numbers').html('');
 					$('#input').html('<span class="type"></span>'); //Erase all content and reset
 				} else if(e.key.length == 1) { //Any other key pressed
 					if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
-						$('#input .type').append(e.key); //Type the key
+						$('#input .type').append(e.key.toLowerCase()); //Type the key
 					}
 					$('#input .type .autofill').remove(); //Remove autofill
 					var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
@@ -511,7 +512,7 @@ exit;
 					$('#input span.type').removeClass('valid');
 				}
 			}
-			if(e.key == 'ArrowUp') {
+			if(e.key == 'ArrowUp') { //Re select main input
 				e.preventDefault();
 				$('input[type=text]').blur();
 				descriptionMode = false;
