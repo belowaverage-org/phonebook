@@ -103,6 +103,7 @@ if(isset($_POST['api'])) {
 				}
 				array_push($result, getNumber($k)); //Otherwise add number to the result
 			}
+			sort($result);
 			echo json_encode($result); //Output result in json
 		}
 	}
@@ -484,13 +485,14 @@ exit;
 					$('#numbers').html('');
 					$('#input').html('<span class="type"></span>'); //Erase all content and reset
 				} else if(e.key.length == 1) { //Any other key pressed
-					if(typeValid() || numberMode || !typeFilled()) { //If type is valid, or in number mode, or type has no text
-						$('#input .type').append(e.key.toLowerCase()); //Type the key
-					}
+					$('#input .type').append(e.key.toLowerCase()); //Type the key
 					$('#input .type .autofill').remove(); //Remove autofill
 					var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
 					if(autoFill !== '') {
 						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+					}
+					if(!(typeValid() || numberMode || !typeFilled())) { //If type is valid, or in number mode, or type has no text
+						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
 					}
 					$('#input .type').removeClass('saved');
 					if($('#input span:first').text().match(/^\d+$/)) { // If only a number
