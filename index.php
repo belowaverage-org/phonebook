@@ -491,12 +491,12 @@ exit;
 					if(autoFill !== '') {
 						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
 					}
-					if(!(typeValid() || numberMode || !typeFilled())) { //If type is valid, or in number mode, or type has no text
-						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
-					}
 					$('#input .type').removeClass('saved');
 					if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 						numberModeOn();
+					}
+					if(typeFilled() && !numberMode && !typeValid()) { //If type is valid, or in number mode, or type has no text
+						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
 					}
 					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
 						loadNumberTags($('#input .type').text());
