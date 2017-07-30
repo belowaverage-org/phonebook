@@ -48,6 +48,7 @@ function setNumber($PhoneNumber = 0, $description = '') { //Set/Create the descr
 }
 function setTags($uid = '', $tags = array()) { //Sets the tags on a number.
 	$db = loadDB('tags');
+	$tags = array_unique($tags);
 	foreach($db as $tag => $uids) { //Remove number from all tags. And remove any empty tags. And remove tags with special characters.
 		foreach($uids as $k => $tuid) { //Remove number's UID from tag.
 			if($tuid == $uid) {
@@ -83,7 +84,7 @@ if(isset($_POST['api'])) {
 		if($postJson !== null) { //JSON is valid
 			$tags = loadDB('tags');// Load tags from database
 			$score = array(); //Define arrays
-			$result = array(); 
+			$result = array();
 			foreach($postJson as $k => $v) { //Foreach search term recieved
 				$searchTag = strtolower($v); //Change caps to lower case
 				if(isset($tags[$searchTag]) && !empty($tags[$searchTag])) { //If search tag exists in database and has a value
@@ -188,6 +189,7 @@ exit;
 		};
 		var numberMode = false;
 		var descriptionMode = false;
+		var lastSearchTags = '[]';
 		//Functions
 		function time() { //Return unix timestamp
 			return Math.round((new Date()).getTime() / 1000);
@@ -354,43 +356,47 @@ exit;
 		}
 		function searchTags() { //grab all tags and search the database and return the result on screen.
 			var tags = [];
-			$('#numbers').html('');
 			$.each($('#input > span'), function() { //For each bubble
 				selectBubble($(this));
 				if(typeFilled()) {
 					tags.push($(this).text()); //push to array to send later
 				}
 			});
-			$.ajax({ //Send search query
-				type: 'post',
-				async: true,
-				url: apiURI,
-				dataType: 'json',
-				data: {
-					api: 'search',
-					filter: true,
-					search: JSON.stringify(tags)
-				},
-				success: function(numbers) { //On success
-					$.each(numbers, function() {
-						var num = $('<div><span class="number">'+this+'</span><span class="description">...</span></div>').appendTo('#numbers'); //Show each number on screen
-						$.ajax({ //Request tags
-							type: 'post',
-							async: true,
-							url: apiURI,
-							dataType: 'json',
-							data: {
-								api: 'export',
-								export: 'number',
-								number: this
-							},
-							success: function(data) {
-								num.find('.description').text(data.description); //Grab description and place on number
-							}
+			jtags = JSON.stringify(tags);
+			if(jtags !== lastSearchTags) {
+				lastSearchTags = jtags;
+				$.ajax({ //Send search query
+					type: 'post',
+					async: true,
+					url: apiURI,
+					dataType: 'json',
+					data: {
+						api: 'search',
+						filter: true,
+						search: jtags
+					},
+					success: function(numbers) { //On success
+						$('#numbers').html(''); //Clear numbers
+						$.each(numbers, function() {
+							var num = $('<div><span class="number">'+this+'</span><span class="description">...</span></div>').appendTo('#numbers'); //Show each number on screen
+							$.ajax({ //Request tags
+								type: 'post',
+								async: true,
+								url: apiURI,
+								dataType: 'json',
+								data: {
+									api: 'export',
+									export: 'number',
+									number: this
+								},
+								success: function(data) {
+									num.find('.description').text(data.description); //Grab description and place on number
+								}
+							});
 						});
-					});
-				}
-			});
+					}
+				});
+			}
 		}
 		function numberModeOff() { //Turns number mode off
 			$('#input').html('<span class="type"></span>');
@@ -460,20 +466,6 @@ exit;
 					if(!numberMode) {
 						searchTags();
 					}
-				} else if(e.key == 'Backspace') {
-					if($('#input .type').text() == '') { //If selected bubble has not text
-						deleteSelectedBubble();
-						$('#input span:last').addClass('type'); //Make the last one typeable
-					} else {
-						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
-					}
-					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
-						loadNumberTags($('#input .type').text());
-					}
-					$('#input .type').removeClass('saved'); //Remove edited color
-					if(!numberMode) {
-						searchTags();
-					}
 				} else if(e.key == 'ArrowLeft') {
 					selectBubble($('#input .type').prev());
 				} else if(e.key == 'ArrowRight') {
@@ -484,26 +476,37 @@ exit;
 				} else if(e.key == 'End' || e.key == 'Escape') {
 					$('#numbers').html('');
 					$('#input').html('<span class="type"></span>'); //Erase all content and reset
-				} else if(e.key.length == 1) { //Any other key pressed
-					$('#input .type').append(e.key.toLowerCase()); //Type the key
-					$('#input .type .autofill').remove(); //Remove autofill
-					var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
-					if(autoFill !== '') {
-						$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+				} else if(e.key.length == 1 || e.key == 'Backspace') { //Any other key pressed
+					if(e.key == 'Backspace') {
+						if($('#input .type').text() == '') { //If selected bubble has not text
+							deleteSelectedBubble();
+							$('#input span:last').addClass('type'); //Make the last one typeable
+						} else {
+							$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
+						}
+					} else {
+						$('#input .type').append(e.key.toLowerCase()); //Type the key
+						$('#input .type .autofill').remove(); //Remove autofill
+						var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
+						if(autoFill !== '') {
+							$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+						}
 					}
 					$('#input .type').removeClass('saved');
 					if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 						numberModeOn();
 					}
-					if(typeFilled() && !numberMode && !typeValid()) { //If type is valid, or in number mode, or type has no text
+					if(typeFilled() && !numberMode && !typeValid() && e.key !== 'Backspace') { //If type is valid, or in number mode, or type has no text
 						$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
 					}
 					if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
 						loadNumberTags($('#input .type').text());
 					}
-					if(!numberMode) {
-						searchTags();
-					}
+					setTimeout(function() {
+						if(!numberMode && allValid()) {
+							searchTags();
+						}
+					});
 				}
 				if(!$('#input span:first').text().match(/^\d+$/) && numberMode) {
 					numberModeOff();
