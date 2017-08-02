@@ -107,7 +107,6 @@ if(isset($_POST['api'])) {
 				}
 				array_push($result, getNumber($k)); //Otherwise add number to the result
 			}
-			arsort($result);
 			echo json_encode($result); //Output result in json
 		}
 	}
