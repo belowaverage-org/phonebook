@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Written by Dylan Bickerstaff -->
+<html>
+	<head>
+		<title>Phone Book</title>
+		<link href="" rel="icon" type="image/x-icon">
+		<link rel="stylesheet" href="static/css/index.css">
+		<script src="static/js/index.js"></script>
+	</head>
+	<body>
+		<div id="main">
+			<h1>Phone Book</h1>
+			<div id="input"><span class="type"></span></div>
+			<input type="text" placeholder="Enter a description" style="display:none;">
+			<div id="numbers"></div>
+		</div>
+		<div style="display:none;" id="legend">
+			<h1>Phone Book Guide</h1>
+			<h3>Bubble / Tag Legend</h3>
+			<div class="leg blue"> - Phone number</div>
+			<div class="leg green"> - Existing tag</div>
+			<div class="leg yellow"> - Saved tag</div>
+			<div class="leg gray"> - Non existing tag</div>
+			<h3>Dictionary</h3>
+			<ul>
+				<li><b>Tag</b> - A word or phrase without a number or space that describes what you are looking for.</li>
+				<li><b>Bubble</b> - The colored background surrounding and seperating the tags.</li>
+				<li><b>Autofill</b> - A function of the Phone Book that automaticly predicts and completes any tag that you are typing.</li>
+				<li><b>Search Mode</b> - A mode of Phone Book that allows you to search for a phone number by tags.</li>
+				<li><b>Edit Mode</b> - A mode of Phone Book that allows you to edit numbers, create numbers, edit tags and create tags on a number.</li>
+			</ul>
+			<h3>Key Mappings / Shortcuts</h3>
+			<h4>Both Modes</h4>
+			<ul>
+				<li><b>Tab</b> - Complete autofilled text.</li>
+				<li><b>Space</b> - Create blank tag</li>
+				<li><b>End</b> - Remove all tags and return to Search Mode</li>
+				<li><b>Delete</b> - Remove selected tag.</li>
+				<li><b>Left Arrow</b> - Select tag to the left. (If exists)</li>
+				<li><b>Right Arrow</b> - Select tag to the right. (If exists)</li>
+			</ul>
+			<h4>Edit Mode</h4>
+			<ul>
+				<li><b>Up Arrow</b> - Select tag input.</li>
+				<li><b>Down Arrow</b> - Select description input.</li>
+				<li><b>Enter</b> - Save changed data.</li>
+			</ul>
+			<h3>Searching Numbers</h3>
+			To search for a number just start typing a tag that exists.<br>
+			Typing a tag that does not exist is not possible.<br>
+			The autofill system will stop you from typing if the tag you are trying to type does not exist.
+			<h3>Editing Numbers</h3>
+			<ol>
+				<li>Press <b>[End]</b> to clear your screen.</li>
+				<li>Type in an existing Phone Number.</li>
+				<li>Press <b>[Space]</b> to create a new tag
+					<ul>
+						<li><span class="leg green"></span> - A green tag indicates an existing tag on another number.</li>
+						<li><span class="leg yellow"></span> - A yellow tag indicates a saved/unedited tag already associated with this number.</li>
+						<li><span class="leg"></span> - A gray tag indicates a non existing tag.</li>
+					</ul>
+				</li>
+				<li>Type a tag you would like to associate with this number.</li>
+				<li>Use the <b>[Down Arrow]</b> key to select the "description" input.</li>
+				<li>Type a description of the Phone Number.</li>
+				<li>Press <b>[Enter]</b> to save your changes.</li>
+			</ol>
+		</div>
+		<div style="display:none;" id="question" tabindex="1">
+			<h1>Warning</h1>
+			<h2>You are about to make changes, proceed?</h2>
+			<span class="yes"><b>Yes</b> [Enter]</span><span class="no"><b>No</b> [Space]</span>
+		</div>
+		<div id="info">i</div>
+		<img title="Written by: Dylan Bickerstaff - June 2017" class="l" alt="Cedar Point Information Technology" src="static/img/index.png">
+	</body>
+</html>
