@@ -99,12 +99,15 @@ if(isset($_POST['api'])) {
 			}
 			arsort($score); //Sort the score array by the score big to small
 			foreach($score as $k => $v) { //For every number found in the search tags
-				if(isset($_POST['filter']) && count($postJson) !== $v) { //If filter is set and score does not equal the amount of tags submitted
-					break; //Skip
+				if(!(isset($_POST['offset']) && is_numeric($_POST['offset']))) { //No offset
+					$_POST['offset'] = 0;
+				}
+				if(count($postJson) !== $v && count($postJson) > $v + $_POST['offset']) { //With offset
+					break;
 				}
 				array_push($result, getNumber($k)); //Otherwise add number to the result
 			}
-			sort($result);
+			arsort($result);
 			echo json_encode($result); //Output result in json
 		}
 	}
@@ -190,6 +193,7 @@ exit;
 		var numberMode = false;
 		var descriptionMode = false;
 		var lastSearchTags = '[]';
+		var searchOffset = 0;
 		//Functions
 		function time() { //Return unix timestamp
 			return Math.round((new Date()).getTime() / 1000);
@@ -372,7 +376,7 @@ exit;
 					dataType: 'json',
 					data: {
 						api: 'search',
-						filter: true,
+						offset: searchOffset,
 						search: jtags
 					},
 					success: function(numbers) { //On success
