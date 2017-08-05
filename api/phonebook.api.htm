@@ -4,7 +4,7 @@
 	<head>
 		<title>PhoneBook API Documentation</title>
 	</head>
-	<body>
+	<body style="background-color:#dedede;">
 		<h1>PhoneBook API Documentation</h1>
 		<hr>
 		<h2>Introduction</h2>
@@ -33,12 +33,14 @@
 				</ul>
 			</li>
 		</ul>
+		<hr>
 		<h2 id="search">Search API</h2>
 		<p>
 			The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
-			The search <b>offset</b> will offset the filter anding algortithm. For example:<br><br>
+			The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
 			An offset of 0 will only return numbers that match all of the search tags.<br>
-			An offset of 1 will return all numbers that match the search tags or all the search tags minus one. For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
+			An offset of 1 will return all numbers that match the search tags or all the search tags minus one.<br>
+			For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
 			The results would return with the most matching numbers first.
 		</p>
 		<h4><i>POST Request Header</i></h4>
@@ -63,13 +65,64 @@ search: ["example","search","tags"]
 ]
 		</pre>
 		<h4><i>POST JSON Live Demo</i></h4>
-		<form>
-			<textarea>
+		<form target="search" method="post">
+			<input type="number" name="offset" placeholder="Offset: 0">
+			<button>Send</button><br><br>
+			<textarea name="search" style="width:300px;height:95px;">
 [
     "manager"
 ]
 			</textarea>
+			<input type="hidden" name="api" value="search">	
+			<iframe style="width:300px;height:95px;" name="search"></iframe>
 		</form>
-		
+		<hr>
+		<h2 id="import">Import API</h2>
+		<p>
+			The import API allows numbers to be imported into the database using JSON.<br>
+			This method allows for number editing and deleting as well.<br><br>
+			When editing a number using the import API, you must first export the number you are going to edit, then modify the JSON (except for the number), then import the JSON using this API.<br><br>
+			To delete a number, submit an empty number like so:
+			<pre>
+{
+    "1234": {}
+}
+			</pre>
+		</p>
+		<h4><i>POST Request Header</i></h4>
+		<pre>
+api: import
+import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
+		</pre>
+		<h4><i>POST JSON Request Syntax</i></h4>
+		<pre>
+{
+    "1234": {
+        "description": "Test Number",
+        "tags": [
+            "example",
+            "tags"
+        ]
+    }
+}
+		</pre>
+		<h4><i>POST JSON Live Demo</i></h4>
+		<form target="import" method="post">
+			<button>Send</button><br><br>
+			<textarea name="import" style="width:300px;height:95px;">
+{
+    "1234": {
+        "description": "Test Number",
+        "tags": [
+            "example",
+            "tags"
+        ]
+    }
+}
+			</textarea>
+			<input type="hidden" name="api" value="import">	
+			<iframe style="width:300px;height:95px;" name="import"></iframe>
+		</form>
+		<br><br><br><br><br><br><br><br>
 	</body>
 </html>
