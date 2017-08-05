@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- Written by: Dylan Bickerstaff -->
+<html>
+	<head>
+		<title>PhoneBook API Documentation</title>
+	</head>
+	<body>
+		<h1>PhoneBook API Documentation</h1>
+		<hr>
+		<h2>Introduction</h2>
+		<p>
+			The PhoneBook's API is used to dynamically respond to changes in search queries live on screen without the need of refreshing/reloading the page. This method is known as <a href="http://api.jquery.com/jquery.ajax/">AJAX</a>.<br>
+			All requests to the API are done using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> http method, and the data submitted will use <a href="http://www.json.org/">json</a>.<br>
+			Every response from the API where a response is nessesary will return with a json string.
+		</p>
+		<h2>Request Structure</h2>
+		<ul>
+			<li><a href="#">api</a></a>
+				<ul>
+					<li><a href="#search">search</a>
+						<ul>
+							<li><a href="#offset">offset</a></li>
+						</ul>
+					</li>
+					<li><a href="#import">import</a></li>
+					<li><a href="#export">export</a>
+						<ul>
+							<li><a href="#tags">tags</a></li>
+							<li><a href="#number">number</a></li>
+							<li><a href="#numbers">numbers</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h2 id="search">Search API</h2>
+		<p>
+			The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
+			The search <b>offset</b> will offset the filter anding algortithm. For example:<br><br>
+			An offset of 0 will only return numbers that match all of the search tags.<br>
+			An offset of 1 will return all numbers that match the search tags or all the search tags minus one. For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
+			The results would return with the most matching numbers first.
+		</p>
+		<h4><i>POST Request Header</i></h4>
+		<pre>
+api: search
+offset: 0
+search: ["example","search","tags"]
+		</pre>
+		<h4><i>POST JSON Request Syntax</i></h4>
+		<pre>
+[
+    "example",
+    "search",
+    "tags"
+]
+		</pre>
+		<h4><i>POST JSON Response Example</i></h4>
+		<pre>
+[
+    1234,
+    5678
+]
+		</pre>
+		<h4><i>POST JSON Live Demo</i></h4>
+		<form>
+			<textarea>
+[
+    "manager"
+]
+			</textarea>
+		</form>
+		
+	</body>
+</html>

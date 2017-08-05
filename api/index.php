@@ -172,4 +172,5 @@ if(isset($_POST['api'])) {
 	}
 exit;
 }
+echo file_get_contents('phonebook.api.htm');
 ?>
