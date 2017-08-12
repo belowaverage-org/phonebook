@@ -85,9 +85,10 @@ search: ["example","search","tags"]
 			To delete a number, submit an empty number like so:
 			<pre>
 {
-    "1234": {}
+    "1234": []
 }
 			</pre>
+			<i>This API only responds with Fatal PHP errors.</i>
 		</p>
 		<h4><i>POST Request Header</i></h4>
 		<pre>
@@ -109,6 +110,8 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
 		<h4><i>POST JSON Live Demo</i></h4>
 		<form target="import" method="post">
 			<button>Send</button><br><br>
+			<b>Warning: Sending this data will write to the database!</b>
+			<br><br>
 			<textarea name="import" style="width:300px;height:95px;">
 {
     "1234": {

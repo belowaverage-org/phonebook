@@ -12,15 +12,16 @@ var numberMode = false;
 var descriptionMode = false;
 var lastSearchTags = '[]';
 var searchOffset = 0;
+var cacheTimeout = 10;
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
 }
 function autoFillTag(term) { //Returns rest of tag
-	if(mem.cache < time() - 10) { //Renew cache
+	if(mem.cache < time() - cacheTimeout) { //Renew cache
 		$.ajax({ //Request tags
 			type: 'post',
-			async: false,
+			async: true,
 			dataType: 'json',
 			url: apiURI,
 			data: {
@@ -232,6 +233,8 @@ function numberModeOn() { //Turns number mode on
 	$('#numbers').hide();
 	numberMode = true;
 }
+//Load cache
+autoFillTag();
 //On doc ready
 $(document).ready(function() {
 	$('#info').click(function() { //On click info button
