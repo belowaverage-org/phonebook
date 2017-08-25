@@ -84,15 +84,27 @@ if(isset($_POST['api'])) {
 		if($postJson !== null) { //JSON is valid
 			$tags = loadDB('tags');// Load tags from database
 			$score = array(); //Define arrays
+			$ASW = array();
 			$result = array();
 			foreach($postJson as $k => $v) { //Foreach search term recieved
 				$searchTag = strtolower($v); //Change caps to lower case
-				if(isset($tags[$searchTag]) && !empty($tags[$searchTag])) { //If search tag exists in database and has a value
-					foreach($tags[$searchTag] as $id) { //Then for every tag add a score of +1 to all the numbers that are associated with the tag
-						if(isset($score[$id])) { 
-							$score[$id] = $score[$id] + 1;
-						} else {
-							$score[$id] = 1;
+				foreach($tags as $k => $v) { //For every tag
+					if(@strpos($k, $searchTag) === 0) { //If tag starts with search tag
+						foreach($v as $id) { //NEED DESCRIPT
+							if($k == $searchTag) {
+								if(isset($score[$id])) { 
+									$score[$id] = $score[$id] + 1;
+								} else {
+									$score[$id] = 1;
+								}
+							} elseif(!isset($ASW[$id])) {
+								if(isset($score[$id])) { 
+									$score[$id] = $score[$id] + 1;
+								} else {
+									$score[$id] = 1;
+								}
+								$ASW[$id] = true;
+							}
 						}
 					}
 				}
@@ -102,10 +114,9 @@ if(isset($_POST['api'])) {
 				if(!(isset($_POST['offset']) && is_numeric($_POST['offset']))) { //No offset
 					$_POST['offset'] = 0;
 				}
-				if(count($postJson) !== $v && count($postJson) > $v + $_POST['offset']) { //With offset
-					break;
+				if(count($postJson) <= $v + $_POST['offset']) { //With offset
+					array_push($result, getNumber($k)); //Otherwise add number to the result
 				}
-				array_push($result, getNumber($k)); //Otherwise add number to the result
 			}
 			echo json_encode($result); //Output result in json
 		}

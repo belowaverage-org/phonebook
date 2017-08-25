@@ -185,6 +185,8 @@ function searchTags() { //grab all tags and search the database and return the r
 			tags.push($(this).text()); //push to array to send later
 		}
 	});
+	//tags.push($('#input .type').text().replace($('#input .type .autofill').text(), ''));
+	console.log($(this)[0] !== $('#input .type')[0]);
 	jtags = JSON.stringify(tags);
 	if(jtags !== lastSearchTags) {
 		lastSearchTags = jtags;
