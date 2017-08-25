@@ -110,12 +110,20 @@ if(isset($_POST['api'])) {
 				}
 			}
 			arsort($score); //Sort the score array by the score big to small
+			if(!(isset($_POST['count']) && is_numeric($_POST['count']))) { //No offset
+				$_POST['count'] = 100;
+			}
 			foreach($score as $k => $v) { //For every number found in the search tags
 				if(!(isset($_POST['offset']) && is_numeric($_POST['offset']))) { //No offset
 					$_POST['offset'] = 0;
 				}
 				if(count($postJson) <= $v + $_POST['offset']) { //With offset
 					array_push($result, getNumber($k)); //Otherwise add number to the result
+				}
+				if($_POST['count'] <= 0) {
+					break;
+				} else {
+					$_POST['count']--;
 				}
 			}
 			echo json_encode($result); //Output result in json
