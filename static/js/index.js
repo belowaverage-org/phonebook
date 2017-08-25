@@ -181,11 +181,11 @@ function searchTags() { //grab all tags and search the database and return the r
 	var tags = [];
 	$.each($('#input > span'), function() { //For each bubble
 		selectBubble($(this));
-		if(typeFilled()) {
+		if(typeFilled() && typeValid() && $(this)[0] !== $('#input > span:last-child')[0]) {
 			tags.push($(this).text()); //push to array to send later
 		}
 	});
-	//tags.push($('#input .type').text().replace($('#input .type .autofill').text(), ''));
+	tags.push($('#input .type').clone().children().remove().end().text());
 	console.log($(this)[0] !== $('#input .type')[0]);
 	jtags = JSON.stringify(tags);
 	if(jtags !== lastSearchTags) {
