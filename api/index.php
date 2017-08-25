@@ -84,7 +84,6 @@ if(isset($_POST['api'])) {
 		if($postJson !== null) { //JSON is valid
 			$tags = loadDB('tags');// Load tags from database
 			$score = array(); //Define arrays
-			$ASW = array();
 			$result = array();
 			foreach($postJson as $k => $v) { //Foreach search term recieved
 				$searchTag = strtolower($v); //Change caps to lower case
@@ -97,13 +96,10 @@ if(isset($_POST['api'])) {
 								} else {
 									$score[$id] = 1;
 								}
-							} elseif(!isset($ASW[$id])) {
-								if(isset($score[$id])) { 
-									$score[$id] = $score[$id] + 1;
-								} else {
-									$score[$id] = 1;
-								}
-								$ASW[$id] = true;
+							} elseif(isset($score[$id])) { 
+								$score[$id] = $score[$id] + 1;
+							} else {
+								$score[$id] = 1;
 							}
 						}
 					}
@@ -120,7 +116,7 @@ if(isset($_POST['api'])) {
 				if(count($postJson) <= $v + $_POST['offset']) { //With offset
 					array_push($result, getNumber($k)); //Otherwise add number to the result
 				}
-				if($_POST['count'] <= 0) {
+				if($_POST['count'] <= 1) {
 					break;
 				} else {
 					$_POST['count']--;

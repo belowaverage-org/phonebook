@@ -52,9 +52,6 @@ function deleteSelectedBubble() { //Delete the type bubble
 }
 function selectBubble(jqueryBubble) { //Make jquery selected bubble the type bubble
 	if(jqueryBubble.is('#input > span')) { //If next bubble is a bubble
-		if(!typeUnique()) { //If type is not unique remove it
-			$('#input .type').remove();
-		}
 		$('#input .type').removeClass('type'); //remove type from any bubble
 		jqueryBubble.addClass('type'); //Add type to bubble.
 	}
@@ -272,6 +269,9 @@ $(document).on('keydown', function (e) {
 		e.preventDefault(); //Disable any default key press actions
 		if(e.key == ' ') { //On Space
 			$('#input .type').html($('#input .type').text()); //Capture autofill
+			if(!typeUnique()) { //If type is not unique remove it
+				deleteSelectedBubble();
+			}
 			if(allValid() || numberMode && allFilled()) { //Create new bubble
 				selectBubble($('<span></span>').appendTo('#input'));
 			} else {
