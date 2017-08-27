@@ -202,7 +202,6 @@ function searchTags() { //grab all tags and search the database and return the r
 				search: jtags
 			},
 			success: function(numbers) { //On success
-				$('#numbers').html(''); //Clear numbers
 				ajaxSearchNumbers = $.ajax({
 					type: 'post',
 					async: true,
@@ -214,6 +213,7 @@ function searchTags() { //grab all tags and search the database and return the r
 						numbers: JSON.stringify(numbers)
 					},
 					success: function(numbers) {
+						$('#numbers').html(''); //Clear numbers
 						$.each(numbers, function(k) {
 							var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
 						});
