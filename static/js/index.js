@@ -13,6 +13,8 @@ var descriptionMode = false;
 var lastSearchTags = '[]';
 var searchOffset = 0;
 var cacheTimeout = 10;
+var ajaxSearchQuery = $.ajax();
+var ajaxSearchNumbers = $.ajax();
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
@@ -176,6 +178,8 @@ function sendTagsAndDescription() { //Send all tags to database
 }
 function searchTags() { //grab all tags and search the database and return the result on screen.
 	var tags = [];
+	ajaxSearchQuery.abort(); //Abort the previous requests.
+	ajaxSearchNumbers.abort();
 	$.each($('#input > span'), function() { //For each bubble
 		selectBubble($(this));
 		if(typeFilled() && typeValid() && $(this)[0] !== $('#input > span:last-child')[0]) {
@@ -183,11 +187,10 @@ function searchTags() { //grab all tags and search the database and return the r
 		}
 	});
 	tags.push($('#input .type').clone().children().remove().end().text());
-	console.log($(this)[0] !== $('#input .type')[0]);
 	jtags = JSON.stringify(tags);
 	if(jtags !== lastSearchTags) {
 		lastSearchTags = jtags;
-		$.ajax({ //Send search query
+		ajaxSearchQuery = $.ajax({ //Send search query
 			type: 'post',
 			async: true,
 			url: apiURI,
@@ -199,22 +202,21 @@ function searchTags() { //grab all tags and search the database and return the r
 			},
 			success: function(numbers) { //On success
 				$('#numbers').html(''); //Clear numbers
-				$.each(numbers, function() {
-					var num = $('<div><span class="number">'+this+'</span><span class="description">...</span></div>').appendTo('#numbers'); //Show each number on screen
-					$.ajax({ //Request tags
-						type: 'post',
-						async: true,
-						url: apiURI,
-						dataType: 'json',
-						data: {
-							api: 'export',
-							export: 'number',
-							number: this
-						},
-						success: function(data) {
-							num.find('.description').text(data.description); //Grab description and place on number
-						}
-					});
+				ajaxSearchNumbers = $.ajax({
+					type: 'post',
+					async: true,
+					url: apiURI,
+					dataType: 'json',
+					data: {
+						api: 'export',
+						export: 'numbers',
+						numbers: JSON.stringify(numbers)
+					},
+					success: function(numbers) {
+						$.each(numbers, function(k) {
+							var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
+						});
+					}
 				});
 			}
 		});
@@ -279,6 +281,7 @@ $(document).on('keydown', function (e) {
 			}
 		} else if(e.key == 'Tab') {
 			$('#input .type').html($('#input .type').text()); //Capture autofill
+			searchTags();
 		} else if(e.key == 'Enter') { //If enter is pressed
 			if(numberMode) {
 				alertToSend();

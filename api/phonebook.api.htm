@@ -151,7 +151,23 @@ export: tags
 		<pre>
 api: export
 export: numbers
+numbers: [1234, 5678]
 		</pre>
+		<h4><i>POST Live Demo</i></h4>
+		<form target="export" method="post">
+			<button>Send</button><br><br>
+			<select name="export">
+				<option value="number">number</option>
+				<option value="tags">tags</option>
+				<option value="numbers">numbers</option>
+			</select><br><br>
+			<input type="number" name="number" value="1234"><br><br>
+			<textarea name="numbers" style="width:300px;height:95px;">
+[1234, 5678]
+			</textarea>
+			<iframe style="width:300px;height:95px;" name="export"></iframe>
+			<input type="hidden" name="api" value="export">	
+		</form>
 		<br><br><br><br><br><br><br><br>
 	</body>
 </html>
