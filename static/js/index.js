@@ -114,6 +114,7 @@ function loadNumberTags(num) {
 		data: {
 			api: 'export',
 			export: 'numbers',
+			includeTags: true,
 			numbers: '["'+num+'"]'
 		},
 		success: function(numbers) {

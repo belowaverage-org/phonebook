@@ -172,9 +172,14 @@ if(isset($_POST['api'])) {
 				$data = loadDB('numbers\\'.$uid); //Load number
 				if(!empty($data)) { //If contains data / exists
 					$result[getNumber($uid)] = array( //Put in array for result
-						'description' => $data['description'],
-						'tags' => getTags($uid)
+						'description' => $data['description']
 					);
+					if(isset($_POST['includeTags']) && $_POST['includeTags'] == true) {
+						$result[getNumber($uid)] = array( //Put in array for result
+							'description' => $data['description'],
+							'tags' => getTags($uid)
+						);
+					}
 				}
 			}
 			echo json_encode($result); //Return result

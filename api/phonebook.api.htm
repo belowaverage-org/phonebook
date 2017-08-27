@@ -28,7 +28,11 @@
 						<ul>
 							<li><a href="#tags">tags</a></li>
 							<li><a href="#number">number</a></li>
-							<li><a href="#numbers">numbers</a></li>
+							<li><a href="#numbers">numbers</a>
+								<ul>
+									<li><a href="#includeTags">includeTags</a></li>
+								</ul>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -134,7 +138,11 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
 		<h2 id="import">Export API</h2>
 		<p>
 			The Export API is split into three methods:<br><br>
-			The <b id="number">number</b> method will export a number's data from the provided number. <br><br>
+			The <b id="number">number</b> method will export a number's data from the provided number. For example:<br>
+			<pre>
+			
+			</pre>
+			<br><br>
 			The <b id="tags">tags</b> method will export all tags at one time.<br><br>
 			The <b id="numbers">numbers</b> method will export all numbers.<br><br>
 		</p>
@@ -153,15 +161,22 @@ api: export
 export: numbers
 numbers: [1234, 5678]
 		</pre>
+		<pre>
+api: export
+export: numbers
+includeTags: 1
+numbers: [1234, 5678]
+		</pre>
 		<h4><i>POST Live Demo</i></h4>
 		<form target="export" method="post">
 			<button>Send</button><br><br>
-			<select name="export">
+			export: <select name="export">
 				<option value="number">number</option>
 				<option value="tags">tags</option>
 				<option value="numbers">numbers</option>
 			</select><br><br>
-			<input type="number" name="number" value="1234"><br><br>
+			includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
+			number: <input type="number" name="number"><br><br>
 			<textarea name="numbers" style="width:300px;height:95px;">
 [1234, 5678]
 			</textarea>
