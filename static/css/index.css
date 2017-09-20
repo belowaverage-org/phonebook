@@ -90,7 +90,7 @@ img.l {
 	z-index:10;
 }
 #legend, #question {
-	position:absolute;
+	position:fixed;
 	width:100%;
 	height:100%;
 	top:0px;
@@ -103,8 +103,11 @@ img.l {
 	text-align:left;
 	padding:30px;
 	width:calc(100% - 60px);
-	min-height:calc(100% + 60px);
-	height:auto;
+	height:calc(100% - 60px);
+	overflow:auto;
+}
+body.blur {
+	overflow:hidden;
 }
 #main.blur {
 	filter:blur(5px);
@@ -178,9 +181,9 @@ input[type=text] {
 	font-size:18px;
 }
 #numbers div.expand .description {
-	text-overflow:initial;
-	white-space:initial;
-	overflow:initial;
+	text-overflow:clip;
+	white-space:normal;
+	overflow:visible;
 }
 #numbers div.expand {
 	height:auto;

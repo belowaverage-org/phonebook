@@ -187,7 +187,7 @@ function loadNumberTags(num) {
 }
 function alertToSend() { //Show alert before sending data
 	descriptionMode = true;
-	$('#question').show().siblings('#main').addClass('blur');
+	$('#question').show().siblings('#main, body').addClass('blur');
 	$('#question > span').click(function() { //Listen for click on yes.
 		if($(this).hasClass('yes')) {
 			sendTagsAndDescription();
@@ -202,7 +202,7 @@ function alertToSend() { //Show alert before sending data
 	}).focus();
 }
 function closeAlert() {
-	$('#question').hide().unbind().siblings('#main').removeClass('blur'); //Unbind all events and remove alert
+	$('#question').hide().unbind().siblings('#main, body').removeClass('blur'); //Unbind all events and remove alert
 	descriptionMode = false;
 }
 function sendTagsAndDescription() { //Send all tags to database
@@ -296,7 +296,7 @@ autoFillTag();
 $(document).ready(function() {
 	$('#info').click(function() { //On click info button
 		$('#legend').toggle();
-		$('#main').toggleClass('blur');
+		$('#main, body').toggleClass('blur');
 	});
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
