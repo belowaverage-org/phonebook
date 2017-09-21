@@ -187,8 +187,8 @@ function loadNumberTags(num) {
 }
 function alertToSend() { //Show alert before sending data
 	descriptionMode = true;
-	$('#question').show().siblings('#main, body').addClass('blur');
-	$('#question > span').click(function() { //Listen for click on yes.
+	$('#question').show().siblings('#main').addClass('blur');
+	$('#question').on('click', 'span', function() { //Listen for click on yes.
 		if($(this).hasClass('yes')) {
 			sendTagsAndDescription();
 		}
@@ -202,7 +202,7 @@ function alertToSend() { //Show alert before sending data
 	}).focus();
 }
 function closeAlert() {
-	$('#question').hide().unbind().siblings('#main, body').removeClass('blur'); //Unbind all events and remove alert
+	$('#question').hide().unbind().siblings('#main').removeClass('blur'); //Unbind all events and remove alert
 	descriptionMode = false;
 }
 function sendTagsAndDescription() { //Send all tags to database
@@ -296,7 +296,7 @@ autoFillTag();
 $(document).ready(function() {
 	$('#info').click(function() { //On click info button
 		$('#legend').toggle();
-		$('#main, body').toggleClass('blur');
+		$('#main').toggleClass('blur');
 	});
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
@@ -369,7 +369,6 @@ $(document).on('keydown', function (e) {
 					$('#input span:last').addClass('type'); //Make the last one typeable
 				} else {
 					$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
-					console.log('bs');
 				}
 			} else {
 				$('#input .type').append(e.key.toLowerCase()); //Type the key
@@ -382,6 +381,9 @@ $(document).on('keydown', function (e) {
 			$('#input .type').removeClass('saved');
 			if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 				numberModeOn();
+			}
+			if(typeFilled() && !numberMode && !typeValid() && e.keyCode !== 8) { //If type is valid, or in number mode, or type has no text		
+				$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble		
 			}
 			if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
 				loadNumberTags($('#input .type').text());
