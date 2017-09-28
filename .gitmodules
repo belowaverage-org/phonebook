@@ -1,0 +1,3 @@
+[submodule "DB"]
+	path = DB
+	url = https://github.com/krisdb2009/PhoneBookDB.git
