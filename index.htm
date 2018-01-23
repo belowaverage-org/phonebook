@@ -8,8 +8,9 @@
 		<script src="static/js/index.js"></script>
 	</head>
 	<body>
-		<div id="main">
+		<div id="main" class="blur">
 			<h1>Phone Book</h1>
+			<h4 id="tip">To search the phone book, start typing...</h4>
 			<div id="input"><span class="type"></span></div>
 			<input type="text" placeholder="Enter a description" style="display:none;">
 			<div id="numbers"></div>
@@ -70,6 +71,10 @@
 			<h1>Warning</h1>
 			<h2>You are about to make changes, proceed?</h2>
 			<span class="yes"><b>Yes</b> [Enter]</span><span class="no"><b>No</b> [Space]</span>
+		</div>
+		<div id="loading">
+			<h1>Phone Book</h1>
+			<img src="static/img/load.gif">
 		</div>
 		<div id="info">i</div>
 		<img title="Written by: Dylan Bickerstaff - June 2017" class="l" alt="Cedar Point Information Technology" src="static/img/index.png">

@@ -63,6 +63,8 @@ var mem = {
 	tags: {},
 	cache: 0
 };
+var firstLoad = true;
+var firstType = true;
 var numberMode = false;
 var descriptionMode = false;
 var lastSearchTags = '[]';
@@ -90,6 +92,11 @@ function autoFillTag(term) { //Returns rest of tag
 					return b.length - a.length;
 				});
 				mem.cache = time(); //Update cache timestamp
+				if(firstLoad) {
+					firstLoad = false;
+					$('#loading').remove();
+					$('#main').removeClass('blur');
+				}
 			}
 		});
 	}
@@ -300,9 +307,11 @@ $(document).ready(function() {
 	});
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
+		$('#input span.type').removeClass('type').addClass('last');
 	});
 	$('#input').click(function() { //If main input is clicked
 		descriptionMode = false;
+		$('#input span').removeClass('last');
 	});
 	$('#input').on('mousedown', 'span', function() { //If a bubble is clicked
 		selectBubble($(this));
@@ -323,6 +332,10 @@ $(document).ready(function() {
 });
 //Keypress action
 $(document).on('keydown', function (e) {
+	if(firstType) {
+		firstType = false;
+		$('#tip').remove();
+	}
 	if(!descriptionMode) {
 		e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
@@ -358,6 +371,7 @@ $(document).on('keydown', function (e) {
 			selectBubble($('#input .type').next());
 		} else if(e.keyCode == 40 && numberMode) { //Arrow Down
 			descriptionMode = true;
+			$('#input span.type').removeClass('type').addClass('last');
 			$('input[type=text]').focus();
 		} else if(e.keyCode == 35 || e.keyCode == 27) { //Esc && End
 			$('#numbers').html('');
@@ -405,6 +419,7 @@ $(document).on('keydown', function (e) {
 	}
 	if(e.keyCode == 38) {//UpArrow //Re select main input 
 		e.preventDefault();
+		$('#input span.last').addClass('type').removeClass('last');
 		$('input[type=text]').blur();
 		descriptionMode = false;
 	}
