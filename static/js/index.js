@@ -70,8 +70,8 @@ var descriptionMode = false;
 var lastSearchTags = '[]';
 var searchOffset = 0;
 var cacheTimeout = 10;
-var ajaxSearchQuery = $.ajax();
-var ajaxSearchNumbers = $.ajax();
+var ajaxSearchQuery = {abort: function() {}};
+var ajaxSearchNumbers = {abort: function() {}};
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
