@@ -301,6 +301,32 @@ if(isset($_POST['api'])) {
 			}
 		}
 	}
+	if($_POST['api'] == 'stats' && isset($_POST['stats'])) {
+		if($_POST['stats'] == 'ping') {
+			session_start();
+			if(!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+				$_SESSION['id'] = uniqid();
+			}
+			session_write_close();
+			$stats = loadDB('sessions');
+			$stats[$_SESSION['id']] = time();
+			foreach($stats as $uid => $time) {
+				if($time < time() - 60) {
+					unset($stats[$uid]);
+				}
+			}
+			putDB($stats, 'sessions');
+		}
+		if($_POST['stats'] == 'count') {
+			$stats = loadDB('sessions');
+			foreach($stats as $uid => $time) {
+				if($time < time() - 60) {
+					unset($stats[$uid]);
+				}
+			}
+			echo count($stats);
+		}
+	}
 exit;
 }
 echo file_get_contents('phonebook.api.htm');

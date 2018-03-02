@@ -69,9 +69,11 @@ var numberMode = false;
 var descriptionMode = false;
 var lastSearchTags = '[]';
 var searchOffset = 0;
-var cacheTimeout = 10;
+var cacheTimeout = 10; //Seconds
 var ajaxSearchQuery = {abort: function() {}};
 var ajaxSearchNumbers = {abort: function() {}};
+var pingInterval = 59; //Seconds
+var placeDashes = true;
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
@@ -277,6 +279,13 @@ function searchTags() { //grab all tags and search the database and return the r
 					success: function(numbers) {
 						$('#numbers').html(''); //Clear numbers
 						$.each(numbers, function(k) {
+							if(placeDashes && k.toString().length == 10) {
+								k = k.toString();
+								var three = k.slice(0, 3) + '-';
+								var six = k.slice(3, 6) + '-';
+								var ten = k.slice(6);
+								k = three + six + ten;
+							}
 							var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
 						});
 					}
@@ -327,8 +336,14 @@ $(document).ready(function() {
 	});
 	$('#numbers').on('click', 'div .number',function() { //If number is clicked
 		numberModeOn();
-		loadNumberTags($(this).text()); // Load number into editor
+		loadNumberTags($(this).text().replace(/-/g, '')); // Load number into editor
 	});
+	if(pingInterval !== 0) {
+		$.post(apiURI, {api: 'stats', stats: 'ping'});
+		setInterval(function() {
+			$.post(apiURI, {api: 'stats', stats: 'ping'});
+		}, pingInterval * 1000);
+	}
 });
 //Keypress action
 $(document).on('keydown', function (e) {
