@@ -192,6 +192,7 @@ input[type=text] {
 }
 #numbers .number {
 	font-weight:bolder;
+	white-space:nowrap;
 }
 #numbers .description {
 	flex:auto;
