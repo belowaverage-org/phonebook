@@ -277,17 +277,23 @@ function searchTags() { //grab all tags and search the database and return the r
 						numbers: JSON.stringify(numbers)
 					},
 					success: function(numbers) {
+						$('#noresult').hide();
 						$('#numbers').html(''); //Clear numbers
-						$.each(numbers, function(k) {
+						console.log(numbers);
+						if(numbers.length == 0) {
+							$('#noresult').show();
+						} else {
+							$.each(numbers, function(k) {
 							if(placeDashes && k.toString().length == 10) {
-								k = k.toString();
-								var three = k.slice(0, 3) + '-';
-								var six = k.slice(3, 6) + '-';
-								var ten = k.slice(6);
-								k = three + six + ten;
-							}
-							var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
-						});
+									k = k.toString();
+									var three = k.slice(0, 3) + '-';
+									var six = k.slice(3, 6) + '-';
+									var ten = k.slice(6);
+									k = three + six + ten;
+								}
+								var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
+							});
+						}
 					}
 				});
 			}

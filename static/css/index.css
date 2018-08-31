@@ -1,14 +1,19 @@
+@font-face {
+  font-family: 'GSans';
+  src: url('../font.woff2');
+}
 html {
 	height:100%;
 	width:100%;
 }
 body {
 	user-select:none;
-	font-family:arial;
+	font-family:GSans, Arial;
 	text-align:center;
 	height:100%;
 	width:100%;
 	margin:0px;
+	color:#000000d9;
 }
 #numbers, #input, h1, input[type=text] {
 	max-width:700px;
@@ -19,7 +24,6 @@ body {
 #input, input[type=text] {
 	text-align:center;
 	font-size:20px;
-	font-family:arial;
 }
 #input .type::after {
 	content:'';
@@ -180,7 +184,7 @@ input[type=text] {
 #numbers div {
 	height:40px;
 	border-radius:20px;
-	background-color:whitesmoke;
+	background-color:#f7f7f7;
 	margin-bottom:10px;
 	margin-top:10px;
 	font-size:20px;
@@ -192,6 +196,7 @@ input[type=text] {
 }
 #numbers .number {
 	font-weight:bolder;
+	white-space:nowrap;
 }
 #numbers .description {
 	flex:auto;
@@ -201,7 +206,7 @@ input[type=text] {
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
-	font-size:18px;
+	font-size:16px;
 }
 #numbers div.expand .description {
 	text-overflow:clip;
