@@ -284,14 +284,28 @@ function searchTags() { //grab all tags and search the database and return the r
 							$('#noresult').show();
 						} else {
 							$.each(numbers, function(k) {
-							if(placeDashes && k.toString().length == 10) {
+								if(placeDashes && k.toString().length == 10) {
 									k = k.toString();
 									var three = k.slice(0, 3) + '-';
 									var six = k.slice(3, 6) + '-';
 									var ten = k.slice(6);
 									k = three + six + ten;
+								} else if(placeDashes && k.toString().length == 11) {
+									k = k.toString();
+									var co = '+' + k.slice(0, 1) + ' ';
+									var three = k.slice(1, 4) + '-';
+									var six = k.slice(4, 7) + '-';
+									var ten = k.slice(7);
+									k = co + three + six + ten;
+								} else if(placeDashes && k.toString().length > 11) {
+									k = k.toString();
+									var three = k.slice(0, 3) + '-';
+									var six = k.slice(3, 6) + '-';
+									var ten = k.slice(6, 10);
+									var ext = ' +' + k.slice(10);
+									k = three + six + ten + ext;
 								}
-								var num = $('<div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div>').appendTo('#numbers'); //Show each number on screen
+								var num = $('<div><div><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div></div>').appendTo('#numbers'); //Show each number on screen
 							});
 						}
 					}
@@ -338,11 +352,11 @@ $(document).ready(function() {
 		}
 	});
 	$('#numbers').on('click', 'div .description', function() { //If description is clicked in number list
-		$(this).parent('div').toggleClass('expand'); //Expand the description in case it overflows
+		$(this).parent('div').parent('div').toggleClass('visible'); //Expand the description in case it overflows
 	});
 	$('#numbers').on('click', 'div .number',function() { //If number is clicked
 		numberModeOn();
-		loadNumberTags($(this).text().replace(/-/g, '')); // Load number into editor
+		loadNumberTags($(this).text().replace(/[^0-9]/g, '')); // Load number into editor
 	});
 	if(pingInterval !== 0) {
 		$.post(apiURI, {api: 'stats', stats: 'ping'});

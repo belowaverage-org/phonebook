@@ -181,22 +181,42 @@ input[type=text] {
 	border-radius:20px;
 	cursor:pointer;
 }
-#numbers div {
+#numbers > div {
 	height:40px;
+	position:relative;
+	margin-bottom:15px;
+	margin-top:15px;
 	border-radius:20px;
-	background-color:#f7f7f7;
-	margin-bottom:10px;
-	margin-top:10px;
+	transition:.3s;
+	border-radius:20px;
+}
+#numbers > div.visible {
+	height:400px;
+    box-shadow:0px 3px 10px rgba(0,0,0,.2);
+}
+#numbers > div > div {
+	height:40px;
 	font-size:20px;
+    border:1px solid rgba(0,0,0,.04);
+    box-shadow:0px 2px 4px rgba(0,0,0,.1);
+	border-radius:20px;
+	cursor:pointer;
 	line-height:40px;
 	display:flex;
-	padding-left:20px;
-	padding-right:20px;
-	cursor:pointer;
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:calc(100% - 2px);
+	transition:.3s;
+}
+#numbers > div.visible > div {
+	background-color:white;
+	box-shadow:0px 2px 3px rgba(0,0,0,.25);
 }
 #numbers .number {
 	font-weight:bolder;
 	white-space:nowrap;
+	margin-left:20px;
 }
 #numbers .description {
 	flex:auto;
@@ -207,6 +227,7 @@ input[type=text] {
 	overflow:hidden;
 	text-overflow:ellipsis;
 	font-size:16px;
+	margin-right:20px;
 }
 #numbers div.expand .description {
 	text-overflow:clip;
