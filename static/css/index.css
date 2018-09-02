@@ -56,12 +56,15 @@ body {
 }
 #input span.valid {
 	background-color:#dfffdf;
+	color:#006d00;
 }
 #input span.number {
 	background-color:#e1f6ff;
+	color:#006590;
 }
 #input span.saved {
 	background-color:#feffbd;
+	color:#3d3e00;
 }
 @keyframes blink {
 	0% {

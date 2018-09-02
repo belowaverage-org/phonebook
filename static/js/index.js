@@ -279,7 +279,6 @@ function searchTags() { //grab all tags and search the database and return the r
 					success: function(numbers) {
 						$('#noresult').hide();
 						$('#numbers').html(''); //Clear numbers
-						console.log(numbers);
 						if(numbers.length == 0) {
 							$('#noresult').show();
 						} else {
