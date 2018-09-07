@@ -1,0 +1,87 @@
+{
+	"number": {
+		"name": "Phone Number",
+		"length": 50,
+		"visible": true,
+		"type": "number",
+		"indexed": true,
+		"unique": true
+	},
+	"desc": {
+		"name": "Description",
+		"length": 1000,
+		"visible": true,
+		"type": "string",
+		"tagged": true
+	},
+	"email": {
+		"name": "Email",
+		"length": 100,
+		"visible": {
+			"Type": [
+				"Person",
+				"Business"
+			]
+		},
+		"type": "string"
+	},
+	"fname": {
+		"name": "First Name",
+		"length": 100,
+		"visible": {
+			"Type": [
+				"Person"
+			]
+		},
+		"type": "string",
+		"tagged": true
+	},
+	"lname": {
+		"name": "Last Name",
+		"length": 100,
+		"visible": {
+			"Type": [
+				"Person"
+			]
+		},
+		"type": "string",
+		"tagged": true
+	},
+	"type": {
+		"name": "Type",
+		"length": 10,
+		"visible": true,
+		"type": "choice",
+		"choices": [
+			"Location",
+			"Person",
+			"Business",
+			"Fax"
+		],
+		"tagged": true
+	},
+	"ext": {
+		"name": "Extension",
+		"length": 20,
+		"visible": true,
+		"type": "number"
+	},
+	"longitude": {
+		"name": "Longitude",
+		"length": 100,
+		"visible": [
+			"Location",
+			"Business"
+		],
+		"type": "number"
+	},
+	"latitude": {
+		"name": "Latitude",
+		"length": 100,
+		"visible": [
+			"Location",
+			"Business"
+		],
+		"type": "number"
+	}
+}

@@ -1,0 +1,58 @@
+<?php
+/* Schema verification / builder */
+
+require(__DIR__.'/../config.database.api');
+
+$schema = json_decode(file_get_contents(__DIR__.'/../config.schema.json'), true);
+
+$db->query('
+	CREATE TABLE tags (
+		text UNIQUE NOT NULL PRIMARY KEY,
+		objects
+	);
+');
+$db->query('
+	CREATE UNIQUE INDEX tags_index ON tags (
+		tagid,
+		text
+	);
+');
+$rows = '';
+$indexed_rows = '';
+foreach($schema as $row => $settings) {
+	foreach($settings as $setting => $v) {
+		if($setting == 'indexed' && $v) {
+			$indexed_rows = $indexed_rows.','.$row;
+		}
+		if($setting == 'unique' && $v) {
+			$row = $row.' UNIQUE NOT NULL';
+		}
+	}
+	$rows = $rows.','.$row;
+}
+$db->query('
+	CREATE TABLE objects (
+		objectid PRIMARY KEY UNIQUE NOT NULL
+		'.$rows.'
+	);
+');
+$db->query('
+	CREATE INDEX objects_index ON objects (
+		objectid
+		'.$indexed_rows.'
+	);
+');
+$db->query('
+	CREATE TABLE tags_objects (
+		tagid NOT NULL REFERENCES tags (tagid),
+		objectid  NOT NULL REFERENCES objects (objectid) 
+	);
+');
+$db->query('
+	CREATE INDEX tags_objects_index ON tags_objects (
+		tagid,
+		objectid
+	);
+');
+exit;
+?>
