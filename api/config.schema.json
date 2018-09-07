@@ -7,7 +7,7 @@
 		"indexed": true,
 		"unique": true
 	},
-	"desc": {
+	"descc": {
 		"name": "Description",
 		"length": 1000,
 		"visible": true,

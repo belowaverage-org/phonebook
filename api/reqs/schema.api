@@ -1,58 +1,79 @@
 <?php
-/* Schema verification / builder */
-
+/* Schema Builder */
 require(__DIR__.'/../config.database.api');
-
-$schema = json_decode(file_get_contents(__DIR__.'/../config.schema.json'), true);
-
-$db->query('
-	CREATE TABLE tags (
-		text UNIQUE NOT NULL PRIMARY KEY,
-		objects
-	);
-');
-$db->query('
-	CREATE UNIQUE INDEX tags_index ON tags (
-		tagid,
-		text
-	);
-');
-$rows = '';
-$indexed_rows = '';
-foreach($schema as $row => $settings) {
-	foreach($settings as $setting => $v) {
-		if($setting == 'indexed' && $v) {
-			$indexed_rows = $indexed_rows.','.$row;
+$schema_json_raw = file_get_contents(__DIR__.'/../config.schema.json');
+$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');
+if($schema_json_raw !== $schema_json_raw_cache) {
+	$tags_objects = $db->select('tags_objects', '*');
+	$objects = $db->select('objects', '*');
+	print_r($objects);
+	$rows = '';
+	$indexed_rows = '';
+	foreach(json_decode($schema_json_raw, true) as $row => $settings) {
+		foreach($settings as $setting => $v) {
+			if($setting == 'indexed' && $v) {
+				$indexed_rows = $indexed_rows.','.$row;
+			}
+			if($setting == 'unique' && $v) {
+				$row = $row.' UNIQUE NOT NULL';
+			}
 		}
-		if($setting == 'unique' && $v) {
-			$row = $row.' UNIQUE NOT NULL';
-		}
+		$rows = $rows.','.$row;
 	}
-	$rows = $rows.','.$row;
+	$db->query('DROP TABLE IF EXISTS tags_objects;');
+	$db->query('DROP TABLE IF EXISTS objects;');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS tags (
+			tagid PRIMARY KEY UNIQUE NOT NULL,
+			text UNIQUE NOT NULL
+		);
+	');
+	$db->query('
+		CREATE UNIQUE INDEX IF NOT EXISTS tags_index ON tags (
+			tagid,
+			text
+		);
+	');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS objects (
+			objectid PRIMARY KEY UNIQUE NOT NULL
+			'.$rows.'
+		);
+	');
+	$db->query('
+		CREATE INDEX IF NOT EXISTS objects_index ON objects (
+			objectid
+			'.$indexed_rows.'
+		);
+	');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS tags_objects (
+			tagid NOT NULL REFERENCES tags (tagid),
+			objectid  NOT NULL REFERENCES objects (objectid) 
+		);
+	');
+	$db->query('
+		CREATE INDEX IF NOT EXISTS tags_objects_index ON tags_objects (
+			tagid,
+			objectid
+		);
+	');
+	if(!empty($objects)) {
+		foreach($objects as $obj_k => $obj_v) {
+			foreach($obj_v as $row_k => $row_v) {
+				if(!in_array($row_k, $rows)) {
+					unset($objects[$obj_k][$row_k]);
+				}
+			}
+		}
+		print_r($objects);
+		$db->insert('objects', $objects);
+	}
+	if(!empty($tags_objects)) {
+		$db->insert('tags_objects', $tags_objects);
+	}
+	print_r($db->error());
+	file_put_contents(__DIR__.'/../../DB/schema.cache', $schema_json_raw);
 }
-$db->query('
-	CREATE TABLE objects (
-		objectid PRIMARY KEY UNIQUE NOT NULL
-		'.$rows.'
-	);
-');
-$db->query('
-	CREATE INDEX objects_index ON objects (
-		objectid
-		'.$indexed_rows.'
-	);
-');
-$db->query('
-	CREATE TABLE tags_objects (
-		tagid NOT NULL REFERENCES tags (tagid),
-		objectid  NOT NULL REFERENCES objects (objectid) 
-	);
-');
-$db->query('
-	CREATE INDEX tags_objects_index ON tags_objects (
-		tagid,
-		objectid
-	);
-');
 exit;
 ?>
