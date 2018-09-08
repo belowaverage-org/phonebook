@@ -1,16 +1,20 @@
 <?php
-/* Schema Builder */
+/* Database maintainer */
 require(__DIR__.'/../config.database.api');
 $schema_json_raw = file_get_contents(__DIR__.'/../config.schema.json');
-$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');
-if($schema_json_raw !== $schema_json_raw_cache) {
+$schema_json_raw_cache = '';
+if(file_exists(__DIR__.'/../../DB/schema.cache')) {
+	$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');
+}
+if($schema_json_raw !== $schema_json_raw_cache || file_exists(__DIR__.'/../../DB/database.sqlite3')) {
 	$tags_objects = $db->select('tags_objects', '*');
 	$objects = $db->select('objects', '*');
-	print_r($objects);
 	$rows = '';
+	$rows_array = array();
 	$indexed_rows = '';
 	foreach(json_decode($schema_json_raw, true) as $row => $settings) {
 		foreach($settings as $setting => $v) {
+			array_push($rows_array, $row);
 			if($setting == 'indexed' && $v) {
 				$indexed_rows = $indexed_rows.','.$row;
 			}
@@ -61,19 +65,16 @@ if($schema_json_raw !== $schema_json_raw_cache) {
 	if(!empty($objects)) {
 		foreach($objects as $obj_k => $obj_v) {
 			foreach($obj_v as $row_k => $row_v) {
-				if(!in_array($row_k, $rows)) {
+				if(!in_array($row_k, $rows_array) && $row_k !== 'objectid') {
 					unset($objects[$obj_k][$row_k]);
 				}
 			}
 		}
-		print_r($objects);
 		$db->insert('objects', $objects);
 	}
 	if(!empty($tags_objects)) {
 		$db->insert('tags_objects', $tags_objects);
 	}
-	print_r($db->error());
 	file_put_contents(__DIR__.'/../../DB/schema.cache', $schema_json_raw);
 }
-exit;
 ?>

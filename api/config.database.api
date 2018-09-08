@@ -1,9 +1,10 @@
 <?php
+//Database conenction config
 require_once(__DIR__.'/reqs/medoo.api');
 use Medoo\Medoo;
 $db = new Medoo([
 	'database_type' => 'sqlite',
-	'database_file' => '../DB/main.sqlite3'
+	'database_file' => '../DB/database.sqlite3'
 ]);
 $db->query('PRAGMA foreign_keys = ON;');
 ?>
