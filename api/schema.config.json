@@ -1,0 +1,77 @@
+{
+    "description": {
+        "length": 1000,
+        "name": "Description",
+        "tagged": true,
+        "visible": true
+    },
+    "email": {
+        "length": 100,
+        "name": "Email",
+        "visible": {
+            "Type": [
+                "Business",
+                "Person"
+            ]
+        }
+    },
+    "firstname": {
+        "length": 100,
+        "name": "First Name",
+        "tagged": true,
+        "visible": {
+            "Type": [
+                "Person"
+            ]
+        }
+    },
+    "latitude": {
+        "length": 100,
+        "name": "Latitude",
+        "type": "number",
+        "visible": [
+            "Business",
+            "Location"
+        ]
+    },
+    "lastname": {
+        "length": 100,
+        "name": "Last Name",
+        "tagged": true,
+        "visible": {
+            "Type": [
+                "Person"
+            ]
+        }
+    },
+    "longitude": {
+        "length": 100,
+        "name": "Longitude",
+        "type": "number",
+        "visible": [
+            "Business",
+            "Location"
+        ]
+    },
+    "number": {
+        "indexed": true,
+        "length": 50,
+        "name": "Phone Number",
+        "type": "number",
+        "unique": true,
+        "visible": true
+    },
+    "type": {
+        "choices": [
+            "Business",
+            "Fax",
+            "Location",
+            "Person"
+        ],
+        "length": 10,
+        "name": "Type",
+        "tagged": true,
+        "type": "choice",
+        "visible": true
+    }
+}
