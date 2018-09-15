@@ -42,6 +42,7 @@ if(isset($_POST['import'])) {
 			}
 			array_push($objects, $row); //Add the row to the objects set
 		}
+		$db->pdo->beginTransaction();
 		foreach($objects as $row) { //For each row in the objects set
 			$unique = array();
 			$objectid = '';
@@ -50,9 +51,8 @@ if(isset($_POST['import'])) {
 					$unique[$attribute] = $value;
 				}
 			}
-			print_r($unique);
 			$objectid = $db->get('objects', array('objectid'), array('OR' => $unique));
-			if($objectid !== '') { //Already exists, so just modify the data instead of inserting
+			if($objectid != '') { //Already exists, so just modify the data instead of inserting
 				foreach($unique as $cname => $cvalue) {
 					unset($row[$cname]);
 				}
@@ -62,8 +62,21 @@ if(isset($_POST['import'])) {
 				$db->insert('objects', $row);
 			}
 		}
+		foreach($tags as $tag) {
+			$tagid = '';
+			$tagid = $db->get('tags', array('tagid'), array('text' => $tag));
+			if($tagid != '') { //Already exists, so just modify the data instead of inserting
+				$db->update('tags', array('text' => $tag), array('tagid' => $tagid));
+			} else {
+				$db->insert('tags', array(
+					'tagid' => bin2hex(random_bytes(5)),
+					'text' => $tag
+				));
+			}
+		}
+		$db->pdo->commit();
 		print_r($db->error());
-		//insertLoop('objects', $objects); //Insert the new objects
+		print_r($db->last());
 	}
 }
 ?>
