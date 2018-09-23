@@ -48,7 +48,7 @@ function createOrFindTag($tag) {
     return $tagID;
 }
 
-function createTagToObjectLink($tagID, $objectID) {
+function createTagLinkForObject($tagID, $objectID) {
     global $db;
     $row = array(
       'tagid' => $tagID,
@@ -59,16 +59,21 @@ function createTagToObjectLink($tagID, $objectID) {
     }
 }
 
+function clearTagsFromObject($objectID) {
+    global $db;
+    $tags_objects = $db->select('tags_objects', 'tagid', array('objectid' => $objectID));
+    foreach($tags_objects as $tagID) {
+        $db->delete('tags_objects', array('objectid' => $objectID, 'tagid' => $tagID));
+        if($db->count('tags_objects', array('tagid' => $tagID)) == 0) {
+            $db->delete('tags', array('tagid' => $tagID));
+        }
+    }
+}
+
 function removeObject($objectID) {
     global $db;
     if(isset($objectID) && !empty($objectID) && $db->has('objects', array('objectid' => $objectID))) {
-        $tags_objects = $db->select('tags_objects', 'tagid', array('objectid' => $objectID));
-        foreach($tags_objects as $tagID) {
-            $db->delete('tags_objects', array('tagid' => $tagID));
-            if($db->count('tags_objects', array('tagid' => $tagID)) == 0) {
-                $db->delete('tags', array('tagid' => $tagID));
-            }
-        }
+        clearTagsFromObject($objectID);
         $db->delete('objects', array('objectid' => $objectID));
     }
 }

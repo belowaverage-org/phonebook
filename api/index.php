@@ -11,6 +11,8 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 	require('./reqs/database.api.php');
 	if($_POST['api'] == 'import') {
 		require('./reqs/import.api.php');
+	} elseif($_POST['api'] == 'export') {
+		require('./reqs/export.api.php');
 	}
 } else {
 	echo file_get_contents('api.documentation.htm');

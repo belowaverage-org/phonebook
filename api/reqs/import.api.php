@@ -38,9 +38,10 @@ if(isset($_POST['import'])) {
 			}
 			$objectID = createModifyOrFindObject($row);
 			if($objectID !== false) {
+				clearTagsFromObject($objectID);
 				foreach($tags as $tag) {
 					$tagID = createOrFindTag($tag);
-					createTagToObjectLink($tagID, $objectID);
+					createTagLinkForObject($tagID, $objectID);
 				}
 			}
 		}
