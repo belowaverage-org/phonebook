@@ -4,24 +4,31 @@ if(!isset($singlePointEntry)){http_response_code(403);exit;}
 function createModifyOrFindObject($row = array()) {
     global $db;
     $unique = array();
+    $rowWithoutUnique = $row;
     foreach($row as $attribute => $value) { //For each attribute in a row
         if(isset(SCHEMA[$attribute]['unique']) && SCHEMA[$attribute]['unique']) { //If attribute is unique according to the schema
             $unique[$attribute] = $value;
         }
     }
+    foreach($unique as $uk => $uv) {
+        unset($rowWithoutUnique[$uk]);
+    }
+    unset($rowWithoutUnique['objectid']);
     $objectID = $db->get('objects', array('objectid'), array('AND' => $unique));
     if(isset($objectID['objectid'])) { //Already exists, so just modify the data instead of inserting
         $objectID = $objectID['objectid'];
-        foreach($unique as $cname => $cvalue) {
-            unset($row[$cname]);
-        }
-        unset($row['objectid']);
-        if(!empty($row)) { 
-            $db->update('objects', $row, array('objectid' => $objectID));
+        if(empty($rowWithoutUnique)) {
+            removeObject($objectID);
+        } else {
+            $db->update('objects', $rowWithoutUnique, array('objectid' => $objectID));
         }
     } else { //Insert the data
-        $row['objectid'] = $objectID = bin2hex(random_bytes(5));
-        $db->insert('objects', $row);
+        if(!empty($rowWithoutUnique)) {
+            $row['objectid'] = $objectID = bin2hex(random_bytes(5));
+            $db->insert('objects', $row);
+        } else {
+            $objectID = false;
+        }
     }
     return $objectID;
 }
@@ -53,8 +60,16 @@ function createTagToObjectLink($tagID, $objectID) {
 }
 
 function removeObject($objectID) {
+    global $db;
     if(isset($objectID) && !empty($objectID) && $db->has('objects', array('objectid' => $objectID))) {
-
+        $tags_objects = $db->select('tags_objects', 'tagid', array('objectid' => $objectID));
+        foreach($tags_objects as $tagID) {
+            $db->delete('tags_objects', array('tagid' => $tagID));
+            if($db->count('tags_objects', array('tagid' => $tagID)) == 0) {
+                $db->delete('tags', array('tagid' => $tagID));
+            }
+        }
+        $db->delete('objects', array('objectid' => $objectID));
     }
 }
 

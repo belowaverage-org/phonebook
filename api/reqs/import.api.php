@@ -37,14 +37,14 @@ if(isset($_POST['import'])) {
 				}
 			}
 			$objectID = createModifyOrFindObject($row);
-			foreach($tags as $tag) {
-				$tagID = createOrFindTag($tag);
-				createTagToObjectLink($tagID, $objectID);
+			if($objectID !== false) {
+				foreach($tags as $tag) {
+					$tagID = createOrFindTag($tag);
+					createTagToObjectLink($tagID, $objectID);
+				}
 			}
 		}
 		$db->pdo->commit();
-		print_r($db->error());
-		print_r($db->log());
 	}
 }
 ?>
