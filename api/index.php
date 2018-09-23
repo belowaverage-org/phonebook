@@ -13,6 +13,8 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 		require('./reqs/import.api.php');
 	} elseif($_POST['api'] == 'export') {
 		require('./reqs/export.api.php');
+	} elseif($_POST['api'] == 'search') {
+		require('./reqs/search.api.php');
 	}
 } else {
 	echo file_get_contents('api.documentation.htm');
