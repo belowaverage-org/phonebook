@@ -3,13 +3,17 @@ if(!isset($singlePointEntry)){http_response_code(403);exit;}
 if(isset($_POST['search']) && !empty($_POST['search'])) {
     $validSearchTags = array();
     $searchTags = json_decode($_POST['search'], true);
+    $count = 100;
+    if(isset($_POST['count']) && is_numeric($_POST['count'])) {
+        $count = $_POST['count'];
+    }
     if($searchTags !== null) {
         foreach($searchTags as $tag) {
             if(!empty($tag) && ctype_alpha($tag) && $tag !== '') {
                 array_push($validSearchTags, $tag);
             }
         }
-        echo json_encode($db->select('tags', array(
+        $results = $db->select('tags', array(
             '[>]tags_objects' => array(
                 'tags.tagid' => 'tagid'
             ),
@@ -18,11 +22,15 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
             )
         ), 'objects.number', array(
             'tags.text[~]' => array(
-                'AND' => $searchTags
+                'OR' => $validSearchTags
             ),
-            'LIMIT' => 100
-        )));
-        print_r($db->last());
+            'LIMIT' => $count
+        ));
+        if($results !== false) {
+            echo json_encode($results);
+        } else {
+            echo '[]';
+        }   
     }
 }
 ?>
