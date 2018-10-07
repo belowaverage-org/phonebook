@@ -9,54 +9,56 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
     }
     if($searchTags !== null) {
         foreach($searchTags as $tag) {
-            if(!empty($tag) && ctype_alpha($tag) && $tag !== '') {
+            if(!empty($tag) && ctype_alpha($tag) && $tag !== '' && strlen($tag) >= 2) {
                 array_push($validSearchTags, $tag);
             }
         }
-        $possibleResults = $db->select('tags', array(
+        if(count($validSearchTags) == 1) {
+            $objects = $db->select('tags', array(
             '[>]tags_objects' => array(
                 'tags.tagid' => 'tagid'
             )
-        ), array(
-            'tags.text',
-            'tags_objects.objectid' //Filter remaining
-        ), array(
-            'tags.text[~]' => array(
-                'OR' => $validSearchTags
+            ), array(
+                'tags_objects.objectid'
+            ), array(
+                'tags.text[~]' => $validSearchTags[0].'%',
+                'LIMIT' => $count
+            ));
+        } else {
+            $objects = $db->select('tags', array(
+                '[>]tags_objects' => array(
+                    'tags.tagid' => 'tagid'
+                )
+            ), array(
+                'tags_objects.objectid'
+            ), array(
+                'tags.text' => $validSearchTags,
+                'GROUP' => 'tags_objects.objectid',
+                'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags)),
+                'LIMIT' => $count
+            ));
+        }
+        foreach($objects as $k => $object) {
+            $objects[$k] = $object['objectid'];
+        }
+        $filteredTags = $db->select('tags_objects', array(
+            '[>]tags' => array(
+                 'tags_objects.tagid' => 'tagid'
             )
+        ), array(
+            'tags.text'
+        ), array(
+            'tags_objects.objectid' => $objects,
+            'GROUP' => 'tags.text'
         ));
-        $organizedPossibleResults = array();
-        foreach($possibleResults as $possibleResult) {
-            if(isset($organizedPossibleResults[$possibleResult['objectid']]) && is_array($organizedPossibleResults[$possibleResult['objectid']])) {
-                array_push($organizedPossibleResults[$possibleResult['objectid']], $possibleResult['text']);
-            } else {
-                $organizedPossibleResults[$possibleResult['objectid']] = array($possibleResult['text']);
-            }
+        foreach($filteredTags as $k => $tag) {
+            $filteredTags[$k] = $tag['text'];
         }
-        $results = array();
-        foreach($organizedPossibleResults as $organizedPossibleResult) {
-            
-            $found = 0;
-            foreach($validSearchTags as $searchTag) {
-                foreach($organizedPossibleResult as $resultTag) {
-                    if(strpos($resultTag, $searchTag) !== false) {
-                        $found++;
-                        break;
-                    }
-                }
-                
-            }
-            if($found == count($validSearchTags)) {
-                array_push($results, $organizedPossibleResult);
-            }
-        }
-        
-        echo "\n";
-        print_r($db->last());
-        echo "\n";
-
-        if($results !== false) {
-            echo json_encode($results, JSON_PRETTY_PRINT);
+        if($objects !== false && $filteredTags !== false) {
+            echo json_encode(array(
+                'tags' => $filteredTags,
+                'objects' => $objects
+            ));
         } else {
             echo '[]';
         }
