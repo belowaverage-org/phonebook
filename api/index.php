@@ -1,5 +1,13 @@
 <?php 
-//September 2018 / Dylan Bickerstaff
+/*
+Phone Book
+----------
+Index Router
+----------
+Dylan Bickerstaff
+----------
+Routes requests to the proper APIs.
+*/
 set_time_limit(300);
 $singlePointEntry = true;
 header('phonebook-api-created-by: Dylan Bickerstaff');

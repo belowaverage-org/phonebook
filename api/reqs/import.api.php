@@ -1,8 +1,14 @@
-<?php 
+<?php
+/*
+Phone Book
+----------
+Import API
+----------
+Dylan Bickerstaff
+----------
+Imports JSON from post request into the database.
+*/
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-
-/* Import API implementation */
-
 if(isset($_POST['import'])) {
 	$import = json_decode($_POST['import'], true);
 	if($import !== null) { //JSON Good

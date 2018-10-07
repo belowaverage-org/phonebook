@@ -1,4 +1,13 @@
 <?php
+/*
+Phone Book
+----------
+Search API
+----------
+Dylan Bickerstaff
+----------
+Searches the database for objects using search tags.
+*/
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
 if(isset($_POST['search']) && !empty($_POST['search'])) {
     $validSearchTags = array();

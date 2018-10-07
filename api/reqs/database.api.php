@@ -1,8 +1,14 @@
 <?php
-/* Database maintainer */
-
+/*
+Phone Book
+----------
+Database Schema Manager
+----------
+Dylan Bickerstaff
+----------
+Creates and updates the database schema as nessesary.
+*/
 if(!isset($singlePointEntry)) { http_response_code(403); exit; }
-
 require(__DIR__.'/../database.config.php');
 function insertLoop($table, $data) { //Function for inserting multiple rows into the database and splitting up the insert statements
 	global $db;

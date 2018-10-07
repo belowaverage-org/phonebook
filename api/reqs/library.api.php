@@ -1,6 +1,14 @@
 <?php
+/*
+Phone Book
+----------
+API Library
+----------
+Dylan Bickerstaff
+----------
+Functions used in other API implementations.
+*/
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-
 function createModifyOrFindObject($row = array()) {
     global $db;
     $unique = array();
@@ -32,7 +40,6 @@ function createModifyOrFindObject($row = array()) {
     }
     return $objectID;
 }
-
 function createOrFindTag($tag) {
     global $db;
     $tagID = $db->get('tags', array('tagid'), array('text' => $tag));
@@ -47,7 +54,6 @@ function createOrFindTag($tag) {
     }
     return $tagID;
 }
-
 function createTagLinkForObject($tagID, $objectID) {
     global $db;
     $row = array(
@@ -58,7 +64,6 @@ function createTagLinkForObject($tagID, $objectID) {
         $db->insert('tags_objects', $row);
     }
 }
-
 function clearTagsFromObject($objectID) {
     global $db;
     $tags_objects = $db->select('tags_objects', 'tagid', array('objectid' => $objectID));
@@ -69,7 +74,6 @@ function clearTagsFromObject($objectID) {
         }
     }
 }
-
 function removeObject($objectID) {
     global $db;
     if(isset($objectID) && !empty($objectID) && $db->has('objects', array('objectid' => $objectID))) {
@@ -77,5 +81,4 @@ function removeObject($objectID) {
         $db->delete('objects', array('objectid' => $objectID));
     }
 }
-
 ?>
