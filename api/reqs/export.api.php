@@ -12,20 +12,18 @@ if(!isset($singlePointEntry)){http_response_code(403);exit;}
 if(isset($_POST['export'])) {
     if($_POST['export'] == 'tags') {
         echo json_encode($db->select('tags', 'text'));
-    } elseif($_POST['export'] == 'numbers' && isset($_POST['numbers']) && !empty($_POST['numbers'])) {
-        $numbers = json_decode($_POST['numbers'], true);
-        if($numbers !== false) {
-            foreach($numbers as $k => $number) {
-                $numbers[$k] = intval($number);
-            }
-            $numbers = $db->select('objects', '*', array(
-                'number' => $numbers
+    } elseif($_POST['export'] == 'objects' && isset($_POST['objects']) && !empty($_POST['objects'])) {
+        $objects = json_decode($_POST['objects'], true);
+        if($objects !== false) {
+            $results = $db->select('objects', '*', array(
+                'objectid' => $objects
             ));
-            foreach($numbers as $k => $number) {
-                $numbers[$number['number']] = $number;
-                unset($numbers[$k]);
+            foreach($results as $k => $object) {
+                $results[$object['objectid']] = $object;
+                unset($results[$k]);
+                unset($results[$object['objectid']]['objectid']);
             }
-            echo json_encode($numbers);
+            echo json_encode($results);
         }
     }
 }

@@ -167,7 +167,7 @@ number: 1234</strike>
 api: export
 export: tags
 		</pre>
-		<pre>
+		<pre><strike>
 api: export
 export: numbers
 numbers: [1234, 5678]
@@ -177,19 +177,31 @@ api: export
 export: numbers
 includeTags: 1
 numbers: [1234, 5678]
+		</strike></pre>
+		<pre>
+api: export
+export: numbers
+numbers: [2834fa80ac, 3e834d4674]
+		</pre>
+		<pre>
+api: export
+export: objects
+includeTags: 1
+objects: [2834fa80ac, 3e834d4674]
 		</pre>
 		<h4><i>POST Live Demo</i></h4>
 		<form target="export" method="post">
 			<button>Send</button><br><br>
 			export: <select name="export">
 				<option value="number" disabled>number</option>
+				<option value="numbers" disabled>numbers</option>
 				<option value="tags">tags</option>
-				<option value="numbers">numbers</option>
+				<option value="objects">objects</option>
 			</select><br><br>
 			includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
 			<strike>number:</strike> <input type="number" name="number" disabled><br><br>
-			<textarea name="numbers" style="width:300px;height:95px;">
-[1234, 5678]
+			<textarea name="objects" style="width:300px;height:95px;">
+["2834fa80ac", "3e834d4674"]
 			</textarea>
 			<iframe style="width:300px;height:95px;resize: both;" name="export"></iframe>
 			<input type="hidden" name="api" value="export">	

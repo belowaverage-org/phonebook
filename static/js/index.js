@@ -183,6 +183,30 @@ function typeUnique() { //Check if type is unique to all other bubbles
 	});
 	return result;
 }
+function formatPhoneNumber(number) {
+	if(placeDashes && number.toString().length == 10) {
+		number = number.toString();
+		var three = number.slice(0, 3) + '-';
+		var six = number.slice(3, 6) + '-';
+		var ten = number.slice(6);
+		number = three + six + ten;
+	} else if(placeDashes && number.toString().length == 11) {
+		number = number.toString();
+		var co = '+' + number.slice(0, 1) + ' ';
+		var three = number.slice(1, 4) + '-';
+		var six = number.slice(4, 7) + '-';
+		var ten = number.slice(7);
+		number = co + three + six + ten;
+	} else if(placeDashes && number.toString().length > 11) {
+		number = number.toString();
+		var three = number.slice(0, 3) + '-';
+		var six = number.slice(3, 6) + '-';
+		var ten = number.slice(6, 10);
+		var ext = ' +' + number.slice(10);
+		number = three + six + ten + ext;
+	}
+	return number;
+}
 function loadNumberTags(num) {
 	$('#input span').remove(); //Remove all bubbles
 	$('<span class="number type">'+num+'</span>').appendTo('#input'); //Create number bubble
@@ -209,6 +233,11 @@ function loadNumberTags(num) {
 				return;
 			});
 		}
+	});
+}
+function loadVisibleNumbers() {
+	$.each($('#numbers > div'), function() {
+		console.log(this.offsetTop);
 	});
 }
 function alertToSend() { //Show alert before sending data
@@ -279,56 +308,21 @@ function searchTags() { //grab all tags and search the database and return the r
 			dataType: 'json',
 			data: {
 				api: 'search',
-				offset: searchOffset,
 				search: jtags
 			},
-			success: function(numbers) { //On success
-				ajaxSearchNumbers = $.ajax({
-					type: 'post',
-					async: true,
-					url: apiURI,
-					dataType: 'json',
-					data: {
-						api: 'export',
-						export: 'numbers',
-						numbers: JSON.stringify(numbers)
-					},
-					success: function(numbers) {
-						$('#noresult').hide();
-						$('#numbers').html(''); //Clear numbers
-						if(numbers.length == 0) {
-							$('#noresult').show();
-						} else {
-							$.each(numbers, function(k) {
-								var r1 = colorRangeMin;
-								var r2 = colorRangeMax;
-								var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-								if(placeDashes && k.toString().length == 10) {
-									k = k.toString();
-									var three = k.slice(0, 3) + '-';
-									var six = k.slice(3, 6) + '-';
-									var ten = k.slice(6);
-									k = three + six + ten;
-								} else if(placeDashes && k.toString().length == 11) {
-									k = k.toString();
-									var co = '+' + k.slice(0, 1) + ' ';
-									var three = k.slice(1, 4) + '-';
-									var six = k.slice(4, 7) + '-';
-									var ten = k.slice(7);
-									k = co + three + six + ten;
-								} else if(placeDashes && k.toString().length > 11) {
-									k = k.toString();
-									var three = k.slice(0, 3) + '-';
-									var six = k.slice(3, 6) + '-';
-									var ten = k.slice(6, 10);
-									var ext = ' +' + k.slice(10);
-									k = three + six + ten + ext;
-								}
-								var num = $('<div><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+k+'</span><span class="description">'+this.description+'</span></div></div>').appendTo('#numbers'); //Show each number on screen
-							});
-						}
-					}
-				});
+			success: function(result) { //On success
+				$('#noresult').hide();
+				$('#numbers').html(''); //Clear numbers
+				if(numbers.length == 0) {
+					$('#noresult').show();
+				} else {
+					$.each(result.objects, function(k) {
+						var r1 = colorRangeMin;
+						var r2 = colorRangeMax;
+						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
+						$('<div objectid="'+this+'" class="loading"><div><span class="thumbnail" style="'+color+'"></span><span class="number"></span><span class="description"></span></div></div>').appendTo('#numbers'); //Show each number on screen
+					});
+				}
 			}
 		});
 	}
