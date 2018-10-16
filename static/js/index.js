@@ -236,8 +236,32 @@ function loadNumberTags(num) {
 	});
 }
 function loadVisibleNumbers() {
+	var objectsToLoad = [];
 	$.each($('#numbers > div'), function() {
-		console.log(this.offsetTop);
+		var object = $(this);
+		if(window.innerHeight > (object[0].offsetTop - $('#main')[0].scrollTop) && object.hasClass('loading')) { //If number is in viewport
+		 	objectsToLoad.push(object.attr('objectid')); //Add to load list
+		}
+	});
+	ajaxSearchNumbers.abort();
+	ajaxSearchNumbers = $.ajax({ //Send export query
+		type: 'post',
+		async: true,
+		url: apiURI,
+		dataType: 'json',
+		data: {
+			api: 'export',
+			export: 'objects',
+			objects: JSON.stringify(objectsToLoad)
+		},
+		success: function(results) { //On success
+			$.each(results, function(objectid) { //Load Data
+				var object = $('#numbers > div[objectid="'+objectid+'"]');
+				object.removeClass('loading');
+				object.find('.number').text(formatPhoneNumber(this.number));
+				object.find('.description').text(this.description);
+			});
+		}
 	});
 }
 function alertToSend() { //Show alert before sending data

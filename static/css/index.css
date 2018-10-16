@@ -203,6 +203,36 @@ input[type=text] {
 	border-radius:20px;
 	box-shadow:0px 2px 4px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
 }
+
+#numbers > div.loading::after {
+	content:"";
+	display:inline-block;
+	position:absolute;
+	top:15px;
+	left:50px;
+	width:80px;
+	height:10px;
+	background-color:rgba(0,0,0,.09);
+	animation:loadingPulse linear infinite 1s;
+}
+#numbers > div.loading::before {
+	content:"";
+	display:inline-block;
+	position:absolute;
+	top:15px;
+	right:10px;
+	width:250px;
+	height:10px;
+	background-color:rgba(0,0,0,.09);
+	animation:loadingPulse linear infinite 1s;
+}
+@keyframes loadingPulse {
+	0% {
+		opacity:1;
+	} 50% {
+		opacity:.5;	
+	}
+}
 #numbers > div.visible {
 	height:400px;
 }
@@ -239,6 +269,9 @@ input[type=text] {
 	border-radius:20px;
 	white-space:nowrap;
 	flex:none;
+}
+#numbers > div.loading .thumbnail {
+	background-color:rgba(0,0,0,.1) !important;
 }
 #numbers .description {
 	flex:auto;
