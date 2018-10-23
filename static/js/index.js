@@ -334,17 +334,21 @@ function searchTags() { //grab all tags and search the database and return the r
 				api: 'search',
 				search: jtags
 			},
-			success: function(result) { //On success
+			success: function(results) { //On success
 				$('#noresult').hide();
 				$('#numbers').html(''); //Clear numbers
-				if(numbers.length == 0) {
+				if(Object.keys(results.objects).length == 0) {
 					$('#noresult').show();
 				} else {
-					$.each(result.objects, function(k) {
+					var sortedNumbers = {};
+					$.each(results.objects, function(k) {
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-						$('<div objectid="'+this+'" class="loading"><div><span class="thumbnail" style="'+color+'"></span><span class="number"></span><span class="description"></span></div></div>').appendTo('#numbers'); //Show each number on screen
+						sortedNumbers[parseInt(this.number)] = $('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>'); //Show each number on screen
+					});
+					$.each(sortedNumbers, function() {
+						this.appendTo('#numbers');
 					});
 				}
 			}
