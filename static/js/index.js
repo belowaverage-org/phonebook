@@ -176,10 +176,8 @@ function typeFilled() { //Check if type is filled
 }
 function typeValid() { //Check if type is a valid tag
 	if(typeFilled() && $('#input > span').length > 1 && mem.availableTags.indexOf($('#input span.type').text()) !== -1) {
-		console.log(1);
 		return true;
 	} else if(typeFilled() && $('#input > span').length == 1 && mem.allTags.indexOf($('#input span.type').text()) !== -1) {
-		console.log(2);
 		return true;
 	} else {
 		return false;
