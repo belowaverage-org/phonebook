@@ -70,7 +70,9 @@ if (!String.prototype.startsWith) {
 //Global Variables
 var apiURI = './api/';
 var mem = {
-	tags: {},
+	availableTags: {},
+	tagsFromLastCall: {},
+	allTags: {},
 	cache: 0
 };
 var firstLoad = true;
@@ -107,7 +109,7 @@ function autoFillTag(term) { //Returns rest of tag
 				'export': 'tags'
 			},
 			success: function(data) {
-				mem.tags = $.makeArray(data).sort(function(a, b) { //Create an array from data object, then sort it by string length
+				mem.allTags = $.makeArray(data).sort(function(a, b) { //Create an array from data object, then sort it by string length
 					return b.length - a.length;
 				});
 				mem.cache = time(); //Update cache timestamp
@@ -120,15 +122,21 @@ function autoFillTag(term) { //Returns rest of tag
 		});
 	}
 	var ret = '';
-	$.each(mem.tags, function() { //Foreach tags as tag, find the first one that starts with the search term
+	function getAutoFill() { //Foreach tags as tag, find the first one that starts with the search term
 		if(this.startsWith(term)) {
 			ret = this.replace(term, ''); //Cut out the term, and return the rest
 			return;
 		}
-	});
+	}
+	if($.isEmptyObject(mem.availableTags) || $('#input > span').length == 1) {
+		$.each(mem.allTags, getAutoFill);
+	} else {
+		$.each(mem.availableTags, getAutoFill);
+	}
 	return ret;
 }
 function deleteSelectedBubble() { //Delete the type bubble
+	mem.availableTags = mem.tagsFromLastCall;
 	if($('#input span').length !== 1) { //If not last bubble
 		$('#input .type').remove(); //Remove it
 	}
@@ -167,7 +175,11 @@ function typeFilled() { //Check if type is filled
 	}
 }
 function typeValid() { //Check if type is a valid tag
-	if(typeFilled() && mem.tags.indexOf($('#input span.type').text()) !== -1) {
+	if(typeFilled() && $('#input > span').length > 1 && mem.availableTags.indexOf($('#input span.type').text()) !== -1) {
+		console.log(1);
+		return true;
+	} else if(typeFilled() && $('#input > span').length == 1 && mem.allTags.indexOf($('#input span.type').text()) !== -1) {
+		console.log(2);
 		return true;
 	} else {
 		return false;
@@ -222,8 +234,8 @@ function loadNumberTags(num) {
 			includeTags: true,
 			numbers: '["'+num+'"]'
 		},
-		success: function(numbers) {
-			$.each(numbers, function(k) {
+		success: function(results) {
+			$.each(results, function(k) {
 				if($('#input .number').text() == num) { //If loaded number is still the number set in the first bubble
 					$('input[type=text]').val(this.description); //Set description field
 					$.each(this.tags, function() { //Create all bubbles
@@ -321,7 +333,17 @@ function searchTags() { //grab all tags and search the database and return the r
 			tags.push($(this).text()); //push to array to send later
 		}
 	});
-	tags.push($('#input .type').clone().children().remove().end().text());
+	if($('#input > span').length > 1) {
+		var text = $('#input .type').text();
+		if($.inArray(text, tags) == -1) {
+			tags.push(text);
+		}
+	} else {
+		var text = $('#input .type').clone().children().remove().end().text();
+		if($.inArray(text, tags) == -1) {
+			tags.push(text);	
+		}
+	}
 	jtags = JSON.stringify(tags);
 	if(jtags !== lastSearchTags) {
 		lastSearchTags = jtags;
@@ -337,6 +359,8 @@ function searchTags() { //grab all tags and search the database and return the r
 			success: function(results) { //On success
 				$('#noresult').hide();
 				$('#numbers').html(''); //Clear numbers
+				var validTagCount = $('#input > span.valid').length;
+				mem.tagsFromLastCall = results.tags;
 				if(Object.keys(results.objects).length == 0) {
 					$('#noresult').show();
 				} else {
@@ -420,6 +444,7 @@ $(document).on('keydown', function (e) {
 				deleteSelectedBubble();
 			}
 			if(allValid() || numberMode && allFilled()) { //Create new bubble
+				mem.availableTags = mem.tagsFromLastCall;
 				selectBubble($('<span></span>').appendTo('#input'));
 			} else {
 				selectBubble($('#input > span:last'));
