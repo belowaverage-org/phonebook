@@ -25,7 +25,7 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 		require('./reqs/search.api.php');
 	}
 } else {
-	echo file_get_contents('api.documentation.htm');
+	echo file_get_contents('documentation.api.htm');
 }
 header('phonebook-api-response-time: '.(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
 ob_end_flush();

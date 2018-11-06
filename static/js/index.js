@@ -352,6 +352,7 @@ function searchTags() { //grab all tags and search the database and return the r
 			dataType: 'json',
 			data: {
 				api: 'search',
+				sort: 'number',
 				search: jtags
 			},
 			success: function(results) { //On success
