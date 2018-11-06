@@ -22,8 +22,12 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
     );
     $searchTags = json_decode($_POST['search'], true);
     $count = 100;
+    $offset = 0;
     if(isset($_POST['count']) && is_numeric($_POST['count'])) {
         $count = $_POST['count'];
+    }
+    if(isset($_POST['offset']) && is_numeric($_POST['offset'])) {
+        $offset = $_POST['offset'];
     }
     if($searchTags !== null) {
         foreach($searchTags as $tag) {
@@ -33,15 +37,13 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
         }
         if(count($validSearchTags) == 1) {
             $objects = $db->select('tags', $objectJoin, '*', array(
-                'tags.text[~]' => $validSearchTags[0].'%',
-                'LIMIT' => $count
+                'tags.text[~]' => $validSearchTags[0].'%'
             ));
         } else {
             $objects = $db->select('tags', $objectJoin, '*', array(
                 'tags.text' => $validSearchTags,
                 'GROUP' => 'tags_objects.objectid',
-                'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags)),
-                'LIMIT' => $count
+                'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags))
             ));
         }
         foreach($objects as $k => $object) {
@@ -65,6 +67,9 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
         foreach($filteredTags as $k => $tag) {
             $filteredTags[$k] = $tag['text'];
         }
+        usort($filteredTags, function($a, $b) {
+            return strlen($b) - strlen($a);
+        });
         if($objects !== false && $filteredTags !== false) {
             echo json_encode(array(
                 'tags' => $filteredTags,

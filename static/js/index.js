@@ -362,16 +362,18 @@ function searchTags() { //grab all tags and search the database and return the r
 				if(Object.keys(results.objects).length == 0) {
 					$('#noresult').show();
 				} else {
-					var sortedNumbers = {};
+					//var sortedNumbers = {};
 					$.each(results.objects, function(k) {
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-						sortedNumbers[parseInt(this.number)] = $('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>'); //Show each number on screen
+						//sortedNumbers[parseInt(this.number)] = 
+						$('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
+						.appendTo('#numbers')
 					});
-					$.each(sortedNumbers, function() {
-						this.appendTo('#numbers');
-					});
+					//$.each(sortedNumbers, function() {
+					//	this.appendTo('#numbers');
+					//});
 				}
 			}
 		});
@@ -438,6 +440,7 @@ $(document).on('keydown', function (e) {
 		e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
 			$('#input .type').html($('#input .type').text()); //Capture autofill
+			searchTags();
 			if(!typeUnique()) { //If type is not unique remove it
 				deleteSelectedBubble();
 			}
