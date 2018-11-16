@@ -10,6 +10,7 @@ Routes requests to the proper APIs.
 */
 set_time_limit(300);
 $singlePointEntry = true;
+$prettyPrintIfRequested = 0;
 header('phonebook-api-created-by: Dylan Bickerstaff');
 header('phonebook-api-version: 2.0');
 ob_start();
@@ -17,6 +18,9 @@ define('SCHEMA', json_decode(file_get_contents(__DIR__.'/schema.config.json'), t
 if(isset($_POST['api']) && !empty($_POST['api'])) {
 	header('Content-Type: application/json');
 	require('./reqs/database.api.php');
+	if(isset($_POST['prettyprint'])) {
+		$prettyPrintIfRequested = JSON_PRETTY_PRINT;
+	}
 	if($_POST['api'] == 'import') {
 		require('./reqs/import.api.php');
 	} elseif($_POST['api'] == 'export') {

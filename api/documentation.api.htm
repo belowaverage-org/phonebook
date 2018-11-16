@@ -29,6 +29,7 @@ A detailed description on how to use the API.
 						<ul>
 							<li><a href="#offset">offset</a></li>
 							<li><a href="#count">count</a></li>
+							<li><a href="#order">order</a></li>
 						</ul>
 					</li>
 					<li><a href="#import">import</a></li>
@@ -63,6 +64,7 @@ A detailed description on how to use the API.
 			For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
 			The results would return with the most matching numbers first.</del><br><br>
 			In the new API, the search <b id="offset">offset</b> will simply offset the results returned, it will no longer change how the search algorithm scores results.<br><br>
+			The search <b id="order">order</b> will determine which way the results are ordered. E.g: Not defined or 0 will sort ascending, and a value of 1 will sort descending.<br><br>
 		</p>
 		<h4><i>POST Request Header</i></h4>
 		<pre>
@@ -70,9 +72,10 @@ api: search
 offset: 0
 count: 100
 sort: objectid
+order: 0
 search: ["example","search","tags"]
 		</pre>
-		<h4><i>POST JSON Request Syntax</i></h4>
+		<h4><i>POST JSON Search Request Syntax</i></h4>
 		<pre>
 [
     "example",
@@ -82,10 +85,25 @@ search: ["example","search","tags"]
 		</pre>
 		<h4><i>POST JSON Response Example</i></h4>
 		<pre>
-[
-    1234,
-    5678
-]
+{
+    "tags": [
+        "example",
+        "tags"
+    ],
+    "objects": {
+        "49b4604ae1": {
+            "description":"Test Number",
+            "email":null,
+            "firstname":null,
+            "latitude":null,
+            "lastname":null,
+            "longitude":null,
+            "number":"1234",
+            "type":null,
+            "username":null
+        }
+    }
+}
 		</pre>
 		<h4><i>POST JSON Live Demo</i></h4>
 		<form target="search" method="post">
@@ -100,7 +118,8 @@ search: ["example","search","tags"]
     "manager"
 ]
 			</textarea>
-			<input type="hidden" name="api" value="search">	
+			<input type="hidden" name="api" value="search">
+			<input type="hidden" name="prettyprint">
 			<iframe style="width:300px;height:95px;resize:both;" name="search"></iframe>
 		</form>
 		<hr>
@@ -150,6 +169,7 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
     }
 }
 			</textarea>
+			<input type="hidden" name="prettyprint">
 			<input type="hidden" name="api" value="import">	
 			<iframe style="width:300px;height:95px;resize: both;" name="import"></iframe>
 		</form>
@@ -209,7 +229,8 @@ objects: [2834fa80ac, 3e834d4674]
 ["2834fa80ac", "3e834d4674"]
 			</textarea>
 			<iframe style="width:300px;height:95px;resize: both;" name="export"></iframe>
-			<input type="hidden" name="api" value="export">	
+			<input type="hidden" name="api" value="export">
+			<input type="hidden" name="prettyprint">
 		</form>
 		<hr>
 		<h2 id="stats">Statistics API</h2>
@@ -238,7 +259,8 @@ stats: count
 				<option value="count">count</option>
 			</select><br><br>
 			<iframe style="width:300px;height:95px;resize: both;" name="stats"></iframe>
-			<input type="hidden" name="api" value="stats">	
+			<input type="hidden" name="api" value="stats">
+			<input type="hidden" name="prettyprint">	
 		</form>
 		<br><br><br><br><br><br><br><br>
 	</body>

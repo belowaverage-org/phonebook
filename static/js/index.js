@@ -321,7 +321,7 @@ function sendTagsAndDescription() { //Send all tags to database
 		}
 	});
 }
-function searchTags() { //grab all tags and search the database and return the result on screen.
+function searchTags(callback = function() {}) { //grab all tags and search the database and return the result on screen.
 	var tags = [];
 	ajaxSearchQuery.abort(); //Abort the previous requests.
 	ajaxSearchNumbers.abort();
@@ -360,7 +360,7 @@ function searchTags() { //grab all tags and search the database and return the r
 				$('#numbers').html(''); //Clear numbers
 				var validTagCount = $('#input > span.valid').length;
 				mem.tagsFromLastCall = results.tags;
-				if(Object.keys(results.objects).length == 0) {
+				if(typeof results.objects == "undefined") {
 					$('#noresult').show();
 				} else {
 					//var sortedNumbers = {};
@@ -376,6 +376,7 @@ function searchTags() { //grab all tags and search the database and return the r
 					//	this.appendTo('#numbers');
 					//});
 				}
+				callback.call();
 			}
 		});
 	}
@@ -441,16 +442,19 @@ $(document).on('keydown', function (e) {
 		e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
 			$('#input .type').html($('#input .type').text()); //Capture autofill
-			searchTags();
+			var searchCallback = function() {};
 			if(!typeUnique()) { //If type is not unique remove it
 				deleteSelectedBubble();
 			}
 			if(allValid() || numberMode && allFilled()) { //Create new bubble
-				mem.availableTags = mem.tagsFromLastCall;
 				selectBubble($('<span></span>').appendTo('#input'));
+				searchCallback = function() {
+					mem.availableTags = mem.tagsFromLastCall;
+				};
 			} else {
 				selectBubble($('#input > span:last'));
 			}
+			searchTags(searchCallback);
 		} else if(e.keyCode == 9) { //Tab
 			$('#input .type').html($('#input .type').text()); //Capture autofill
 			searchTags();
@@ -486,6 +490,11 @@ $(document).on('keydown', function (e) {
 					$('#input span:last').addClass('type'); //Make the last one typeable
 				} else {
 					$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
+					if($('#input .type').text() == '') {
+						searchTags(function() {
+							mem.availableTags = mem.tagsFromLastCall;
+						});
+					}
 				}
 			} else {
 				$('#input .type').append(e.key.toLowerCase()); //Type the key

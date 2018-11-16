@@ -46,52 +46,56 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
                 'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags))
             ));
         }
-        if(isset($_POST['sort']) && !empty($_POST['sort']) && isset(SCHEMA[$_POST['sort']])) {
-            usort($objects, function($a, $b) {
-                if(is_numeric($a[$_POST['sort']])) {
-                    return $a[$_POST['sort']] - $b[$_POST['sort']];
-                } else {
-                    return strcmp($a[$_POST['sort']], $b[$_POST['sort']]);
-                }
-            });
-        }
-        foreach($objects as $k => $object) {
-            $objectid = $object['objectid'];
-            unset($object['tagid']);
-            unset($object['text']);
-            unset($object['objectid']);
-            $tagSearchObjects[$k] = $objectid;
-            if($count > 0 && $offset <= 0) {
-                $count--;
-                $organizedObjects[$objectid] = $object;
-            } else {
-                $offset--;
+        if(is_array($objects) && !empty($objects)) {
+            if(isset($_POST['sort']) && !empty($_POST['sort']) && isset(SCHEMA[$_POST['sort']])) {
+                usort($objects, function($a, $b) {
+                    if(is_numeric($a[$_POST['sort']])) {
+                        return $a[$_POST['sort']] - $b[$_POST['sort']];
+                    } else {
+                        return strcmp($a[$_POST['sort']], $b[$_POST['sort']]);
+                    }
+                });
             }
-        }
-        $filteredTags = $db->select('tags_objects', array(
-            '[>]tags' => array(
-                 'tags_objects.tagid' => 'tagid'
-            )
-        ), array(
-            'tags.text'
-        ), array(
-            'tags_objects.objectid' => $tagSearchObjects,
-            'GROUP' => 'tags.text'
-        ));
-        foreach($filteredTags as $k => $tag) {
-            $filteredTags[$k] = $tag['text'];
-        }
-        usort($filteredTags, function($a, $b) {
-            return strlen($b) - strlen($a);
-        });
-        if($objects !== false && $filteredTags !== false) {
-            echo json_encode(array(
-                'tags' => $filteredTags,
-                'objects' => $organizedObjects
+            if(isset($_POST['order']) && $_POST['order'] == 1) {
+                $objects = array_reverse($objects);
+            }
+            foreach($objects as $k => $object) {
+                $objectid = $object['objectid'];
+                unset($object['tagid']);
+                unset($object['text']);
+                unset($object['objectid']);
+                $tagSearchObjects[$k] = $objectid;
+                if($count > 0 && $offset <= 0) {
+                    $count--;
+                    $organizedObjects[$objectid] = $object;
+                } else {
+                    $offset--;
+                }
+            }
+            $filteredTags = $db->select('tags_objects', array(
+                '[>]tags' => array(
+                     'tags_objects.tagid' => 'tagid'
+                )
+            ), array(
+                'tags.text'
+            ), array(
+                'tags_objects.objectid' => $tagSearchObjects,
+                'GROUP' => 'tags.text'
             ));
+            foreach($filteredTags as $k => $tag) {
+                $filteredTags[$k] = $tag['text'];
+            }
+            if($objects !== false && $filteredTags !== false) {
+                echo json_encode(array(
+                    'tags' => $filteredTags,
+                    'objects' => $organizedObjects
+                ), $prettyPrintIfRequested);
+            }
         } else {
             echo '[]';
         }
+    } else {
+        echo '[]';
     }
 }
 ?>
