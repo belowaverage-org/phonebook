@@ -10,6 +10,7 @@ Searches the database for objects using search tags.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
 if(isset($_POST['search']) && !empty($_POST['search'])) {
+    $blankJson = '{"tags":[],"objects":{}}';
     $validSearchTags = array();
     $tagSearchObjects = array();
     $organizedObjects = array();
@@ -82,20 +83,24 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
                 'tags_objects.objectid' => $tagSearchObjects,
                 'GROUP' => 'tags.text'
             ));
-            foreach($filteredTags as $k => $tag) {
-                $filteredTags[$k] = $tag['text'];
-            }
-            if($objects !== false && $filteredTags !== false) {
-                echo json_encode(array(
-                    'tags' => $filteredTags,
-                    'objects' => $organizedObjects
-                ), $prettyPrintIfRequested);
+            if(is_array($filteredTags)) {
+                foreach($filteredTags as $k => $tag) {
+                    $filteredTags[$k] = $tag['text'];
+                }
+                if($objects !== false && $filteredTags !== false) {
+                    echo json_encode(array(
+                        'tags' => $filteredTags,
+                        'objects' => $organizedObjects
+                    ), $prettyPrintIfRequested);
+                }
+            } else {
+                echo $blankJson;
             }
         } else {
-            echo '[]';
+            echo $blankJson;
         }
     } else {
-        echo '[]';
+        echo $blankJson;
     }
 }
 ?>

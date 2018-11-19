@@ -70,8 +70,8 @@ if (!String.prototype.startsWith) {
 //Global Variables
 var apiURI = './api/';
 var mem = {
-	availableTags: {},
-	tagsFromLastCall: {},
+	availableTags: [],
+	tagsFromLastCall: [],
 	allTags: {},
 	cache: 0
 };
@@ -175,10 +175,14 @@ function typeFilled() { //Check if type is filled
 	}
 }
 function typeValid() { //Check if type is a valid tag
-	if(typeFilled() && $('#input > span').length > 1 && mem.availableTags.indexOf($('#input span.type').text()) !== -1) {
-		return true;
-	} else if(typeFilled() && $('#input > span').length == 1 && mem.allTags.indexOf($('#input span.type').text()) !== -1) {
-		return true;
+	if(typeFilled()) {
+		if($('#input > span').length > 1 && mem.availableTags.indexOf($('#input span.type').text()) !== -1) {
+			return true;
+		} else if($('#input > span').length == 1 && mem.allTags.indexOf($('#input span.type').text()) !== -1) {
+			return true;
+		} else {
+			return false;
+		}
 	} else {
 		return false;
 	}
@@ -326,8 +330,8 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 	ajaxSearchQuery.abort(); //Abort the previous requests.
 	ajaxSearchNumbers.abort();
 	$.each($('#input > span'), function() { //For each bubble
-		selectBubble($(this));
-		if(typeFilled() && typeValid() && $(this)[0] !== $('#input > span:last-child')[0]) {
+		//selectBubble($(this)); //Select this bubble to check if it is valid below.
+		if($(this)[0] !== $('#input > span:last-child')[0]) {
 			tags.push($(this).text()); //push to array to send later
 		}
 	});
@@ -337,7 +341,7 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 			tags.push(text);
 		}
 	} else {
-		var text = $('#input .type').clone().children().remove().end().text();
+		var text = $('#input > span').clone().children().remove().end().text();
 		if($.inArray(text, tags) == -1) {
 			tags.push(text);	
 		}
@@ -360,21 +364,16 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 				$('#numbers').html(''); //Clear numbers
 				var validTagCount = $('#input > span.valid').length;
 				mem.tagsFromLastCall = results.tags;
-				if(typeof results.objects == "undefined") {
+				if($.isEmptyObject(results.objects)) {
 					$('#noresult').show();
 				} else {
-					//var sortedNumbers = {};
 					$.each(results.objects, function(k) {
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-						//sortedNumbers[parseInt(this.number)] = 
 						$('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
 						.appendTo('#numbers')
 					});
-					//$.each(sortedNumbers, function() {
-					//	this.appendTo('#numbers');
-					//});
 				}
 				callback.call();
 			}
