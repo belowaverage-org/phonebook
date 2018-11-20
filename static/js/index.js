@@ -73,6 +73,7 @@ var mem = {
 	availableTags: [],
 	tagsFromLastCall: [],
 	allTags: {},
+	allTagsRetrieving: false,
 	cache: 0
 };
 var firstLoad = true;
@@ -98,7 +99,8 @@ function seedRandom(seed, min, max)
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 function autoFillTag(term) { //Returns rest of tag
-	if(mem.cache < time() - cacheTimeout) { //Renew cache
+	if(mem.cache < time() - cacheTimeout && !mem.allTagsRetrieving) { //Renew cache
+		mem.allTagsRetrieving = true;
 		$.ajax({ //Request tags
 			type: 'post',
 			async: true,
@@ -118,6 +120,7 @@ function autoFillTag(term) { //Returns rest of tag
 					$('#loading').remove();
 					$('#main').removeClass('blur');
 				}
+				mem.allTagsRetrieving = false;
 			}
 		});
 	}
@@ -249,35 +252,6 @@ function loadNumberTags(num) {
 		}
 	});
 }
-function loadVisibleNumbers() {
-	var objectsToLoad = [];
-	$.each($('#numbers > div'), function() {
-		var object = $(this);
-		if(window.innerHeight > (object[0].offsetTop - $('#main')[0].scrollTop) && object.hasClass('loading')) { //If number is in viewport
-		 	objectsToLoad.push(object.attr('objectid')); //Add to load list
-		}
-	});
-	ajaxSearchNumbers.abort();
-	ajaxSearchNumbers = $.ajax({ //Send export query
-		type: 'post',
-		async: true,
-		url: apiURI,
-		dataType: 'json',
-		data: {
-			api: 'export',
-			export: 'objects',
-			objects: JSON.stringify(objectsToLoad)
-		},
-		success: function(results) { //On success
-			$.each(results, function(objectid) { //Load Data
-				var object = $('#numbers > div[objectid="'+objectid+'"]');
-				object.removeClass('loading');
-				object.find('.number').text(formatPhoneNumber(this.number));
-				object.find('.description').text(this.description);
-			});
-		}
-	});
-}
 function alertToSend() { //Show alert before sending data
 	descriptionMode = true;
 	$('#question').show().siblings('#main').addClass('blur');
@@ -327,10 +301,7 @@ function sendTagsAndDescription() { //Send all tags to database
 }
 function searchTags(callback = function() {}) { //grab all tags and search the database and return the result on screen.
 	var tags = [];
-	ajaxSearchQuery.abort(); //Abort the previous requests.
-	ajaxSearchNumbers.abort();
 	$.each($('#input > span'), function() { //For each bubble
-		//selectBubble($(this)); //Select this bubble to check if it is valid below.
 		if($(this)[0] !== $('#input > span:last-child')[0]) {
 			tags.push($(this).text()); //push to array to send later
 		}
@@ -349,6 +320,7 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 	jtags = JSON.stringify(tags);
 	if(jtags !== lastSearchTags) {
 		lastSearchTags = jtags;
+		ajaxSearchQuery.abort(); //Abort the previous requests.
 		ajaxSearchQuery = $.ajax({ //Send search query
 			type: 'post',
 			async: true,
@@ -433,6 +405,7 @@ $(document).ready(function() {
 });
 //Keypress action
 $(document).on('keydown', function (e) {
+	var type = $('#input .type');
 	if(firstType) {
 		firstType = false;
 		$('#tip').remove();
@@ -440,7 +413,7 @@ $(document).on('keydown', function (e) {
 	if(!descriptionMode) {
 		e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
-			$('#input .type').html($('#input .type').text()); //Capture autofill
+			type.html(type.text()); //Capture autofill
 			var searchCallback = function() {};
 			if(!typeUnique()) { //If type is not unique remove it
 				deleteSelectedBubble();
@@ -455,7 +428,7 @@ $(document).on('keydown', function (e) {
 			}
 			searchTags(searchCallback);
 		} else if(e.keyCode == 9) { //Tab
-			$('#input .type').html($('#input .type').text()); //Capture autofill
+			type.html(type.text()); //Capture autofill
 			searchTags();
 		} else if(e.keyCode == 13) { //If enter is pressed
 			if(numberMode) {
@@ -464,54 +437,60 @@ $(document).on('keydown', function (e) {
 				searchTags();
 			}
 		} else if(e.keyCode == 46) { //Delete
-			var prev = $('#input .type').prev(); //Select previous bubble
-			$('#input .type').text(''); //Clear selected bubble.
+			var isFirstSelected = ($('#input > span:first')[0] == type[0]); //If the first bubble is selected
+			var next = type.next();
+			var prev = type.prev();
+			type.text(''); //Clear the bubble text in case this is the last existing bubble
 			deleteSelectedBubble();
-			prev.addClass('type'); //Make previous bubble typeable
+			if(isFirstSelected) { //If first bubble was selected
+				selectBubble(next); //Make next bubble typeable
+			} else {
+				selectBubble(prev); //Make previous bubble typeable
+			}
 			if(!numberMode) {
 				searchTags();
 			}
 		} else if(e.keyCode == 37) { //Left Arrow
-			selectBubble($('#input .type').prev());
+			selectBubble(type.prev());
 		} else if(e.keyCode == 39) { //Right Arrow
-			selectBubble($('#input .type').next());
+			selectBubble(type.next());
 		} else if(e.keyCode == 40 && numberMode) { //Arrow Down
 			descriptionMode = true;
-			$('#input span.type').removeClass('type').addClass('last');
+			type.removeClass('type').addClass('last');
 			$('input[type=text]').focus();
 		} else if(e.keyCode == 35 || e.keyCode == 27) { //Esc && End
 			$('#numbers').html('');
 			$('#input').html('<span class="type"></span>'); //Erase all content and reset
-		} else if(e.key.length == 1 || e.keyCode == 8) { //Any other key pressed (backspace)
-			if(e.keyCode == 8) {
-				if($('#input .type').text() == '') { //If selected bubble has not text
+		} else if(e.key.length == 1 || e.keyCode == 8) { //Any other key pressed
+			if(e.keyCode == 8) { //If backspace is pressed
+				if(type.text() == '') { //If selected bubble has not text
 					deleteSelectedBubble();
-					$('#input span:last').addClass('type'); //Make the last one typeable
+					selectBubble($('#input span:last')); //Make the last one typeable
 				} else {
-					$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble
-					if($('#input .type').text() == '') {
+					type.text(type.text().slice(0, -1)); //Remove one character from end of selected bubble
+					if(type.text() == '' || $('#input > span').length == 1) { //Search on backspace only if one bubble or empty bubble
 						searchTags(function() {
 							mem.availableTags = mem.tagsFromLastCall;
 						});
 					}
 				}
 			} else {
-				$('#input .type').append(e.key.toLowerCase()); //Type the key
+				type.append(e.key.toLowerCase()); //Type the key
 				$('#input .type .autofill').remove(); //Remove autofill
-				var autoFill = autoFillTag($('#input .type').text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
+				var autoFill = autoFillTag(type.text().replace($('#input .type .autofill').text(), '')); //Grab non autofilled text
 				if(autoFill !== '') {
-					$('<span class="autofill">'+autoFill+'</span>').appendTo('#input .type'); //Create autofill
+					$('<span class="autofill">'+autoFill+'</span>').appendTo(type); //Create autofill
 				}
 			}
-			$('#input .type').removeClass('saved');
+			type.removeClass('saved');
 			if($('#input span:first').text().match(/^\d+$/)) { // If only a number
 				numberModeOn();
 			}
 			if(typeFilled() && !numberMode && !typeValid() && e.keyCode !== 8) { //If type is valid, or in number mode, or type has no text		
-				$('#input .type').text($('#input .type').text().slice(0, -1)); //Remove one character from end of selected bubble		
+				type.text(type.text().slice(0, -1)); //Remove one character from end of selected bubble		
 			}
-			if($('#input span:first')[0] == $('#input .type')[0] && numberMode) { //If first bubble is number and changed
-				loadNumberTags($('#input .type').text());
+			if($('#input span:first')[0] == type[0] && numberMode) { //If first bubble is number and changed
+				loadNumberTags(type.text());
 			}
 			setTimeout(function() {
 				if(!numberMode && allValid()) {
@@ -522,10 +501,11 @@ $(document).on('keydown', function (e) {
 		if(!$('#input span:first').text().match(/^\d+$/) && numberMode) {
 			numberModeOff();
 		}
+		var currentType = $('#input .type'); //Get current type since it could have changed above.
 		if(typeValid()) { //If type is valid, and unique
-			$('#input span.type').addClass('valid');
+			currentType.addClass('valid');
 		} else {
-			$('#input span.type').removeClass('valid');
+			currentType.removeClass('valid');
 		}
 	}
 	if(e.keyCode == 38) {//UpArrow //Re select main input 
