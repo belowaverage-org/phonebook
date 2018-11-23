@@ -74,7 +74,8 @@ var mem = {
 	tagsFromLastCall: [],
 	allTags: {},
 	allTagsRetrieving: false,
-	cache: 0
+	cache: 0,
+	scrollTriggered: false
 };
 var firstLoad = true;
 var firstType = true;
@@ -402,16 +403,28 @@ $(document).ready(function() {
 			$.post(apiURI, {api: 'stats', stats: 'ping'});
 		}, pingInterval * 1000);
 	}
+	//On page scroll
+	$('#main').on('scroll', function(e) {
+		if(e.target.scrollTop + e.target.clientHeight > e.target.scrollHeight - 500) {
+			if(!mem.scrollTriggered) {
+				console.log(e.target.scrollTop + e.target.clientHeight);
+			}
+			mem.scrollTriggered = true;
+		} else {
+			mem.scrollTriggered = false;
+		}
+	});
 });
 //Keypress action
 $(document).on('keydown', function (e) {
+	e.preventDefault();
 	var type = $('#input .type');
 	if(firstType) {
 		firstType = false;
 		$('#tip').remove();
 	}
 	if(!descriptionMode) {
-		e.preventDefault(); //Disable any default key press actions
+		//e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
 			type.html(type.text()); //Capture autofill
 			var searchCallback = function() {};
