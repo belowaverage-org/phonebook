@@ -75,7 +75,8 @@ var mem = {
 	allTags: {},
 	allTagsRetrieving: false,
 	cache: 0,
-	scrollTriggered: false
+	scrollTriggered: false,
+	scrollPageCount: 0
 };
 var firstLoad = true;
 var firstType = true;
@@ -300,7 +301,18 @@ function sendTagsAndDescription() { //Send all tags to database
 		}
 	});
 }
-function searchTags(callback = function() {}) { //grab all tags and search the database and return the result on screen.
+function searchTags(arg1 = null, arg2 = null) { //grab all tags and search the database and return the result on screen.
+	var callback = function() {};
+	var keepContent = false;
+	args = [arg1, arg2];
+	$.each(args, function(k, v) {
+		if(typeof v == 'function') {
+			callback = v;
+		}
+		if(typeof v == 'boolean') {
+			keepContent = v;
+		}
+	});
 	var tags = [];
 	$.each($('#input > span'), function() { //For each bubble
 		if($(this)[0] !== $('#input > span:last-child')[0]) {
@@ -319,7 +331,7 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 		}
 	}
 	jtags = JSON.stringify(tags);
-	if(jtags !== lastSearchTags) {
+	if(jtags !== lastSearchTags || keepContent) {
 		lastSearchTags = jtags;
 		ajaxSearchQuery.abort(); //Abort the previous requests.
 		ajaxSearchQuery = $.ajax({ //Send search query
@@ -334,7 +346,9 @@ function searchTags(callback = function() {}) { //grab all tags and search the d
 			},
 			success: function(results) { //On success
 				$('#noresult').hide();
-				$('#numbers').html(''); //Clear numbers
+				if(!keepContent) {
+					$('#numbers').html(''); //Clear numbers
+				}
 				var validTagCount = $('#input > span.valid').length;
 				mem.tagsFromLastCall = results.tags;
 				if($.isEmptyObject(results.objects)) {
@@ -408,6 +422,7 @@ $(document).ready(function() {
 		if(e.target.scrollTop + e.target.clientHeight > e.target.scrollHeight - 500) {
 			if(!mem.scrollTriggered) {
 				console.log(e.target.scrollTop + e.target.clientHeight);
+				searchTags(true);
 			}
 			mem.scrollTriggered = true;
 		} else {
