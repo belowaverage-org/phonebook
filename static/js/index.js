@@ -76,15 +76,18 @@ var mem = {
 	allTagsRetrieving: false,
 	cache: 0,
 	scrollTriggered: false,
-	scrollPageCount: 0
+	scrollPageOffset: 0,
+	lastSearchTags: [],
+	lastSearchOffset: 0,
+	scrollPageEnd: false
 };
 var firstLoad = true;
 var firstType = true;
+var loadCount = 100;
 var colorRangeMin = 100;
 var colorRangeMax = 200;
 var numberMode = false;
 var descriptionMode = false;
-var lastSearchTags = '[]';
 var searchOffset = 0;
 var cacheTimeout = 10; //Seconds
 var ajaxSearchQuery = {abort: function() {}};
@@ -331,9 +334,14 @@ function searchTags(arg1 = null, arg2 = null) { //grab all tags and search the d
 		}
 	}
 	jtags = JSON.stringify(tags);
-	if(jtags !== lastSearchTags || keepContent) {
-		lastSearchTags = jtags;
+	if(jtags !== mem.lastSearchTags || (keepContent && !mem.scrollPageEnd) ) {
+		mem.lastSearchTags = jtags;
 		ajaxSearchQuery.abort(); //Abort the previous requests.
+		if(!keepContent) {
+			mem.scrollPageOffset = 0;
+		} else if(mem.scrollPageOffset == 0) {
+			mem.scrollPageOffset += loadCount;
+		}
 		ajaxSearchQuery = $.ajax({ //Send search query
 			type: 'post',
 			async: true,
@@ -342,25 +350,36 @@ function searchTags(arg1 = null, arg2 = null) { //grab all tags and search the d
 			data: {
 				api: 'search',
 				sort: 'number',
+				count: loadCount,
+				offset: mem.scrollPageOffset,
 				search: jtags
 			},
 			success: function(results) { //On success
-				$('#noresult').hide();
+				$('.resultsMessage').hide();
 				if(!keepContent) {
+					mem.scrollPageEnd = false;
 					$('#numbers').html(''); //Clear numbers
 				}
 				var validTagCount = $('#input > span.valid').length;
 				mem.tagsFromLastCall = results.tags;
 				if($.isEmptyObject(results.objects)) {
-					$('#noresult').show();
+					mem.scrollPageEnd = true;
+					if(keepContent) {
+						$('#endresult').show();
+					} else {
+						$('#noresult').show();
+					}
 				} else {
 					$.each(results.objects, function(k) {
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
 						$('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
-						.appendTo('#numbers')
+						.appendTo('#numbers');
 					});
+					if(keepContent) {
+						mem.scrollPageOffset += loadCount;
+					}
 				}
 				callback.call();
 			}
@@ -421,7 +440,6 @@ $(document).ready(function() {
 	$('#main').on('scroll', function(e) {
 		if(e.target.scrollTop + e.target.clientHeight > e.target.scrollHeight - 500) {
 			if(!mem.scrollTriggered) {
-				console.log(e.target.scrollTop + e.target.clientHeight);
 				searchTags(true);
 			}
 			mem.scrollTriggered = true;
@@ -489,6 +507,7 @@ $(document).on('keydown', function (e) {
 		} else if(e.keyCode == 35 || e.keyCode == 27) { //Esc && End
 			$('#numbers').html('');
 			$('#input').html('<span class="type"></span>'); //Erase all content and reset
+			$('.resultsMessage').hide();
 		} else if(e.key.length == 1 || e.keyCode == 8) { //Any other key pressed
 			if(e.keyCode == 8) { //If backspace is pressed
 				if(type.text() == '') { //If selected bubble has not text
@@ -536,7 +555,7 @@ $(document).on('keydown', function (e) {
 			currentType.removeClass('valid');
 		}
 	}
-	if(e.keyCode == 38) {//UpArrow //Re select main input 
+	if(e.keyCode == 38) {//UpArrow //Re-select main input 
 		e.preventDefault();
 		$('#input span.last').addClass('type').removeClass('last');
 		$('input[type=text]').blur();

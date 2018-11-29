@@ -304,6 +304,9 @@ input[type=text] {
 #legend li {
 	margin-top:10px;
 }
+.resultsMessage {
+	margin:50px 0px 50px 0px;
+}
 img.c {
 	position:fixed;
 	bottom:-13px;
