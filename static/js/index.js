@@ -304,7 +304,7 @@ function sendTagsAndDescription() { //Send all tags to database
 		}
 	});
 }
-function searchTags(arg1 = null, arg2 = null) { //grab all tags and search the database and return the result on screen.
+function searchTags(arg1, arg2) { //grab all tags and search the database and return the result on screen.
 	var callback = function() {};
 	var keepContent = false;
 	args = [arg1, arg2];
@@ -398,14 +398,21 @@ function numberModeOn() { //Turns number mode on
 	$('#numbers').hide();
 	numberMode = true;
 }
+function toggleHamburger() {
+	$('#hamburger').toggleClass('hidden');
+	$('#main').toggleClass('hamburger');
+	$('#hamopen').toggleClass('hidden');
+}
+function toggleLegend() {
+	$('#legend').toggle();
+	$('#main').toggleClass('blur');
+}
 //Load cache
 autoFillTag();
 //On doc ready
 $(document).ready(function() {
-	$('#info').click(function() { //On click info button
-		$('#legend').toggle();
-		$('#main').toggleClass('blur');
-	});
+	$('#info').click(toggleLegend);
+	$('#hamopen, #hamclose, #hamburger .button').click(toggleHamburger);
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
 		$('#input span.type').removeClass('type').addClass('last');
@@ -440,7 +447,7 @@ $(document).ready(function() {
 	$('#main').on('scroll', function(e) {
 		if(e.target.scrollTop + e.target.clientHeight > e.target.scrollHeight - 500) {
 			if(!mem.scrollTriggered) {
-				searchTags(true);
+				searchTags(true, null);
 			}
 			mem.scrollTriggered = true;
 		} else {
@@ -472,15 +479,15 @@ $(document).on('keydown', function (e) {
 			} else {
 				selectBubble($('#input > span:last'));
 			}
-			searchTags(searchCallback);
+			searchTags(searchCallback, null);
 		} else if(e.keyCode == 9) { //Tab
 			type.html(type.text()); //Capture autofill
-			searchTags();
+			searchTags(null, null);
 		} else if(e.keyCode == 13) { //If enter is pressed
 			if(numberMode) {
 				alertToSend();
 			} else {
-				searchTags();
+				searchTags(null, null);
 			}
 		} else if(e.keyCode == 46) { //Delete
 			var isFirstSelected = ($('#input > span:first')[0] == type[0]); //If the first bubble is selected
@@ -494,7 +501,7 @@ $(document).on('keydown', function (e) {
 				selectBubble(prev); //Make previous bubble typeable
 			}
 			if(!numberMode) {
-				searchTags();
+				searchTags(null, null);
 			}
 		} else if(e.keyCode == 37) { //Left Arrow
 			selectBubble(type.prev());
@@ -518,7 +525,7 @@ $(document).on('keydown', function (e) {
 					if(type.text() == '' || $('#input > span').length == 1) { //Search on backspace only if one bubble or empty bubble
 						searchTags(function() {
 							mem.availableTags = mem.tagsFromLastCall;
-						});
+						}, null);
 					}
 				}
 			} else {
@@ -541,7 +548,7 @@ $(document).on('keydown', function (e) {
 			}
 			setTimeout(function() {
 				if(!numberMode && allValid()) {
-					searchTags();
+					searchTags(null, null);
 				}
 			});
 		}

@@ -24,6 +24,13 @@ body {
 	margin:0px;
 	color:#000000d9;
 }
+#numbers > div, #hamburger .button:hover {
+	border-radius:20px;
+	transition:.3s;
+	border-radius:20px;
+	box-shadow:0px 2px 4px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
+	background-color:white;
+}
 #numbers, #input, h1, input[type=text] {
 	max-width:700px;
 	min-width:200px;
@@ -146,6 +153,11 @@ img.l {
 	width:100%;
 	overflow:auto;
 	overflow-y:scroll;
+	transition:.3s;
+}
+#main.hamburger {
+	margin-left:270px;
+	width:calc(100% - 270px);
 }
 #main.blur {
 	filter:blur(5px);
@@ -170,6 +182,11 @@ img.l {
 }
 #legend .leg.yellow::before {
 	background-color:#feffbd;
+}
+hr {
+	border:none;
+	background-color:rgba(0,0,0,.2);
+	height:1px;
 }
 input[type=text] {
 	background-color:whitesmoke;
@@ -198,12 +215,7 @@ input[type=text] {
 	position:relative;
 	margin-bottom:15px;
 	margin-top:15px;
-	border-radius:20px;
-	transition:.3s;
-	border-radius:20px;
-	box-shadow:0px 2px 4px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
 }
-
 #numbers > div.loading::after {
 	content:"";
 	display:inline-block;
@@ -311,4 +323,83 @@ img.c {
 	position:fixed;
 	bottom:-13px;
 	left:0px;
+}
+.hambutton {
+	width:30px;
+	height:30px;
+	background-size:100% 100%;
+	cursor:pointer;
+	transition:.3s;
+}
+#hamopen {
+	position:fixed;
+	background-image:url('../img/hamburger.svg');
+	top:18px;
+	left:18px;
+}
+#hamopen.hidden {
+	left:-30px;
+}
+#hamclose {
+	position:absolute;
+	background-image:url('../img/back.svg');
+	top:18px;
+	left:10px;
+}
+#hamburger {
+	padding:20px 10px 20px 10px;
+	height:calc(100% - 40px);
+	position:fixed;
+	left:0px;
+	top:0px;
+	width:250px;
+	box-shadow:0px 0px 10px rgba(0,0,0,.3);
+	overflow-y:auto;
+	transition:.3s;
+}
+#hamburger.hidden {
+	left:-270px;
+}
+#hamburger hr {
+	margin:20px 0px 20px 0px;
+}
+#hamburger h1 {
+	font-size:22px;
+	font-weight:normal;
+	margin:0px;
+}
+#hamburger .button {
+	margin-top:10px;
+	line-height:30px;
+	cursor:pointer;
+	height:30px;
+	text-align:left;
+	background-color:rgba(0,0,0,.03);
+	transition:.3s;
+	text-align:left;
+	border-radius:15px;
+}
+#hamburger .button::before {
+	content:'';
+	display:inline-block;
+	width:18px;
+	height:18px;
+	vertical-align:-3px;
+	margin:6px 10px 0px 10px;
+	background-size:100% 100%;
+}
+#hamburger .button.print::before {
+	background-image:url('../img/print.svg');
+}
+#hamburger .button.export::before {
+	background-image:url('../img/export.svg');
+}
+#hamburger .button.help::before {
+	background-image:url('../img/help.svg');
+}
+#hamburger .button.about::before {
+	background-image:url('../img/info.svg');
+}
+#hamburger .button.stats::before {
+	background-image:url('../img/stats.svg');
 }
