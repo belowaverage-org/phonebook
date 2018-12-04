@@ -16,13 +16,12 @@ The initial HTML for the client.
 		<script src="static/js/index.js"></script>
 	</head>
 	<body>
-		
 		<div id="hamburger" class="hidden">
 			<div class="hambutton" id="hamclose"></div>
 			<h1>Actions</h1>
 			<hr>
-			<div class="button print">Print results...</div>
-			<div class="button export">Export results...</div>
+			<div class="button print">Print results...<span>Ctrl + P</span></div>
+			<div class="button export">Export results...<span>Ctrl + E</span></div>
 			<hr>
 			<h1>Info</h1>
 			<hr>
@@ -96,12 +95,11 @@ The initial HTML for the client.
 			<h2>You are about to make changes, proceed?</h2>
 			<span class="yes"><b>Yes</b> [Enter]</span><span class="no"><b>No</b> [Space]</span>
 		</div>
+		<div id="printscrn" style="display:none;"></div>
 		<div id="loading">
 			<h1>Phone Book</h1>
 			<img src="static/img/load.gif">
 		</div>
-		<div id="info">i</div>
 		<div class="hambutton" id="hamopen"></div>
-		<img title="Created by Dylan Bickerstaff - June 2017 - Updated September 2018 - Version: 2.0" class="l" alt="Created by Dylan Bickerstaff" src="static/img/index.png">
 	</body>
 </html>

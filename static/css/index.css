@@ -325,8 +325,8 @@ img.c {
 	left:0px;
 }
 .hambutton {
-	width:30px;
-	height:30px;
+	width:25px;
+	height:25px;
 	background-size:100% 100%;
 	cursor:pointer;
 	transition:.3s;
@@ -334,8 +334,8 @@ img.c {
 #hamopen {
 	position:fixed;
 	background-image:url('../img/hamburger.svg');
-	top:18px;
-	left:18px;
+	top:22px;
+	left:22px;
 }
 #hamopen.hidden {
 	left:-30px;
@@ -343,7 +343,7 @@ img.c {
 #hamclose {
 	position:absolute;
 	background-image:url('../img/back.svg');
-	top:18px;
+	top:22px;
 	left:10px;
 }
 #hamburger {
@@ -379,6 +379,13 @@ img.c {
 	text-align:left;
 	border-radius:15px;
 }
+#hamburger .button > span {
+	color:gray;
+	float:right;
+	margin-right:10px;
+	font-size:14px;
+	margin-top:2px;
+}
 #hamburger .button::before {
 	content:'';
 	display:inline-block;
@@ -402,4 +409,27 @@ img.c {
 }
 #hamburger .button.stats::before {
 	background-image:url('../img/stats.svg');
+}
+#printscrn {
+	background-color:white;
+	min-height:100%;
+	width:100%;
+}
+#printscrn table {
+	text-align:left;
+	border-collapse:collapse;
+	font-size:14px;
+	page-break-after:always;
+	page-break-inside:avoid;
+	width:100%;
+}
+#printscrn table th {
+	padding:5px 0px 5px 0px;
+}
+#printscrn table td {
+	border:1px solid #e2e2e2;
+	padding:5px;
+}
+#printscrn table tr:nth-child(even) {
+	background-color:#efefef;
 }

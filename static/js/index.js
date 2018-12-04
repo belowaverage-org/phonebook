@@ -79,8 +79,10 @@ var mem = {
 	scrollPageOffset: 0,
 	lastSearchTags: [],
 	lastSearchOffset: 0,
-	scrollPageEnd: false
+	scrollPageEnd: false,
+	schema: {}
 };
+var printCols = 25;
 var firstLoad = true;
 var firstType = true;
 var loadCount = 100;
@@ -122,8 +124,11 @@ function autoFillTag(term) { //Returns rest of tag
 				mem.cache = time(); //Update cache timestamp
 				if(firstLoad) {
 					firstLoad = false;
-					$('#loading').remove();
-					$('#main').removeClass('blur');
+					$.getJSON(apiURI + 'schema.config.json', function(schema) {
+						mem.schema = schema;
+						$('#loading').hide();
+						$('#main').removeClass('blur');
+					});
 				}
 				mem.allTagsRetrieving = false;
 			}
@@ -304,18 +309,7 @@ function sendTagsAndDescription() { //Send all tags to database
 		}
 	});
 }
-function searchTags(arg1, arg2) { //grab all tags and search the database and return the result on screen.
-	var callback = function() {};
-	var keepContent = false;
-	args = [arg1, arg2];
-	$.each(args, function(k, v) {
-		if(typeof v == 'function') {
-			callback = v;
-		}
-		if(typeof v == 'boolean') {
-			keepContent = v;
-		}
-	});
+function getSearchTags() {
 	var tags = [];
 	$.each($('#input > span'), function() { //For each bubble
 		if($(this)[0] !== $('#input > span:last-child')[0]) {
@@ -333,6 +327,38 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 			tags.push(text);	
 		}
 	}
+	return tags;
+}
+function searchTagsRaw(callback) {
+	ajaxSearchQuery = $.ajax({ //Send search query
+		type: 'post',
+		async: true,
+		url: apiURI,
+		dataType: 'json',
+		data: {
+			api: 'search',
+			sort: 'number',
+			count: 10000,
+			search: JSON.stringify(getSearchTags())
+		},
+		success: function(results) {
+			callback.call(results);
+		}
+	});
+}
+function searchTags(arg1, arg2) { //grab all tags and search the database and return the result on screen.
+	var callback = function() {};
+	var keepContent = false;
+	args = [arg1, arg2];
+	$.each(args, function(k, v) {
+		if(typeof v == 'function') {
+			callback = v;
+		}
+		if(typeof v == 'boolean') {
+			keepContent = v;
+		}
+	});
+	var tags = getSearchTags();
 	jtags = JSON.stringify(tags);
 	if(jtags !== mem.lastSearchTags || (keepContent && !mem.scrollPageEnd) ) {
 		mem.lastSearchTags = jtags;
@@ -407,12 +433,72 @@ function toggleLegend() {
 	$('#legend').toggle();
 	$('#main').toggleClass('blur');
 }
+function filterPrintCols(cols) {
+	$.each(cols, function() {
+		allEmpty = true;
+		$.each(this, function() {
+			if($(this).text() !== '' && $(this)[0].tagName == 'TD') {
+				allEmpty = false;
+				return false;
+			}
+		});
+		if(allEmpty) {
+			$(this).remove();
+		}
+	});
+}
+function printResults() {
+	var hide = '#main, #hamburger, #hamopen';
+	$(hide).hide();
+	$('#loading').show().find('h1').text('Requesting print info...');
+	searchTagsRaw(function() {
+		var result = this;
+		$('#loading h1').text('Generating print page...');
+		setTimeout(function() {
+			var psrn = $('#printscrn');
+			var tabl = $('<table></table>').appendTo(psrn);
+			var thed = $('<tr></tr>').appendTo(tabl);
+			var cols = {};
+			var count = printCols;
+			$.each(result.objects, function() {
+				if(count-- == 0) {
+					filterPrintCols(cols);
+					cols = {};
+					tabl = $('<table></table>').appendTo(psrn);
+					thed = $('<tr></tr>').appendTo(tabl);
+					count = printCols;
+				}
+				var tr = $('<tr></tr>').appendTo(tabl);
+				var col = 0;
+				$.each(this, function(k, v) {
+					if(typeof cols[++col] == 'undefined') {
+						cols[col] = $();
+					}
+					if(v == null) {
+						v = '';
+					}
+					if(count + 1 == printCols) {
+						cols[col] = cols[col].add($('<th></th>').text(mem.schema[k].name).appendTo(thed));
+					}
+					cols[col] = cols[col].add($('<td></td>').text(v).appendTo(tr));
+				});
+			});
+			filterPrintCols(cols);
+			$('#loading').hide();
+			psrn.show();
+			window.print();
+			psrn.hide().html('');
+			$(hide).show();
+		}, 100);
+	});
+}
 //Load cache
 autoFillTag();
 //On doc ready
 $(document).ready(function() {
 	$('#info').click(toggleLegend);
 	$('#hamopen, #hamclose, #hamburger .button').click(toggleHamburger);
+	$('#hamburger .print').click(printResults);
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
 		$('#input span.type').removeClass('type').addClass('last');
@@ -515,6 +601,10 @@ $(document).on('keydown', function (e) {
 			$('#numbers').html('');
 			$('#input').html('<span class="type"></span>'); //Erase all content and reset
 			$('.resultsMessage').hide();
+		} else if(e.keyCode == 116) { //If F5
+			location.reload(true);
+		} else if(e.keyCode == 80 && e.ctrlKey) { //If CTRL + P
+			printResults();
 		} else if(e.key.length == 1 || e.keyCode == 8) { //Any other key pressed
 			if(e.keyCode == 8) { //If backspace is pressed
 				if(type.text() == '') { //If selected bubble has not text
