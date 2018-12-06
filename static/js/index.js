@@ -499,7 +499,7 @@ $(document).ready(function() {
 	$('#info').click(toggleLegend);
 	$('#hamopen, #hamclose').click(toggleHamburger);
 	$('#hamburger .button').click(function() {
-		if($('#hamburger').hasClass('hidden')) {
+		if(!$('#hamburger').hasClass('hidden')) {
 			toggleHamburger();
 		}
 	});
