@@ -22,7 +22,7 @@ body {
 	height:100%;
 	width:100%;
 	margin:0px;
-	color:#000000d9;
+	color:rgba(0,0,0,.85);
 }
 #numbers > div, #hamburger .button:hover {
 	border-radius:20px;
@@ -31,7 +31,7 @@ body {
 	box-shadow:0px 2px 4px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
 	background-color:white;
 }
-#numbers, #input, h1, input[type=text] {
+#numbers, #input, input[type=text] {
 	max-width:700px;
 	min-width:200px;
 	margin-left:auto;
@@ -335,16 +335,17 @@ img.c {
 	position:fixed;
 	background-image:url('../img/hamburger.svg');
 	top:22px;
-	left:22px;
+	left:12px;
 }
 #hamopen.hidden {
-	left:-30px;
+	left:50px;
+	opacity:0;
 }
 #hamclose {
 	position:absolute;
 	background-image:url('../img/back.svg');
 	top:22px;
-	left:10px;
+	left:12px;
 }
 #hamburger {
 	padding:20px 10px 20px 10px;
@@ -357,27 +358,50 @@ img.c {
 	overflow-y:auto;
 	transition:.3s;
 }
+#hamburger.hidden #hamclose {
+	left:-20px;
+	opacity:0;
+}
 #hamburger.hidden {
-	left:-270px;
+    width:30px;
 }
 #hamburger hr {
 	margin:20px 0px 20px 0px;
+	transition:.3s;
 }
 #hamburger h1 {
 	font-size:22px;
+	height:22px;
 	font-weight:normal;
 	margin:0px;
+	transition:.3s;
+	width:250px;
+}
+#hamburger.hidden hr:not(.nocollapse), #hamburger.hidden h1:not(:nth-child(2)) {
+	height:0px;
+	margin:0px;
+	background-color:transparent;
+	border:0px;
+}
+#hamburger.hidden h1 {
+	color:transparent;
 }
 #hamburger .button {
+	display:block;
 	margin-top:10px;
 	line-height:30px;
 	cursor:pointer;
 	height:30px;
 	text-align:left;
 	background-color:rgba(0,0,0,.03);
-	transition:.3s;
-	text-align:left;
 	border-radius:15px;
+	overflow:hidden;
+	width:100%;
+	transition:.3s;
+}
+#hamburger.hidden .button {
+	width:30px;
+	color:transparent;
 }
 #hamburger .button > span {
 	color:gray;
@@ -394,6 +418,10 @@ img.c {
 	vertical-align:-3px;
 	margin:6px 10px 0px 10px;
 	background-size:100% 100%;
+	transition:.3s;
+}
+#hamburger.hidden .button::before {
+	margin:6px 10px 0px 6px;
 }
 #hamburger .button.print::before {
 	background-image:url('../img/print.svg');
@@ -409,6 +437,9 @@ img.c {
 }
 #hamburger .button.stats::before {
 	background-image:url('../img/stats.svg');
+}
+#hamburger .button.feedback::before {
+	background-image:url('../img/feedb.svg');
 }
 #printscrn {
 	background-color:white;

@@ -497,7 +497,12 @@ autoFillTag();
 //On doc ready
 $(document).ready(function() {
 	$('#info').click(toggleLegend);
-	$('#hamopen, #hamclose, #hamburger .button').click(toggleHamburger);
+	$('#hamopen, #hamclose').click(toggleHamburger);
+	$('#hamburger .button').click(function() {
+		if($('#hamburger').hasClass('hidden')) {
+			toggleHamburger();
+		}
+	});
 	$('#hamburger .print').click(printResults);
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
