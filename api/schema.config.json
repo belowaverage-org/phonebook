@@ -1,13 +1,17 @@
 {
     "description": {
+    	"export": true,
         "length": 1000,
         "name": "Description",
+        "print": true,
         "tagged": true,
         "visible": true
     },
     "email": {
+    	"export": true,
         "length": 100,
         "name": "Email",
+        "print": true,
 		"tagged": true,
         "visible": {
             "Type": [
@@ -17,8 +21,10 @@
         }
     },
     "firstname": {
+    	"export": true,
         "length": 100,
         "name": "First Name",
+        "print": true,
         "tagged": true,
         "visible": {
             "Type": [
@@ -37,8 +43,10 @@
         ]
     },
     "lastname": {
+    	"export": true,
         "length": 100,
         "name": "Last Name",
+        "print": true,
         "tagged": true,
         "visible": {
             "Type": [
@@ -57,9 +65,11 @@
         ]
     },
     "number": {
+    	"export": true,
         "indexed": true,
         "length": 50,
         "name": "Phone Number",
+        "print": true,
 		"tagged": false,
         "type": "number",
         "unique": true,
@@ -72,8 +82,10 @@
             "Location",
             "Person"
         ],
+        "export": true,
         "length": 10,
         "name": "Type",
+        "print": true,
         "tagged": true,
         "type": "choice",
         "visible": true

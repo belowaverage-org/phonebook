@@ -438,10 +438,12 @@ function toggleMenu(id) {
 	$(blurToggle).toggleClass('blur');
 	if($(id).hasClass('hidden')) {
 		$('#exit').addClass('hidden').unbind('click');
+		descriptionMode = false;
 	} else {
 		$('#exit').removeClass('hidden').click(function() {
 			toggleMenu(id);
 		});
+		descriptionMode = true;
 	}
 }
 function filterPrintCols(cols) {
@@ -548,6 +550,12 @@ $(document).ready(function() {
 	$('#hamburger .help').click(function() {
 		toggleMenu('#legend');
 	});
+	$('#hamburger .about').click(function() {
+		toggleMenu('#about');
+	});
+	$('#hamburger .feedback').click(function() {
+		toggleMenu('#feedback');
+	});
 	$('#hamopen, #hamclose').click(toggleHamburger);
 	$('#hamburger .button').click(function() {
 		if(!$('#hamburger').hasClass('hidden')) {
@@ -600,14 +608,13 @@ $(document).ready(function() {
 });
 //Keypress action
 $(document).on('keydown', function (e) {
-	e.preventDefault();
 	var type = $('#input .type');
 	if(firstType) {
 		firstType = false;
 		$('#tip').remove();
 	}
 	if(!descriptionMode) {
-		//e.preventDefault(); //Disable any default key press actions
+		e.preventDefault(); //Disable any default key press actions
 		if(e.keyCode == 32) { //On Space
 			type.html(type.text()); //Capture autofill
 			var searchCallback = function() {};

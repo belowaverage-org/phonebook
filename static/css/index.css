@@ -15,6 +15,9 @@ html {
 	height:100%;
 	width:100%;
 }
+h1, h2, h3, h4 {
+	font-weight:normal;
+}
 body {
 	user-select:none;
 	font-family:GSans, Arial;
@@ -27,7 +30,7 @@ body {
 .menu.hidden, .float.hidden:not(#hamopen) {
 	display:none;
 }
-#numbers > div, #hamburger .button:hover {
+#numbers > div, .button:hover {
 	border-radius:20px;
 	transition:.3s;
 	border-radius:20px;
@@ -133,7 +136,7 @@ body > .menu {
 	top:0px;
 	left:0px;
 	z-index:9;
-	background-color:rgba(255,255,255,.8);
+	background-color:white;
 	outline:none;
 	overflow-y:scroll;
 }
@@ -400,18 +403,21 @@ img.c {
 #hamburger.hidden h1 {
 	color:transparent;
 }
-#hamburger .button {
+.button {
 	display:block;
 	margin-top:10px;
 	line-height:30px;
 	cursor:pointer;
 	height:30px;
-	text-align:left;
+	
 	background-color:rgba(0,0,0,.03);
 	border-radius:15px;
 	overflow:hidden;
 	width:100%;
 	transition:.3s;
+}
+#hamburger .button {
+    text-align:left;
 }
 #hamburger.hidden .button {
 	width:30px;
@@ -477,4 +483,31 @@ img.c {
 }
 #printscrn table tr:nth-child(even) {
 	background-color:#efefef;
+}
+#about div {
+	max-width:400px;
+	text-align:left;
+	margin:0px auto 0px auto;
+}
+#about p {
+	padding-left:23px;
+}
+#about div h1 {
+	text-align:center;
+}
+#feedback select, #feedback textarea, #feedback .button {
+	width:300px;
+	display:block;
+	margin:0px auto 20px auto;
+	height:30px;
+	padding:0px;
+}
+#feedback textarea {
+	height:300px;
+	padding:5px;
+	width:288px;
+	resize:none;
+}
+#feedback .button {
+	height:30px;
 }
