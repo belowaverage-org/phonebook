@@ -80,7 +80,8 @@ var mem = {
 	lastSearchTags: [],
 	lastSearchOffset: 0,
 	scrollPageEnd: false,
-	schema: {}
+	schema: {},
+	CSVLibraryLoaded: false
 };
 var printCols = 25;
 var firstLoad = true;
@@ -96,6 +97,7 @@ var ajaxSearchQuery = {abort: function() {}};
 var ajaxSearchNumbers = {abort: function() {}};
 var pingInterval = 59; //Seconds
 var placeDashes = true;
+var blurToggle = '#main, #hamburger, #hamopen';
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
@@ -126,8 +128,8 @@ function autoFillTag(term) { //Returns rest of tag
 					firstLoad = false;
 					$.getJSON(apiURI + 'schema.config.json', function(schema) {
 						mem.schema = schema;
-						$('#loading').hide();
-						$('#main').removeClass('blur');
+						$('#loading').addClass('hidden');
+						$(blurToggle).removeClass('blur');
 					});
 				}
 				mem.allTagsRetrieving = false;
@@ -264,7 +266,8 @@ function loadNumberTags(num) {
 }
 function alertToSend() { //Show alert before sending data
 	descriptionMode = true;
-	$('#question').show().siblings('#main').addClass('blur');
+	$('#question').show();
+	$(blurToggle).addClass('blur');
 	$('#question').on('click', 'span', function() { //Listen for click on yes.
 		if($(this).hasClass('yes')) {
 			sendTagsAndDescription();
@@ -279,7 +282,8 @@ function alertToSend() { //Show alert before sending data
 	}).focus();
 }
 function closeAlert() {
-	$('#question').hide().unbind().siblings('#main').removeClass('blur'); //Unbind all events and remove alert
+	$('#question').hide().unbind(); //Unbind all events and remove alert
+	$(blurToggle).removeClass('blur'); 
 	descriptionMode = false;
 }
 function sendTagsAndDescription() { //Send all tags to database
@@ -429,9 +433,16 @@ function toggleHamburger() {
 	$('#main').toggleClass('hamburger');
 	$('#hamopen').toggleClass('hidden');
 }
-function toggleLegend() {
-	$('#legend').toggle();
-	$('#main').toggleClass('blur');
+function toggleMenu(id) {
+	$(id).toggleClass('hidden');
+	$(blurToggle).toggleClass('blur');
+	if($(id).hasClass('hidden')) {
+		$('#exit').addClass('hidden').unbind('click');
+	} else {
+		$('#exit').removeClass('hidden').click(function() {
+			toggleMenu(id);
+		});
+	}
 }
 function filterPrintCols(cols) {
 	$.each(cols, function() {
@@ -446,6 +457,44 @@ function filterPrintCols(cols) {
 			$(this).remove();
 		}
 	});
+}
+function exportResults() {
+	$('#loading').removeClass('hidden').find('h1').text('Sending request...');
+	$(blurToggle).addClass('blur');
+	function xport() {
+		mem.CSVLibraryLoaded = true;
+		searchTagsRaw(function() {
+			$('#loading').find('h1').text('Generating CSV...');
+			var objectsArray = {
+				fields: [],
+				records: []
+			};
+			$.each(mem.schema, function(k) {
+				objectsArray.fields.push({id: k});
+			});
+			$.each(this.objects, function() {
+				objectsArray.records.push(this);
+			});
+			var csv = new Blob([CSV.serialize(objectsArray)], {type: 'text/csv'});
+			if(window.navigator.msSaveOrOpenBlob) {
+				window.navigator.msSaveBlob(csv, "export.csv");
+			} else {
+				var link = $('<a></a>')
+				.attr('href', URL.createObjectURL(csv))
+				.attr('download', 'export.csv')
+				.appendTo('body');
+				link[0].click();
+				link.remove();
+			}
+			$('#loading').addClass('hidden');
+			$(blurToggle).removeClass('blur');
+		});
+	}
+	if(mem.CSVLibraryLoaded) {
+		xport();
+	} else {
+		$.getScript('./static/js/csv.js', xport);
+	}
 }
 function printResults() {
 	var hide = '#main, #hamburger, #hamopen';
@@ -496,7 +545,9 @@ function printResults() {
 autoFillTag();
 //On doc ready
 $(document).ready(function() {
-	$('#info').click(toggleLegend);
+	$('#hamburger .help').click(function() {
+		toggleMenu('#legend');
+	});
 	$('#hamopen, #hamclose').click(toggleHamburger);
 	$('#hamburger .button').click(function() {
 		if(!$('#hamburger').hasClass('hidden')) {
@@ -504,6 +555,7 @@ $(document).ready(function() {
 		}
 	});
 	$('#hamburger .print').click(printResults);
+	$('#hamburger .export').click(exportResults);
 	$('input[type=text]').click(function() { //If description input is clicked
 		descriptionMode = true;
 		$('#input span.type').removeClass('type').addClass('last');

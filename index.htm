@@ -16,12 +16,12 @@ The initial HTML for the client.
 		<script src="static/js/index.js"></script>
 	</head>
 	<body>
-		<div id="hamburger" class="hidden">
-			<div class="hambutton" id="hamclose"></div>
+		<div id="hamburger" class="hidden blur">
+			<div class="float" id="hamclose"></div>
 			<h1>Actions</h1>
 			<hr class="nocollapse">
 			<div class="button print" title="Print results...">Print results...<span>Ctrl + P</span></div>
-			<div class="button export" title="Export results...">Export results...<span>Ctrl + E</span></div>
+			<div class="button export" title="Export as CSV...">Export as CSV...<span>Ctrl + E</span></div>
 			<hr>
 			<h1>Help</h1>
 			<hr class="nocollapse">
@@ -42,7 +42,7 @@ The initial HTML for the client.
 			<div id="noresult" class="resultsMessage" style="display:none;">Your search did not match any numbers.</div>
 			<div id="endresult" class="resultsMessage" style="display:none;">End of search results.</div>
 		</div>
-		<div style="display:none;" id="legend">
+		<div id="legend" class="menu hidden">
 			<h1>Phone Book Guide</h1>
 			<h3>Bubble / Tag Legend</h3>
 			<div class="leg blue"> - Phone number</div>
@@ -94,16 +94,17 @@ The initial HTML for the client.
 				<li>Press <b>[Enter]</b> to save your changes.</li>
 			</ol>
 		</div>
-		<div style="display:none;" id="question" tabindex="1">
+		<div id="question" class="menu hidden" tabindex="1">
 			<h1>Warning</h1>
 			<h2>You are about to make changes, proceed?</h2>
 			<span class="yes"><b>Yes</b> [Enter]</span><span class="no"><b>No</b> [Space]</span>
 		</div>
 		<div id="printscrn" style="display:none;"></div>
-		<div id="loading">
-			<h1>Phone Book</h1>
+		<div id="loading" class="menu">
+			<h1>One moment...</h1>
 			<img src="static/img/load.gif">
 		</div>
-		<div class="hambutton" id="hamopen"></div>
+		<div class="float blur" id="hamopen"></div>
+		<div class="float hidden" id="exit"></div>
 	</body>
 </html>

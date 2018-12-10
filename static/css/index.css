@@ -24,6 +24,9 @@ body {
 	margin:0px;
 	color:rgba(0,0,0,.85);
 }
+.menu.hidden, .float.hidden:not(#hamopen) {
+	display:none;
+}
 #numbers > div, #hamburger .button:hover {
 	border-radius:20px;
 	transition:.3s;
@@ -123,7 +126,7 @@ img.l {
 	right:30px;
 	z-index:10;
 }
-#legend, #question, #loading {
+body > .menu {
 	position:fixed;
 	width:100%;
 	height:100%;
@@ -143,23 +146,24 @@ img.l {
 }
 #legend {
 	text-align:left;
-	padding:0px 30px 30px 30px;
-	width:calc(100% - 60px);
+	padding:0px 30px 30px 70px;
+	width:calc(100% - 70px);
 	height:calc(100% - 30px);
 	overflow:auto;
 }
 #main {
 	height:100%;
-	width:100%;
 	overflow:auto;
 	overflow-y:scroll;
 	transition:.3s;
+	margin-left:50px;
+	width:calc(100% - 50px);
 }
 #main.hamburger {
 	margin-left:270px;
 	width:calc(100% - 270px);
 }
-#main.blur {
+.blur {
 	filter:blur(5px);
 }
 #legend .leg {
@@ -324,18 +328,27 @@ img.c {
 	bottom:-13px;
 	left:0px;
 }
-.hambutton {
+.float {
 	width:25px;
 	height:25px;
 	background-size:100% 100%;
 	cursor:pointer;
 	transition:.3s;
-}
-#hamopen {
+	width:25px;
+	height:25px;
 	position:fixed;
-	background-image:url('../img/hamburger.svg');
 	top:22px;
 	left:12px;
+	z-index:8;
+}
+#hamopen {
+	background-image:url('../img/hamburger.svg');
+}
+#exit {
+	background-image:url('../img/x.svg');
+	top:24px;
+	left:24px;
+	z-index:1000;
 }
 #hamopen.hidden {
 	left:50px;
@@ -356,6 +369,7 @@ img.c {
 	width:250px;
 	box-shadow:0px 0px 10px rgba(0,0,0,.3);
 	overflow-y:auto;
+	overflow-x:hidden;
 	transition:.3s;
 }
 #hamburger.hidden #hamclose {
