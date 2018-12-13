@@ -7,7 +7,7 @@ $dbConfig = array(
 );
 
 /* Database connection settings */
-require_once(__DIR__.'/reqs/medoo.api.php');
+require_once(__DIR__.'/reqs/medoo.lib.php');
 use Medoo\Medoo;
 $db = new Medoo([
 	'database_type' => 'sqlite',

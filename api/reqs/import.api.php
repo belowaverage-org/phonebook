@@ -9,7 +9,8 @@ Dylan Bickerstaff
 Imports JSON from post request into the database.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-if(isset($_POST['import'])) {
+require_once('auth.lib.php');
+if(isset($_POST['import']) && authenticated_as_admin()) {
 	$import = json_decode($_POST['import'], true);
 	if($import !== null) { //JSON Good
 		require_once('library.api.php');

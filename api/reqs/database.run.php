@@ -9,7 +9,7 @@ Dylan Bickerstaff
 Creates and updates the database schema as nessesary.
 */
 if(!isset($singlePointEntry)) { http_response_code(403); exit; }
-require(__DIR__.'/../database.config.php');
+require(__DIR__.'/../database.cfg.php');
 function insertLoop($table, $data) { //Function for inserting multiple rows into the database and splitting up the insert statements
 	global $db;
 	global $dbConfig;
@@ -19,7 +19,7 @@ function insertLoop($table, $data) { //Function for inserting multiple rows into
 		$offset += $dbConfig['insertLoopLimit'];
 	}
 }
-$schema_json_raw = file_get_contents(__DIR__.'/../schema.config.json');
+$schema_json_raw = json_encode(SCHEMA, true);
 $schema_json_raw_cache = '';
 if(file_exists(__DIR__.'/../../DB/schema.cache')) {
 	$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');

@@ -126,7 +126,7 @@ function autoFillTag(term) { //Returns rest of tag
 				mem.cache = time(); //Update cache timestamp
 				if(firstLoad) {
 					firstLoad = false;
-					$.getJSON(apiURI + 'schema.config.json', function(schema) {
+					$.getJSON(apiURI + 'schema.cfg.json', function(schema) {
 						mem.schema = schema;
 						$('#loading').addClass('hidden');
 						$(blurToggle).removeClass('blur');
