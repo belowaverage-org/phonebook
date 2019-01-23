@@ -74,6 +74,20 @@ function clearTagsFromObject($objectID) {
         }
     }
 }
+function getTagsFromObject($objectID, $resolveTagText = false) {
+    global $db;
+    if($resolveTagText) {
+        return $db->select('tags_objects', array(
+            '[>]tags' => 'tagid'
+        ), 'text', array(
+            'tags_objects.objectid' => $objectID
+        ));
+    } else {
+        return $db->select('tags_objects', 'tagid', array(
+            'objectid' => $objectID
+        ));
+    }
+}
 function removeObject($objectID) {
     global $db;
     if(isset($objectID) && !empty($objectID) && $db->has('objects', array('objectid' => $objectID))) {

@@ -19,11 +19,18 @@ if(isset($_POST['export'])) {
                 'objectid' => $objects
             ));
             foreach($results as $k => $object) {
+                if(isset($_POST['includeTags'])) {
+                    require_once('library.lib.php');
+                    $tags = getTagsFromObject($object['objectid'], true);
+                    if($tags) {
+                        $object['tags'] = $tags;
+                    }
+                }
                 $results[$object['objectid']] = $object;
                 unset($results[$k]);
                 unset($results[$object['objectid']]['objectid']);
             }
-            echo json_encode($results);
+            echo json_encode($results, $prettyPrintIfRequested);
         }
     }
 }

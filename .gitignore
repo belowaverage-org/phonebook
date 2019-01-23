@@ -48,3 +48,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /.vs
+api/auth.ldap.cfg.php
+api/auth.cfg.php
