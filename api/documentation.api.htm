@@ -21,6 +21,18 @@ A detailed description on how to use the API.
 			All requests to the API are done using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> http method, and the data submitted will use <a href="http://www.json.org/">JSON</a>.<br>
 			Every response from the API where a response is nessesary will return with a JSON string.
 		</p>
+		<h2>Authentication</h2>
+		<p>
+			API's listed below with the following tag: (<span style="color:red;font-weight:bolder;">API Requires Authentication</span>),<br>
+			will need to have credentials passed for the first call. If authentication is successful a cookie will be set that can be used<br>
+			for any subsequent calls to the API. If authentication fails, the result will be a 403 code. Some authentication plugins may not<br>
+		    require any credentials to be passed. E.g: (IIS with LDAP enabled).<br><br>
+			If an API call requires authentication, add the following to the POST request header:
+		</p>
+		<pre>
+username: allice
+password: pass123
+		</pre>
 		<h2>Request Structure</h2>
 		<ul>
 			<li><a href="#">api</a></a>
@@ -113,17 +125,18 @@ search: ["example","search","tags"]
 			Order: 0 - <input type="radio" name="order" value="0" checked>
 			Order: 1 - <input type="radio" name="order" value="1">
 			<button>Send</button><br><br>
-			<textarea name="search" style="width:300px;height:95px;">
+			<textarea name="search" style="width:800px;height:300px;">
 [
     "manager"
 ]
 			</textarea>
 			<input type="hidden" name="api" value="search">
 			<input type="hidden" name="prettyprint">
-			<iframe style="width:300px;height:95px;resize:both;" name="search"></iframe>
+			<iframe style="width:800px;height:300px;resize:both;" name="search"></iframe>
 		</form>
 		<hr>
 		<h2 id="import">Import API</h2>
+		<span style="color:red;font-weight:bolder;">API Requires Authentication</span>
 		<p>
 			The import API allows numbers to be imported into the database using JSON.<br>
 			This method allows for number editing and deleting as well.<br><br>
@@ -158,7 +171,7 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
 			<button>Send</button><br><br>
 			<b style="color:red;">Sending this data will save to the database.</b>
 			<br><br>
-			<textarea name="import" style="width:300px;height:95px;">
+			<textarea name="import" style="width:800px;height:300px;">
 {
     "1234": {
         "description": "Test Number",
@@ -171,7 +184,7 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
 			</textarea>
 			<input type="hidden" name="prettyprint">
 			<input type="hidden" name="api" value="import">	
-			<iframe style="width:300px;height:95px;resize: both;" name="import"></iframe>
+			<iframe style="width:800px;height:300px;resize: both;" name="import"></iframe>
 		</form>
 		<hr>
 		<h2 id="import">Export API</h2>
@@ -225,10 +238,10 @@ objects: [2834fa80ac, 3e834d4674]
 			</select><br><br>
 			includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
 			<strike>number:</strike> <input type="number" name="number" disabled><br><br>
-			<textarea name="objects" style="width:300px;height:95px;">
+			<textarea name="objects" style="width:800px;height:300px;">
 ["2834fa80ac", "3e834d4674"]
 			</textarea>
-			<iframe style="width:300px;height:95px;resize: both;" name="export"></iframe>
+			<iframe style="width:800px;height:300px;resize: both;" name="export"></iframe>
 			<input type="hidden" name="api" value="export">
 			<input type="hidden" name="prettyprint">
 		</form>
@@ -258,7 +271,7 @@ stats: count
 				<option value="ping">ping</option>
 				<option value="count">count</option>
 			</select><br><br>
-			<iframe style="width:300px;height:95px;resize: both;" name="stats"></iframe>
+			<iframe style="width:800px;height:300px;resize: both;" name="stats"></iframe>
 			<input type="hidden" name="api" value="stats">
 			<input type="hidden" name="prettyprint">	
 		</form>

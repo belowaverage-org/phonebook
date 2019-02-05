@@ -10,10 +10,10 @@ Imports JSON from post request into the database.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
 require_once('auth.lib.php');
-if(isset($_POST['import']) && authenticated_as_admin()) {
+if(isset($_POST['import']) && auth_authenticated()) {
 	$import = json_decode($_POST['import'], true);
 	if($import !== null) { //JSON Good
-		require_once('library.api.php');
+		require_once('library.lib.php');
 		$db->pdo->beginTransaction();
 		foreach($import as $number => $object) { //For every number being imported...
 			$tags = array();

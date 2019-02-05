@@ -81,6 +81,13 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 			objectid
 		);
 	');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS sessions (
+			id PRIMARY KEY NOT NULL,
+			expire NOT NULL,
+			username NOT NULL
+		);
+	');
 	/* End create tables */
 	if(!empty($objects)) { //Check if any old database columns exist in the new schema, if not delete the column from each data point
 		foreach($objects as $obj_k => $obj_v) {
