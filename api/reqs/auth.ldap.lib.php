@@ -35,9 +35,7 @@ $auth_ldap_api_admin_groups = array(
 ?>'
     );
 }
-
 require_once('auth.ldap.cfg.php'); //Import config for LDAP.
-
 function auth_plugin_authenticated() { //Main function called by AUTH Lib.
     global $auth_ldap_domain_controller_hostname;
     global $auth_ldap_base_dn;
@@ -84,5 +82,4 @@ function auth_plugin_authenticated() { //Main function called by AUTH Lib.
         return false;
     }
 }
-
 ?>

@@ -141,12 +141,25 @@ search: ["example","search","tags"]
 			The import API allows numbers to be imported into the database using JSON.<br>
 			This method allows for number editing and deleting as well.<br><br>
 			When editing a number using the import API, you must first export the number you are going to edit, then modify the JSON (except for the number), then import the JSON using this API.<br><br>
-			To delete a number, submit an empty number like so:
+			To delete a number, submit an empty number in one of the following ways:
 			<pre>
+[
+    {
+        "number": "1234"
+    }
+]
+
+{
+    "49b4604ae1": []
+}
+			</pre>
+			<strike>
+				<pre>
 {
     "1234": []
 }
-			</pre>
+				</pre>
+			</strike>
 			<i>This API only responds with Fatal PHP errors.</i>
 		</p>
 		<h4><i>POST Request Header</i></h4>
@@ -154,10 +167,21 @@ search: ["example","search","tags"]
 api: import
 import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
 		</pre>
-		<h4><i>POST JSON Request Syntax</i></h4>
+		<h4><i>POST JSON Request Syntax Examples</i></h4>
 		<pre>
+[
+    {
+        "number": "1234",
+        "description": "Test Number",
+        "tags": [
+            "example",
+            "tags"
+        ]
+    }
+]
+
 {
-    "1234": {
+    "49b4604ae1": {
         "description": "Test Number",
         "tags": [
             "example",
@@ -166,12 +190,8 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
     }
 }
 		</pre>
-		<h4><i>POST JSON Live Demo</i></h4>
-		<form target="import" method="post">
-			<button>Send</button><br><br>
-			<b style="color:red;">Sending this data will save to the database.</b>
-			<br><br>
-			<textarea name="import" style="width:800px;height:300px;">
+		<strike>
+			<pre>
 {
     "1234": {
         "description": "Test Number",
@@ -181,10 +201,29 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         ]
     }
 }
+			</pre>
+		</strike>
+		<h4><i>POST JSON Live Demo</i></h4>
+		<form target="import" method="post">
+			<button>Send</button><br><br>
+			<b style="color:red;">Sending this data will save to the database.</b>
+			<br><br>
+			legacy: <input type="checkbox" name="legacy" value="1"><br><br>
+			<textarea name="import" style="width:800px;height:300px;">
+[
+    {
+        "number": "1234",
+        "description": "Test Number",
+        "tags": [
+            "example",
+            "tags"
+        ]
+    }
+]
 			</textarea>
 			<input type="hidden" name="prettyprint">
 			<input type="hidden" name="api" value="import">	
-			<iframe style="width:800px;height:300px;resize: both;" name="import"></iframe>
+			<iframe style="width:800px;height:300px;resize:both;" name="import"></iframe>
 		</form>
 		<hr>
 		<h2 id="import">Export API</h2>
@@ -241,7 +280,7 @@ objects: [2834fa80ac, 3e834d4674]
 			<textarea name="objects" style="width:800px;height:300px;">
 ["2834fa80ac", "3e834d4674"]
 			</textarea>
-			<iframe style="width:800px;height:300px;resize: both;" name="export"></iframe>
+			<iframe style="width:800px;height:300px;resize:both;" name="export"></iframe>
 			<input type="hidden" name="api" value="export">
 			<input type="hidden" name="prettyprint">
 		</form>
@@ -271,7 +310,7 @@ stats: count
 				<option value="ping">ping</option>
 				<option value="count">count</option>
 			</select><br><br>
-			<iframe style="width:800px;height:300px;resize: both;" name="stats"></iframe>
+			<iframe style="width:800px;height:300px;resize:both;" name="stats"></iframe>
 			<input type="hidden" name="api" value="stats">
 			<input type="hidden" name="prettyprint">	
 		</form>

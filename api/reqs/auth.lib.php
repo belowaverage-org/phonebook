@@ -33,13 +33,10 @@ $auth_lib_plugin = \'auth.ldap.lib.php\';
 ?>'
     );
 }
-
 require_once('auth.cfg.php'); //Load the auth config.
-
 $db->delete('sessions', array( //Remove expired sessions from the database.
     'expire[<]' => time()
 ));
-
 function auth_get_username() { //Return the username from either the server or the POST header.
     if(isset($_POST['username'])) {
         return $_POST['username'];
@@ -49,7 +46,6 @@ function auth_get_username() { //Return the username from either the server or t
         return false;
     }
 }
-
 function auth_get_password() { //Return the password from the POST header.
     if(isset($_POST['username'])) {
         return $_POST['username'];
@@ -57,7 +53,6 @@ function auth_get_password() { //Return the password from the POST header.
         return false;
     }
 }
-
 function auth_session_set() { //Generate a session and send a cookie.
     global $db;
     global $auth_session_expire;
@@ -69,7 +64,6 @@ function auth_session_set() { //Generate a session and send a cookie.
     ));
     setcookie('phonebook-api-cookie', $id, time() + $auth_session_expire, '', '', true);
 }
-
 function auth_session_get() { //Get and update session information from the database / cookie.
     global $db;
     global $auth_session_expire;
@@ -89,7 +83,6 @@ function auth_session_get() { //Get and update session information from the data
     setcookie('phonebook-api-cookie', $_COOKIE['phonebook-api-cookie'], $expire, '', '', true);
     return $session;
 }
-
 function auth_session_clear() { //Remove the session from the server and client.
     global $db;
     if(!isset($_COOKIE['phonebook-api-cookie'])) {
@@ -101,9 +94,7 @@ function auth_session_clear() { //Remove the session from the server and client.
     setcookie('phonebook-api-cookie', '', 0, '', '', true); //Clear the cookie.
     return true;
 }
-
 require_once($auth_lib_plugin); //Load the specified auth plugin.
-
 function auth_authenticated() { //Function called by other APIs to deterimine if user is authenticated as admin.
     if(auth_session_get()) { //If session already exists
         return true;
@@ -115,5 +106,4 @@ function auth_authenticated() { //Function called by other APIs to deterimine if
         return false;
     }
 }
-
 ?>

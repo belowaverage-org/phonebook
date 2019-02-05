@@ -22,7 +22,11 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 		$prettyPrintIfRequested = JSON_PRETTY_PRINT;
 	}
 	if($_POST['api'] == 'import') {
-		require('./reqs/import.api.php');
+		if(isset($_POST['legacy'])) {
+			require('./reqs/import.legacy.api.php');
+		} else {
+			require('./reqs/import.api.php');
+		}
 	} elseif($_POST['api'] == 'export') {
 		require('./reqs/export.api.php');
 	} elseif($_POST['api'] == 'search') {
