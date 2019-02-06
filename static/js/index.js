@@ -81,7 +81,12 @@ var mem = {
 	lastSearchOffset: 0,
 	scrollPageEnd: false,
 	schema: {},
-	CSVLibraryLoaded: false
+	CSVLibraryLoaded: false,
+	keyboard: {
+		lib: null,
+		keyCode: 0,
+		key: ''
+	}
 };
 var printCols = 25;
 var firstLoad = true;
@@ -98,6 +103,24 @@ var ajaxSearchNumbers = {abort: function() {}};
 var pingInterval = 59; //Seconds
 var placeDashes = true;
 var blurToggle = '#main, #hamburger, #hamopen';
+var keyboard = {
+	layout: {
+		'default': [
+			'{clear} {} {delete} {} {backspace}',
+			'{} q w e r t y u i o p {}',
+			'{} a s d f g h j k l {}',
+			'{} z x c v b n m {}',
+			'{space}'
+		],
+	},
+	display: {
+		'{backspace}': 'Backspace',
+		'{space}': ' ',
+		'{delete}': 'Delete',
+		'{clear}': 'Clear',
+		'{}': ' '
+	}
+};
 //Functions
 function time() { //Return unix timestamp
 	return Math.round((new Date()).getTime() / 1000);
@@ -543,12 +566,56 @@ function printResults() {
 		}, 100);
 	});
 }
-//Load cache
-autoFillTag();
+function keyboardShow() {
+	if(mem.keyboard.lib == null) {
+		$('<link rel="stylesheet" href="./static/css/keyboard.css">').appendTo('head');
+		$.getScript('./static/js/keyboard.js', function() { //Load Keyboard Lib
+			$('<div class="simple-keyboard"></div>').appendTo('body');
+			mem.keyboard.lib = new SimpleKeyboard.default({
+				onKeyPress: keyboardOnInput,
+				layout: keyboard.layout,
+				display: keyboard.display
+			});
+		});
+	} else {
+		$('.simple-keyboard').show();
+	}
+}
+function keyboardHide() {
+	$('.simple-keyboard').hide();
+}
+function keyboardOnInput(input) {
+	var code = 0;
+	var key = input;
+	if(input == '{backspace}') {
+		code = 8;
+	}
+	if(input == '{space}') {
+		code = 32;
+	}
+	if(input == '{delete}') {
+		code = 46;
+	}
+	if(input == '{clear}') {
+		code = 35;
+	}
+	mem.keyboard.key = key;
+	mem.keyboard.keyCode = code;
+	navigator.vibrate(10);
+	$(document).trigger('keydown');
+}
 //On doc ready
 $(document).ready(function() {
 	$('#hamburger .help').click(function() {
 		toggleMenu('#legend');
+	});
+	$('body').on('touchstart', '#input > span', function(e) {
+		keyboardShow();
+	});
+	$('body *:not(.simple-keyboard)').on('mousedown touchstart', function(e) {
+		if($.inArray($(e.target)[0], $('#input > span')) == -1) {
+			keyboardHide();
+		}
 	});
 	$('#hamburger .about').click(function() {
 		toggleMenu('#about');
@@ -605,9 +672,14 @@ $(document).ready(function() {
 			mem.scrollTriggered = false;
 		}
 	});
+	autoFillTag(); //Initiate Application
 });
 //Keypress action
 $(document).on('keydown', function (e) {
+	if(typeof e.key == 'undefined' || typeof e.keyCode == 'undefined') {
+		e.key = mem.keyboard.key;
+		e.keyCode = mem.keyboard.keyCode;
+	}
 	var type = $('#input .type');
 	if(firstType) {
 		firstType = false;

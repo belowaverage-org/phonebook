@@ -21,10 +21,8 @@ function createModifyOrFindObject($row = array()) {
     foreach($unique as $uk => $uv) {
         unset($rowWithoutUnique[$uk]);
     }
-    print_r($unique);
     unset($rowWithoutUnique['objectid']);
     $objectID = $db->get('objects', array('objectid'), array('AND' => $unique));
-    print_r($objectID);
     if(isset($objectID['objectid'])) { //Already exists, so just modify the data instead of inserting
         $objectID = $objectID['objectid'];
         if(empty($rowWithoutUnique)) {
