@@ -26,6 +26,7 @@ body {
 	width:100%;
 	margin:0px;
 	color:rgba(0,0,0,.85);
+	overflow-x:hidden;
 }
 .menu.hidden, .float.hidden:not(#hamopen) {
 	display:none;
@@ -156,15 +157,16 @@ body > .menu {
 }
 #main {
 	height:100%;
-	overflow:auto;
 	overflow-y:scroll;
 	transition:.3s;
 	margin-left:50px;
-	width:calc(100% - 50px);
+	width:calc(100% - 70px);
+	padding:0px 10px 0px 10px;
+	min-width:300px;
 }
 #main.hamburger {
 	margin-left:270px;
-	width:calc(100% - 270px);
+	width:calc(100% - 290px);
 }
 .blur {
 	filter:blur(5px);
