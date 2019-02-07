@@ -1,0 +1,17 @@
+{
+  "short_name": "Phone Book",
+  "name": "Phone Book",
+  "description": "A Fast and Easy Phone Book.",
+  "icons": [
+    {
+      "src": "./img/ico.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "../",
+  "background_color": "#383838",
+  "display": "standalone",
+  "scope": "../",
+  "theme_color": "#383838"
+}

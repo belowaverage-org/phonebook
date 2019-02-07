@@ -606,6 +606,9 @@ function keyboardOnInput(input) {
 }
 //On doc ready
 $(document).ready(function() {
+    if('serviceWorker' in navigator) { //Caches to android homescreen.
+        navigator.serviceWorker.register('./serviceworker.js');
+    }
 	$('#hamburger .help').click(function() {
 		toggleMenu('#legend');
 	});
