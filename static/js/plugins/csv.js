@@ -1,5 +1,5 @@
 /* global jQuery, _ */
-var CSV = {};
+window.CSV = {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
 (function(my) {

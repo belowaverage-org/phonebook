@@ -19,6 +19,7 @@ h1, h2, h3, h4 {
 	font-weight:normal;
 }
 body {
+	-webkit-tap-highlight-color: transparent;
 	user-select:none;
 	font-family:GSans, Arial;
 	text-align:center;
