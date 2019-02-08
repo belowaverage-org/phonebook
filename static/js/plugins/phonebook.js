@@ -428,7 +428,7 @@ function printResults() {
 		var result = this;
 		$('#loading h1').text('Generating print page...');
 		setTimeout(function() {
-			var psrn = $('#printscrn');
+			var psrn = $('#printscrn').html('');
 			var tabl = $('<table></table>').appendTo(psrn);
 			var thed = $('<tr></tr>').appendTo(tabl);
 			var cols = {};

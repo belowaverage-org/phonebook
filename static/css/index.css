@@ -618,16 +618,3 @@ img.c {
 #feedback .button {
     height: 30px;
 }
-
-.simple-keyboard {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
-    background-color: #e6e6e6 !important;
-}
-
-body > .simple-keyboard .hg-button > span {
-    font-family: GSans, Arial;
-    min-width: 15px;
-}

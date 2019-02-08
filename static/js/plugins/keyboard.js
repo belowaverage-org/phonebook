@@ -37,12 +37,13 @@ function keyboardShow() {
 			layout: settings.layout,
 			display: settings.display
 		});
-	} else {
-		$('.simple-keyboard').show();
 	}
+	setTimeout(function() {
+		$('.simple-keyboard').addClass('visible');
+	});
 }
 function keyboardHide() {
-	$('.simple-keyboard').hide();
+	$('.simple-keyboard').removeClass('visible');
 }
 function keyboardOnInput(input) {
     var e = $.Event('keydown');
