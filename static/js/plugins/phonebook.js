@@ -23,7 +23,7 @@ var mem = {
 	scrollPageEnd: false,
 	schema: {}
 };
-var printCols = 25;
+var printRows = 30;
 var firstLoad = true;
 var firstType = true;
 var loadCount = 100;
@@ -356,18 +356,6 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 		});
 	}
 }
-function numberModeOff() { //Turns number mode off
-	$('#input').html('<span class="type"></span>');
-	$('input[type=text]').hide();
-	$('#numbers').show();
-	numberMode = false;
-}
-function numberModeOn() { //Turns number mode on
-	$('#input span:first').addClass('number');
-	$('input[type=text]').show();
-	$('#numbers').hide();
-	numberMode = true;
-}
 function toggleHamburger() {
 	$('#hamburger').toggleClass('hidden');
 	$('#main').toggleClass('hamburger');
@@ -386,7 +374,7 @@ function toggleMenu(id) {
 		descriptionMode = true;
 	}
 }
-function filterPrintCols(cols) {
+function filterprintRows(cols) {
 	$.each(cols, function() {
 		allEmpty = true;
 		$.each(this, function() {
@@ -435,8 +423,6 @@ function exportResults() {
 	xport();
 }
 function printResults() {
-	var hide = '#main, #hamburger, #hamopen';
-	$(hide).hide();
 	$('#loading').show().find('h1').text('Requesting print info...');
 	searchTagsRaw(function() {
 		var result = this;
@@ -446,14 +432,14 @@ function printResults() {
 			var tabl = $('<table></table>').appendTo(psrn);
 			var thed = $('<tr></tr>').appendTo(tabl);
 			var cols = {};
-			var count = printCols;
+			var count = printRows;
 			$.each(result.objects, function() {
 				if(count-- == 0) {
-					filterPrintCols(cols);
+					filterprintRows(cols);
 					cols = {};
 					tabl = $('<table></table>').appendTo(psrn);
 					thed = $('<tr></tr>').appendTo(tabl);
-					count = printCols;
+					count = printRows;
 				}
 				var tr = $('<tr></tr>').appendTo(tabl);
 				var col = 0;
@@ -464,26 +450,20 @@ function printResults() {
 					if(v == null) {
 						v = '';
 					}
-					if(count + 1 == printCols) {
+					if(count + 1 == printRows) {
 						cols[col] = cols[col].add($('<th></th>').text(mem.schema[k].name).appendTo(thed));
 					}
 					cols[col] = cols[col].add($('<td></td>').text(v).appendTo(tr));
 				});
 			});
-			filterPrintCols(cols);
+			filterprintRows(cols);
 			$('#loading').hide();
-			psrn.show();
 			window.print();
-			psrn.hide().html('');
-			$(hide).show();
 		}, 100);
 	});
 }
 //On doc ready
 $(document).on('bsloaded', function() {
-    if('serviceWorker' in navigator) { //Caches to android homescreen.
-        navigator.serviceWorker.register('./serviceworker.js');
-    }
 	$('#hamburger .help').click(function() {
 		toggleMenu('#legend');
 	});
@@ -521,9 +501,8 @@ $(document).on('bsloaded', function() {
 	$('#numbers').on('click', 'div .description', function() { //If description is clicked in number list
 		$(this).parent('div').parent('div').toggleClass('visible'); //Expand the description in case it overflows
 	});
-	$('#numbers').on('click', 'div .number',function() { //If number is clicked
-		numberModeOn();
-		loadNumberTags($(this).text().replace(/[^0-9]/g, '')); // Load number into editor
+	$('#numbers').on('click', 'div .number', function() { //If number is clicked
+		document.location.href = 'tel:' + $(this).text();
 	});
 	if(pingInterval !== 0) {
 		$.post(apiURI, {api: 'stats', stats: 'ping'});
@@ -629,9 +608,6 @@ $(document).on('keydown', function (e) {
 				}
 			}
 			type.removeClass('saved');
-			if($('#input span:first').text().match(/^\d+$/)) { // If only a number
-				numberModeOn();
-			}
 			if(typeFilled() && !numberMode && !typeValid() && e.keyCode !== 8) { //If type is valid, or in number mode, or type has no text		
 				type.text(type.text().slice(0, -1)); //Remove one character from end of selected bubble		
 			}
@@ -643,9 +619,6 @@ $(document).on('keydown', function (e) {
 					searchTags(null, null);
 				}
 			});
-		}
-		if(!$('#input span:first').text().match(/^\d+$/) && numberMode) {
-			numberModeOff();
 		}
 		var currentType = $('#input .type'); //Get current type since it could have changed above.
 		if(typeValid()) { //If type is valid, and unique

@@ -2,6 +2,7 @@
     "jquery.js",
     "phonebook.js",
     "seedrandom.js",
+    "serviceworker.js",
     "startswith.js",
     "csv.js",
     "keyboard.js"
