@@ -9,7 +9,7 @@ Contains layouts and styles for the client.
 */
 @font-face {
     font-family: 'GSans';
-    src: url('../font.woff2');
+    src: url('../font.ttf');
 }
 
 html {

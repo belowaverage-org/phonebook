@@ -1,7 +1,7 @@
 var CACHE_NAME = 'phonebook-v2.0.0.1';
 var urlsToCache = [
     './index.htm',
-    './static/font.woff2',
+    './static/font.ttf',
     './static/css/index.css',
     './static/css/keyboard.css',
     './static/img/back.svg',
