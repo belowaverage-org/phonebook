@@ -9,6 +9,7 @@ Dylan Bickerstaff
 Routes requests to the proper APIs.
 */
 set_time_limit(300);
+ini_set('html_errors', false);
 $singlePointEntry = true;
 $prettyPrintIfRequested = 0;
 header('phonebook-api-created-by: Dylan Bickerstaff');
