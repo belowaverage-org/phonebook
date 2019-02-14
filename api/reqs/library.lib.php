@@ -95,4 +95,19 @@ function removeObject($objectID) {
         $db->delete('objects', array('objectid' => $objectID));
     }
 }
+function generateTags($sentence) {
+    $return = array();
+    $buffer = '';
+    foreach(str_split($sentence) as $k => $character) {
+        if(ctype_alpha($character)) {
+            $buffer = $buffer.$character;
+        } else {
+            if($buffer !== '') {
+                array_push($return, $buffer);
+                $buffer = '';
+            }
+        }
+    }
+    return $return;
+}
 ?>

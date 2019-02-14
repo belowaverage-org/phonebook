@@ -88,6 +88,12 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 			username NOT NULL
 		);
 	');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS translations (
+			\'from\' NOT NULL,
+			\'to\'
+		);
+	');
 	/* End create tables */
 	if(!empty($objects)) { //Check if any old database columns exist in the new schema, if not delete the column from each data point
 		foreach($objects as $obj_k => $obj_v) {
