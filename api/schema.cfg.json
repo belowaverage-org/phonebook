@@ -1,6 +1,6 @@
 {
     "description": {
-    	"export": true,
+        "export": true,
         "length": 1000,
         "name": "Description",
         "print": true,
@@ -8,11 +8,11 @@
         "visible": true
     },
     "email": {
-    	"export": true,
+        "export": true,
         "length": 100,
         "name": "Email",
         "print": true,
-		"tagged": true,
+        "tagged": true,
         "visible": {
             "Type": [
                 "Business",
@@ -21,7 +21,7 @@
         }
     },
     "firstname": {
-    	"export": true,
+        "export": true,
         "length": 100,
         "name": "First Name",
         "print": true,
@@ -36,14 +36,14 @@
         "length": 100,
         "name": "Latitude",
         "type": "number",
-		"tagged": false,
+        "tagged": false,
         "visible": [
             "Business",
             "Location"
         ]
     },
     "lastname": {
-    	"export": true,
+        "export": true,
         "length": 100,
         "name": "Last Name",
         "print": true,
@@ -58,19 +58,19 @@
         "length": 100,
         "name": "Longitude",
         "type": "number",
-		"tagged": false,
+        "tagged": false,
         "visible": [
             "Business",
             "Location"
         ]
     },
     "number": {
-    	"export": true,
+        "export": true,
         "indexed": true,
         "length": 50,
         "name": "Phone Number",
         "print": true,
-		"tagged": false,
+        "tagged": false,
         "type": "number",
         "unique": true,
         "visible": true
@@ -90,7 +90,7 @@
         "type": "choice",
         "visible": true
     },
-	"username": {
+    "username": {
         "length": 50,
         "tagged": true,
         "visible": false

@@ -95,10 +95,10 @@ function removeObject($objectID) {
         $db->delete('objects', array('objectid' => $objectID));
     }
 }
-function generateTags($sentence) {
+function tagSplice($string) {
     $return = array();
     $buffer = '';
-    foreach(str_split($sentence) as $k => $character) {
+    foreach(str_split($string) as $k => $character) {
         if(ctype_alpha($character)) {
             $buffer = $buffer.$character;
         } else {
@@ -107,6 +107,28 @@ function generateTags($sentence) {
                 $buffer = '';
             }
         }
+    }
+    array_push($return, $buffer);
+    return $return;
+}
+function tagTranslate($tag) {
+    global $db;
+    $return = array();
+    $result = $db->get('translations', array('to'), array(
+        'from' => $tag
+    ));
+    if(empty($result)) {
+        $return[0] = $tag;
+    } elseif(!empty($result['to'])) {
+        $return = tagSplice($result['to']);
+    }
+    return $return;
+}
+function tagFilter($string) {
+    $return = array();
+    $string = strtolower($string);
+    foreach(tagSplice($string) as $rawTag) {
+        $return = array_merge($return, tagTranslate($rawTag));
     }
     return $return;
 }
