@@ -49,6 +49,8 @@ function auth_plugin_authenticated() { //Main function called by AUTH Lib.
     }
     $bound = false;
     $ldap = ldap_connect($auth_ldap_domain_controller_hostname); //Connect to LDAP.
+    ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3); //Set AD specific options.
+    ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
     if(auth_get_password()) { //If password is provided.
         if(ldap_bind($ldap, auth_get_username(), auth_get_password())) { //If username and password combo can bind (authenticate with LDAP).
             $bound = true;

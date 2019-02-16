@@ -9,7 +9,9 @@ Dylan Bickerstaff
 Routes requests to the proper APIs.
 */
 set_time_limit(300);
+error_reporting(E_ALL);
 ini_set('html_errors', false);
+ini_set('display_errors', 1);
 $singlePointEntry = true;
 $prettyPrintIfRequested = 0;
 header('phonebook-api-created-by: Dylan Bickerstaff');
@@ -33,6 +35,8 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 	} elseif($_POST['api'] == 'search') {
 		require('./reqs/search.api.php');
 	}
+} elseif(isset($_GET['db'])) {
+	require('./reqs/dbadmin.run.php');
 } else {
 	echo file_get_contents('documentation.api.htm');
 }
