@@ -437,7 +437,7 @@ if (isset($_GET['resource']))
 
 // don't mess with this - required for the login session
 ini_set('session.cookie_httponly', '1');
-session_name('PhoneBookDB');
+session_name('phonebook-api-dbadmin');
 session_start();
 // generate CSRF token 
 if (empty($_SESSION['token']))
