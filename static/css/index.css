@@ -34,6 +34,12 @@ body {
     overflow-x: hidden;
 }
 
+#logo {
+    font-size: 36px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
 .menu.hidden, .float.hidden:not(#hamopen) {
     display: none;
 }
@@ -70,7 +76,7 @@ body {
 
 #tip {
     color: #656565;
-    font-weight: normal;
+    margin-bottom: 40px;
 }
 
 #input > span {
@@ -88,7 +94,7 @@ body {
 }
 
 #input span .autofill {
-    color: rgba(0,0,0,.25);
+    color: rgb(135, 191, 135);
 }
 
 #input span.valid {
@@ -548,7 +554,7 @@ img.c {
 }
 
 #printscrn {
-    display:none;
+    display: none;
     background-color: white;
     min-height: 100%;
     width: 100%;
@@ -590,6 +596,14 @@ img.c {
     max-width: 400px;
     text-align: left;
     margin: 0px auto 0px auto;
+}
+
+#about .logo {
+    width: 150px;
+    height: 150px;
+    background-image: url('../img/ico.png');
+    background-size: 100%;
+    margin: 30px auto 30px auto;
 }
 
 #about p {
