@@ -1224,6 +1224,7 @@ if(isset($_GET['action']) && isset($_GET['confirm']))
 
 		//- Empty table (=table_empty)
 		case "table_empty":
+			$name = $_POST['tablename'];
 			$query = "DELETE FROM ".$db->quote_id($_POST['tablename']);
 			$result = $db->query($query);
 			if($result===false)
@@ -1728,7 +1729,7 @@ if(isset($_GET['confirm']))
 	echo "<div id='main'>";
 	echo "<div class='confirm'>";
 	if(isset($error) && $error) //an error occured during the action, so show an error message
-		echo $lang['err'].": ".htmlencode($db->getError())."<br/>".$lang['bug_report'].' '.PROJECT_BUGTRACKER_LINK;
+		echo $lang['err'].": ".htmlencode($db->getError())."<br/>".$lang['bug_report'];
 	else //action was performed successfully - show success message
 		echo $completed;
 	echo "</div>";

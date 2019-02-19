@@ -98,14 +98,12 @@ function removeObject($objectID) {
 function tagSplice($string) {
     $return = array();
     $buffer = '';
-    foreach(str_split($string) as $k => $character) {
-        if(ctype_alpha($character)) {
+    foreach(str_split($string) as $k => $character) { // I DO NOT NEED THIS, THIS CAN BE SIMPLIFIED!
+        if($character !== ' ') {
             $buffer = $buffer.$character;
         } else {
-            if($buffer !== '') {
-                array_push($return, $buffer);
-                $buffer = '';
-            }
+            array_push($return, $buffer);
+            $buffer = '';
         }
     }
     array_push($return, $buffer);
@@ -127,8 +125,17 @@ function tagTranslate($tag) {
 function tagFilter($string) {
     $return = array();
     $string = strtolower($string);
+    $string = preg_replace('/[^a-z?![:space:]]/', ' ', $string);
     foreach(tagSplice($string) as $rawTag) {
         $return = array_merge($return, tagTranslate($rawTag));
+    }
+    foreach($return as $k => $tag) {
+        if(
+            strlen($tag) < 2 ||
+            empty($tag)
+        ) {
+            unset($return[$k]);
+        }
     }
     return $return;
 }

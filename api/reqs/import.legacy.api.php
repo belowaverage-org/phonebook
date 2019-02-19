@@ -36,10 +36,13 @@ if(isset($_POST['import']) && auth_authenticated()) {
 					if(isset(SCHEMA[$attribute]['length']) && strlen($value) > SCHEMA[$attribute]['length']) { //Check string length constraint
 						break;
 					}
+					if(isset(SCHEMA[$attribute]['tagged']) && SCHEMA[$attribute]['tagged']) { //Apply tagged constraint.
+						$tags = array_merge($tags, tagFilter($value));
+					}
 					$row[$attribute] = $value; //Add the attribute to the row
 				} elseif($attribute == 'tags') { //If a tag list
 					foreach($value as $tag) { //Foreach tag
-						array_push($tags, $tag);
+						$tags = array_merge($tags, tagFilter($tag)); //Filter the input tag and append the output.
 					}
 				}
 			}
