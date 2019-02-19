@@ -1462,7 +1462,7 @@ if(isset($_GET['action']) && isset($_GET['confirm']))
 							$query .= ")";
 						$query .= ", ";
 					}
-					$query = substr($query, 0, sizeof($query)-3);
+					$query = substr($query, 0, -2);
 					$query .= " WHERE ".$db->wherePK($target_table, json_decode($pks[$i]));
 					$result1 = $db->query($query);
 					if($result1===false)

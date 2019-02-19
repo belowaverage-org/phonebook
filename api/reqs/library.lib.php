@@ -95,20 +95,6 @@ function removeObject($objectID) {
         $db->delete('objects', array('objectid' => $objectID));
     }
 }
-function tagSplice($string) {
-    $return = array();
-    $buffer = '';
-    foreach(str_split($string) as $k => $character) { // I DO NOT NEED THIS, THIS CAN BE SIMPLIFIED!
-        if($character !== ' ') {
-            $buffer = $buffer.$character;
-        } else {
-            array_push($return, $buffer);
-            $buffer = '';
-        }
-    }
-    array_push($return, $buffer);
-    return $return;
-}
 function tagTranslate($tag) {
     global $db;
     $return = array();
@@ -118,7 +104,7 @@ function tagTranslate($tag) {
     if(empty($result)) {
         $return[0] = $tag;
     } elseif(!empty($result['to'])) {
-        $return = tagSplice($result['to']);
+        $return = explode(' ', $result['to']);
     }
     return $return;
 }
@@ -126,7 +112,8 @@ function tagFilter($string) {
     $return = array();
     $string = strtolower($string);
     $string = preg_replace('/[^a-z?![:space:]]/', ' ', $string);
-    foreach(tagSplice($string) as $rawTag) {
+    $string = trim($string);
+    foreach(explode(' ', $string) as $rawTag) {
         $return = array_merge($return, tagTranslate($rawTag));
     }
     foreach($return as $k => $tag) {
