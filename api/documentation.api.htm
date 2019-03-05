@@ -15,6 +15,8 @@ A detailed description on how to use the API.
 	<body style="background-color:#ffe9dc;">
 		<h1>PhoneBook API Documentation</h1>
 		<hr>
+		<a href="../">Phone Book</a> | <a href="./?db">Database Admin</a>
+		<hr>
 		<h2>Introduction</h2>
 		<p>
 			The PhoneBook's API is used to dynamically respond to changes in search queries live on screen without the need of refreshing/reloading the page.<br>
@@ -56,6 +58,7 @@ password: pass123
 							</li>
 						</ul>
 					</li>
+					<li><a href="#schema">schema</a></li>
 					<li><a href="#stats">stats</a>
 						<ul>
 							<li><a href="#stats">ping</a></li>
@@ -285,6 +288,16 @@ objects: [2834fa80ac, 3e834d4674]
 			<input type="hidden" name="prettyprint">
 		</form>
 		<hr>
+		<h2 id="schema">Schema API</h2>
+		<p>
+			This API returns the current schema in json format. This is the only method that uses the GET HTTP method.
+		</p>
+		<h4><i>GET Live Demo</i></h4>
+		<form action="./schema.cfg.json" target="schema" method="get">
+			<button>Send</button><br><br>
+			<iframe style="width:800px;height:300px;resize:both;" name="schema"></iframe>
+		</form>
+		<hr>
 		<h2 id="stats">Statistics API</h2>
 		<p>
 			The statistics API will return stats about active sessions, phone lookup counts, and lookup tags.<br><br>
@@ -302,7 +315,6 @@ stats: ping
 api: stats
 stats: count
 		</pre>
-		
 		<h4><i>POST Live Demo</i></h4>
 		<form target="stats" method="post">
 			<button>Send</button><br><br>
