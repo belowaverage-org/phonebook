@@ -5,6 +5,5 @@
     "serviceworker.js",
     "startswith.js",
     "csv.js",
-    "keyboard.js",
-    "demo.js"
+    "keyboard.js"
 ]
