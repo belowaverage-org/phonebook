@@ -38,15 +38,42 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
             }
         }
         if(count($validSearchTags) == 1) { //If there is only one tag present.
+
+
+
+
             $objects = $db->select('tags', $objectJoin, '*', array( //Search the database with a wildcard appeneded to the tag.
                 'tags.text[~]' => $validSearchTags[0].'%'
             ));
+
+
+
+            
         } else { //If there are more than 1 search tags.
+
+
+
+
+
+
+
+
             $objects = $db->select('tags', $objectJoin, '*', array( //Search the database for objects associated with the valid tags.
-                'tags.text' => $validSearchTags,
+                'AND' => array(
+                    'tags.text' => $validSearchTags,
+                    'objects.type' => 'Person',
+                ),
                 'GROUP' => 'tags_objects.objectid',
                 'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags))
             ));
+
+
+
+
+
+
+
+
         }
         if(is_array($objects) && !empty($objects)) { //If the search returned objects.
             /*

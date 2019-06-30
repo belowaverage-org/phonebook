@@ -9,97 +9,327 @@ Dylan Bickerstaff
 A detailed description on how to use the API.
 -->
 <html>
-	<head>
-		<title>PhoneBook API Documentation</title>
-	</head>
-	<body style="background-color:#ffe9dc;">
-		<h1>PhoneBook API Documentation</h1>
-		<hr>
-		<a href="../">Phone Book</a> | <a href="./?db">Database Admin</a>
-		<hr>
-		<h2>Introduction</h2>
-		<p>
-			The PhoneBook's API is used to dynamically respond to changes in search queries live on screen without the need of refreshing/reloading the page.<br>
-			All requests to the API are done using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> http method, and the data submitted will use <a href="http://www.json.org/">JSON</a>.<br>
-			Every response from the API where a response is nessesary will return with a JSON string.
-		</p>
-		<h2>Authentication</h2>
-		<p>
-			API's listed below with the following tag: (<span style="color:red;font-weight:bolder;">API Requires Authentication</span>),<br>
-			will need to have credentials passed for the first call. If authentication is successful a cookie will be set that can be used<br>
-			for any subsequent calls to the API. If authentication fails, the result will be a 403 code. Some authentication plugins may not<br>
-		    require any credentials to be passed. E.g: (IIS with LDAP enabled).<br><br>
-			If an API call requires authentication, add the following to the POST request header:
-		</p>
-		<pre>
+    <head>
+        <title>PhoneBook API Documentation</title>
+    </head>
+    <body style="background-color:#ffe9dc;">
+        <h1>PhoneBook API Documentation</h1>
+        <hr>
+        <a href="../">Phone Book</a> | <a href="./?db">Database Admin</a>
+        <hr>
+        <h2>Introduction</h2>
+        <p>
+            The PhoneBook's API is used to dynamically respond to changes in search queries live on screen without the need of refreshing/reloading the page.<br>
+            All requests to the API are done using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> http method, and the data submitted will use <a href="http://www.json.org/">JSON</a>.<br>
+            Every response from the API where a response is nessesary will return with a JSON string.
+        </p>
+        <h2>Authentication</h2>
+        <p>
+            API's listed below with the following tag: (<span style="color:red;font-weight:bolder;">API Requires Authentication</span>),<br>
+            will need to have credentials passed for the first call. If authentication is successful a cookie will be set that can be used<br>
+            for any subsequent calls to the API. If authentication fails, the result will be a 403 code. Some authentication plugins may not<br>
+            require any credentials to be passed. E.g: (IIS with LDAP enabled).<br><br>
+            If an API call requires authentication, add the following to the POST request header:
+        </p>
+        <pre>
 username: allice
 password: pass123
-		</pre>
-		<h2>Request Structure</h2>
-		<ul>
-			<li><a href="#">api</a></a>
-				<ul>
-					<li><a href="#search">search</a>
-						<ul>
-							<li><a href="#offset">offset</a></li>
-							<li><a href="#count">count</a></li>
-							<li><a href="#order">order</a></li>
-						</ul>
-					</li>
-					<li><a href="#import">import</a></li>
-					<li><a href="#export">export</a>
-						<ul>
-							<li><a href="#tags">tags</a></li>
-							<li><strike><a href="#number">number</a></strike></li>
-							<li><a href="#numbers">numbers</a>
-								<ul>
-									<li><a href="#includeTags">includeTags</a></li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><a href="#schema">schema</a></li>
-					<li><a href="#stats">stats</a>
-						<ul>
-							<li><a href="#stats">ping</a></li>
-							<li><a href="#stats">count</a></li>
-						</ul>
-					</li>
-				</ul>
-			</li>
-		</ul>
-		<hr>
-		<h2 id="search">Search API</h2>
-		<p>
-			The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
-			The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
-			<del>The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
-			An offset of 0 will only return numbers that match all of the search tags.<br>
-			An offset of 1 will return all numbers that match the search tags or all the search tags minus one.<br>
-			For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
-			The results would return with the most matching numbers first.</del><br><br>
-			In the new API, the search <b id="offset">offset</b> will simply offset the results returned, it will no longer change how the search algorithm scores results.<br><br>
-			The search <b id="order">order</b> will determine which way the results are ordered. E.g: Not defined or 0 will sort ascending, and a value of 1 will sort descending.<br><br>
-		</p>
-		<h4><i>POST Request Header</i></h4>
-		<pre>
+        </pre>
+        <h2>Request Structure</h2>
+        <ul>
+            <li><a href="#">api</a></a>
+                <ul>
+                    <li><a href="#search">search</a>
+                        <ul>
+                            <li><a href="#offset">offset</a></li>
+                            <li><a href="#count">count</a></li>
+                            <li><a href="#order">order</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#import">import</a></li>
+                    <li><a href="#export">export</a>
+                        <ul>
+                            <li><a href="#tags">tags</a></li>
+                            <li><strike><a href="#number">number</a></strike></li>
+                            <li><a href="#numbers">numbers</a>
+                                <ul>
+                                    <li><a href="#includeTags">includeTags</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#schema">schema</a></li>
+                    <li><a href="#stats">stats</a>
+                        <ul>
+                            <li><a href="#stats">ping</a></li>
+                            <li><a href="#stats">count</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <hr>
+        <h2 id="search">Search API</h2>
+        <p>
+            The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
+            The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
+            <del>The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
+            An offset of 0 will only return numbers that match all of the search tags.<br>
+            An offset of 1 will return all numbers that match the search tags or all the search tags minus one.<br>
+            For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
+            The results would return with the most matching numbers first.</del><br><br>
+            In the new API, the search <b id="offset">offset</b> will simply offset the results returned, it will no longer change how the search algorithm scores results.<br><br>
+            The search <b id="order">order</b> will determine which way the results are ordered. E.g: Not defined or 0 will sort ascending, and a value of 1 will sort descending.<br><br>
+        </p>
+        <h4><i>POST Request Header</i></h4>
+        <pre>
 api: search
 offset: 0
 count: 100
 sort: objectid
 order: 0
 search: ["example","search","tags"]
-		</pre>
-		<h4><i>POST JSON Search Request Syntax</i></h4>
-		<pre>
-[
-    "example",
-    "search",
-    "tags"
-]
-		</pre>
-		<h4><i>POST JSON Response Example</i></h4>
-		<pre>
+        </pre>
+        <h4><i>POST JSON Search Request Syntax</i></h4>
+        <pre>
+{
+    "TAGS": [
+        "example",
+        "search",
+        "tags"
+    ],
+    "WHERE" {
+        "AND": {
+            "modified[&lt;&gt;]": [
+                1561900000,
+                1561901285
+            ],
+            "firstname[~]": "john"
+        },
+        "OR": {
+            "lastname": "smith"
+        }
+    }
+}
+        </pre>
+        <h4><i>WHERE Basic Conditions</i></h4>
+        <p>Where "email" is "john.smith@contoso.com"</p>
+        <pre>
+{
+    "WHERE": {
+        "email": "john.smith@contoso.com"
+    }
+}
+        </pre>
+        <p>Where "number" is "8005882300"</p>
+        <pre>
+{
+    "WHERE": {
+        "number": 8005882300
+    }
+}
+        </pre>
+        <p>Where "modified" is greater than "1561901285"</p>
+        <pre>
+{
+    "WHERE": {
+        "modified[&gt;]": 1561901285
+    }
+}
+        </pre>
+        <p>Where "modified" is greater than or equal to "1561901285"</p>
+        <pre>
+{
+    "WHERE": {
+        "modified[&gt;=]": 1561901285
+    }
+}
+        </pre>
+        <p>Where "firstname" does not equal "john"</p>
+        <pre>
+{
+    "WHERE": {
+        "firstname[!]": "john"
+    }
+}
+        </pre>
+        <p>Where "created" is between "1561900000" and "1561901285"</p>
+        <pre>
+{
+    "WHERE": {
+        "created[&lt;&gt;]": [
+            1561900000,
+            1561901285
+        ]
+    }
+}
+        </pre>
+        <p>Where "created" is not between "1561900000" and "1561901285"</p>
+        <pre>
+{
+    "WHERE": {
+        "created[&gt;&lt;]": [
+            1561900000,
+            1561901285
+        ]
+    }
+}
+        </pre>
+        <h4><i>WHERE Wildcard Conditions</i></h4>
+        <p>Where "lastname" contains "ill"</p>
+        <i>Results:</i><i style="color:gray;"> miller, williams, willson</i>
+        <pre>
+{
+    "WHERE": {
+        "lastname[~]": "ill"
+    }
+}
+        </pre>
+        <p>Where "firstname" ends with "on"</p>
+        <i>Results:</i><i style="color:gray;"> brandon, cameron, mason</i>
+        <pre>
+{
+    "WHERE": {
+        "firstname[~]": "~on"
+    }
+}
+        </pre>
+        <p>Where "firstname" is three characters long with an "o" in the middle</p>
+        <i>Results:</i><i style="color:gray;"> bob, tom</i>
+        <pre>
+{
+    "WHERE": {
+        "firstname[~]": "_o_"
+    }
+}
+        </pre>
+        <p>Where "firstname" is three characters long with an "s" or "p" at the begining</p>
+        <i>Results:</i><i style="color:gray;"> sam, pam</i>
+        <pre>
+{
+    "WHERE": {
+        "firstname[~]": "[sp]am"
+    }
+}
+        </pre>
+        <p>Where "firstname" is three characters long and does not contain an "s" or "p" at the begining</p>
+        <i>Results:</i><i style="color:gray;"> sam, pam </i><i>Exclude: </i><i style="color:red;">cam, bam</i>
+        <pre>
+{
+    "WHERE": {
+        "firstname[~]": "[!cb]am"
+    }
+}
+        </pre>
+        <h4><i>WHERE Complex Conditions</i></h4>
+        <p>Where ( "email" equals "john.smith@contoso.com" and "number" equals "8005882300" ) or ("created" is less than "1561901285" )</p>
+        <pre>
+{
+    "WHERE": {
+        "AND": {
+            "email": "john.smith@contoso.com",
+            "number": 8005882300
+        },
+        "OR": {
+            "created[&lt;]": 1561901285
+        }
+    }
+}
+        </pre>
+        <p>Where "email" starts with "@contoso.com" or "@contoso.org"</p>
+        <pre>
+{
+    "WHERE": {
+        "email[~]": {
+            "OR" [
+                "%@contoso.com",
+                "%@contoso.org"
+            ]
+        }
+    }
+}
+        </pre>
+
+
+
+
+
+
+
+
+
+
+
+
+        <h4><i>WHERE Order Conditions</i></h4>
+        <p>Where results are ordered by "firstname"</p>
+        <pre>
+{
+    "WHERE": {
+        "ORDER": "firstname"
+    }
+}
+        </pre>
+        <p>Where results are ordered by "firstname" in ascending order, than secondly by "lastname" in descending order.</p>
+        <pre>
+{
+    "WHERE": {
+        "ORDER": {
+            "firstname": "ASC",
+            "lastname": "DESC"
+        }
+    }
+}
+        </pre>
+
+
+
+
+
+
+
+
+
+
+
+
+        <h4><i>WHERE Limits and Offsets</i></h4>
+        <p>Where the number of results is limited to 100.</p>
+        <pre>
+{
+    "WHERE": {
+        "LIMIT": 100
+    }
+}
+        </pre>
+        <p>Where the number of results returned must be 100 or under.</p>
+        <pre>
+{
+    "WHERE": {
+        "LIMIT": [
+            100,
+            200
+        ]
+    }
+}
+        </pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <h4><i>POST JSON Response Example</i></h4>
+        <pre>
 {
     "tags": [
         "example",
@@ -119,33 +349,33 @@ search: ["example","search","tags"]
         }
     }
 }
-		</pre>
-		<h4><i>POST JSON Live Demo</i></h4>
-		<form target="search" method="post">
-			<input type="number" name="offset" placeholder="Offset: 0">
-			<input type="number" name="count" placeholder="Count: 100">
-			<input type="text" name="sort" placeholder="Sort: objectid">
-			Order: 0 - <input type="radio" name="order" value="0" checked>
-			Order: 1 - <input type="radio" name="order" value="1">
-			<button>Send</button><br><br>
-			<textarea name="search" style="width:800px;height:300px;">
+        </pre>
+        <h4><i>POST JSON Live Demo</i></h4>
+        <form target="search" method="post">
+            <input type="number" name="offset" placeholder="Offset: 0">
+            <input type="number" name="count" placeholder="Count: 100">
+            <input type="text" name="sort" placeholder="Sort: objectid">
+            Order: 0 - <input type="radio" name="order" value="0" checked>
+            Order: 1 - <input type="radio" name="order" value="1">
+            <button>Send</button><br><br>
+            <textarea name="search" style="width:800px;height:300px;">
 [
     "manager"
 ]
-			</textarea>
-			<input type="hidden" name="api" value="search">
-			<input type="hidden" name="prettyprint">
-			<iframe style="width:800px;height:300px;resize:both;" name="search"></iframe>
-		</form>
-		<hr>
-		<h2 id="import">Import API</h2>
-		<span style="color:red;font-weight:bolder;">API Requires Authentication</span>
-		<p>
-			The import API allows numbers to be imported into the database using JSON.<br>
-			This method allows for number editing and deleting as well.<br><br>
-			When editing a number using the import API, you must first export the number you are going to edit, then modify the JSON (except for the number), then import the JSON using this API.<br><br>
-			To delete a number, submit an empty number in one of the following ways:
-			<pre>
+            </textarea>
+            <input type="hidden" name="api" value="search">
+            <input type="hidden" name="prettyprint">
+            <iframe style="width:800px;height:300px;resize:both;" name="search"></iframe>
+        </form>
+        <hr>
+        <h2 id="import">Import API</h2>
+        <span style="color:red;font-weight:bolder;">API Requires Authentication</span>
+        <p>
+            The import API allows numbers to be imported into the database using JSON.<br>
+            This method allows for number editing and deleting as well.<br><br>
+            When editing a number using the import API, you must first export the number you are going to edit, then modify the JSON (except for the number), then import the JSON using this API.<br><br>
+            To delete a number, submit an empty number in one of the following ways:
+            <pre>
 [
     {
         "number": "1234"
@@ -155,23 +385,23 @@ search: ["example","search","tags"]
 {
     "49b4604ae1": []
 }
-			</pre>
-			<strike>
-				<pre>
+            </pre>
+            <strike>
+                <pre>
 {
     "1234": []
 }
-				</pre>
-			</strike>
-			<i>This API only responds with Fatal PHP errors.</i>
-		</p>
-		<h4><i>POST Request Header</i></h4>
-		<pre>
+                </pre>
+            </strike>
+            <i>This API only responds with Fatal PHP errors.</i>
+        </p>
+        <h4><i>POST Request Header</i></h4>
+        <pre>
 api: import
 import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
-		</pre>
-		<h4><i>POST JSON Request Syntax Examples</i></h4>
-		<pre>
+        </pre>
+        <h4><i>POST JSON Request Syntax Examples</i></h4>
+        <pre>
 [
     {
         "number": "1234",
@@ -192,9 +422,9 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         ]
     }
 }
-		</pre>
-		<strike>
-			<pre>
+        </pre>
+        <strike>
+            <pre>
 {
     "1234": {
         "description": "Test Number",
@@ -204,15 +434,15 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         ]
     }
 }
-			</pre>
-		</strike>
-		<h4><i>POST JSON Live Demo</i></h4>
-		<form target="import" method="post">
-			<button>Send</button><br><br>
-			<b style="color:red;">Sending this data will save to the database.</b>
-			<br><br>
-			legacy: <input type="checkbox" name="legacy" value="1"><br><br>
-			<textarea name="import" style="width:800px;height:300px;">
+            </pre>
+        </strike>
+        <h4><i>POST JSON Live Demo</i></h4>
+        <form target="import" method="post">
+            <button>Send</button><br><br>
+            <b style="color:red;">Sending this data will save to the database.</b>
+            <br><br>
+            legacy: <input type="checkbox" name="legacy" value="1"><br><br>
+            <textarea name="import" style="width:800px;height:300px;">
 [
     {
         "number": "1234",
@@ -223,109 +453,109 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         ]
     }
 ]
-			</textarea>
-			<input type="hidden" name="prettyprint">
-			<input type="hidden" name="api" value="import">	
-			<iframe style="width:800px;height:300px;resize:both;" name="import"></iframe>
-		</form>
-		<hr>
-		<h2 id="import">Export API</h2>
-		<p>
-			The Export API is split into three methods:<br><br>
-			<strike>The <b id="number">number</b> method will export a number's data from the provided number.</strike>
-			<br><br>
-			The <b id="tags">tags</b> method will export all tags at one time.<br><br>
-			The <b id="numbers">numbers</b> method will export all numbers.<br><br>
-		</p>
-		<h4><i>POST Request Headers</i></h4>
-		<pre>
+            </textarea>
+            <input type="hidden" name="prettyprint">
+            <input type="hidden" name="api" value="import">    
+            <iframe style="width:800px;height:300px;resize:both;" name="import"></iframe>
+        </form>
+        <hr>
+        <h2 id="import">Export API</h2>
+        <p>
+            The Export API is split into three methods:<br><br>
+            <strike>The <b id="number">number</b> method will export a number's data from the provided number.</strike>
+            <br><br>
+            The <b id="tags">tags</b> method will export all tags at one time.<br><br>
+            The <b id="numbers">numbers</b> method will export all numbers.<br><br>
+        </p>
+        <h4><i>POST Request Headers</i></h4>
+        <pre>
 <strike>api: export
 export: number
 number: 1234</strike>
-		</pre>
-		<pre>
+        </pre>
+        <pre>
 api: export
 export: tags
-		</pre>
-		<pre><strike>
+        </pre>
+        <pre><strike>
 api: export
 export: numbers
 numbers: [1234, 5678]
-		</pre>
-		<pre>
+        </pre>
+        <pre>
 api: export
 export: numbers
 includeTags: 1
 numbers: [1234, 5678]
-		</strike></pre>
-		<pre>
+        </strike></pre>
+        <pre>
 api: export
 export: numbers
 numbers: [2834fa80ac, 3e834d4674]
-		</pre>
-		<pre>
+        </pre>
+        <pre>
 api: export
 export: objects
 includeTags: 1
 objects: [2834fa80ac, 3e834d4674]
-		</pre>
-		<h4><i>POST Live Demo</i></h4>
-		<form target="export" method="post">
-			<button>Send</button><br><br>
-			export: <select name="export">
-				<option value="number" disabled>number</option>
-				<option value="numbers" disabled>numbers</option>
-				<option value="tags">tags</option>
-				<option value="objects">objects</option>
-			</select><br><br>
-			includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
-			<strike>number:</strike> <input type="number" name="number" disabled><br><br>
-			<textarea name="objects" style="width:800px;height:300px;">
+        </pre>
+        <h4><i>POST Live Demo</i></h4>
+        <form target="export" method="post">
+            <button>Send</button><br><br>
+            export: <select name="export">
+                <option value="number" disabled>number</option>
+                <option value="numbers" disabled>numbers</option>
+                <option value="tags">tags</option>
+                <option value="objects">objects</option>
+            </select><br><br>
+            includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
+            <strike>number:</strike> <input type="number" name="number" disabled><br><br>
+            <textarea name="objects" style="width:800px;height:300px;">
 ["2834fa80ac", "3e834d4674"]
-			</textarea>
-			<iframe style="width:800px;height:300px;resize:both;" name="export"></iframe>
-			<input type="hidden" name="api" value="export">
-			<input type="hidden" name="prettyprint">
-		</form>
-		<hr>
-		<h2 id="schema">Schema API</h2>
-		<p>
-			This API returns the current schema in json format. This is the only method that uses the GET HTTP method.
-		</p>
-		<h4><i>GET Live Demo</i></h4>
-		<form action="./schema.cfg.json" target="schema" method="get">
-			<button>Send</button><br><br>
-			<iframe style="width:800px;height:300px;resize:both;" name="schema"></iframe>
-		</form>
-		<hr>
-		<h2 id="stats">Statistics API</h2>
-		<p>
-			The statistics API will return stats about active sessions, phone lookup counts, and lookup tags.<br><br>
-			
-			The <b>ping</b> method will register a session on the system.<br><br>
-			
-			The <b>count</b> method will return the number of active sessions on the system. <i>Active on web page for last 60 seconds.</i>
-		</p>
-		<h4><i>POST Request Headers</i></h4>
-		<pre>
+            </textarea>
+            <iframe style="width:800px;height:300px;resize:both;" name="export"></iframe>
+            <input type="hidden" name="api" value="export">
+            <input type="hidden" name="prettyprint">
+        </form>
+        <hr>
+        <h2 id="schema">Schema API</h2>
+        <p>
+            This API returns the current schema in json format. This is the only method that uses the GET HTTP method.
+        </p>
+        <h4><i>GET Live Demo</i></h4>
+        <form action="./schema.cfg.json" target="schema" method="get">
+            <button>Send</button><br><br>
+            <iframe style="width:800px;height:300px;resize:both;" name="schema"></iframe>
+        </form>
+        <hr>
+        <h2 id="stats">Statistics API</h2>
+        <p>
+            The statistics API will return stats about active sessions, phone lookup counts, and lookup tags.<br><br>
+            
+            The <b>ping</b> method will register a session on the system.<br><br>
+            
+            The <b>count</b> method will return the number of active sessions on the system. <i>Active on web page for last 60 seconds.</i>
+        </p>
+        <h4><i>POST Request Headers</i></h4>
+        <pre>
 api: stats
 stats: ping
-		</pre>
-		<pre>
+        </pre>
+        <pre>
 api: stats
 stats: count
-		</pre>
-		<h4><i>POST Live Demo</i></h4>
-		<form target="stats" method="post">
-			<button>Send</button><br><br>
-			stats: <select name="stats">
-				<option value="ping">ping</option>
-				<option value="count">count</option>
-			</select><br><br>
-			<iframe style="width:800px;height:300px;resize:both;" name="stats"></iframe>
-			<input type="hidden" name="api" value="stats">
-			<input type="hidden" name="prettyprint">	
-		</form>
-		<br><br><br><br><br><br><br><br>
-	</body>
+        </pre>
+        <h4><i>POST Live Demo</i></h4>
+        <form target="stats" method="post">
+            <button>Send</button><br><br>
+            stats: <select name="stats">
+                <option value="ping">ping</option>
+                <option value="count">count</option>
+            </select><br><br>
+            <iframe style="width:800px;height:300px;resize:both;" name="stats"></iframe>
+            <input type="hidden" name="api" value="stats">
+            <input type="hidden" name="prettyprint">    
+        </form>
+        <br><br><br><br><br><br><br><br>
+    </body>
 </html>
