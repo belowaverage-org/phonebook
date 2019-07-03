@@ -43,6 +43,7 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
 
 
             $objects = $db->select('tags', $objectJoin, '*', array( //Search the database with a wildcard appeneded to the tag.
+                
                 'tags.text[~]' => $validSearchTags[0].'%'
             ));
 
@@ -59,10 +60,7 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
 
 
             $objects = $db->select('tags', $objectJoin, '*', array( //Search the database for objects associated with the valid tags.
-                'AND' => array(
-                    'tags.text' => $validSearchTags,
-                    'objects.type' => 'Person',
-                ),
+                'tags.text' => $validSearchTags,
                 'GROUP' => 'tags_objects.objectid',
                 'HAVING' => $db->raw('COUNT(tags_objects.objectid) = '.count($validSearchTags))
             ));

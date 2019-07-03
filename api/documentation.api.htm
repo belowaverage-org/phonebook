@@ -72,23 +72,30 @@ password: pass123
         <h2 id="search">Search API</h2>
         <p>
             The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
-            The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
-            <del>The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
-            An offset of 0 will only return numbers that match all of the search tags.<br>
-            An offset of 1 will return all numbers that match the search tags or all the search tags minus one.<br>
-            For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
-            The results would return with the most matching numbers first.</del><br><br>
-            In the new API, the search <b id="offset">offset</b> will simply offset the results returned, it will no longer change how the search algorithm scores results.<br><br>
-            The search <b id="order">order</b> will determine which way the results are ordered. E.g: Not defined or 0 will sort ascending, and a value of 1 will sort descending.<br><br>
+            You can search either by TAGS and/or WHERE. In the WHERE clause, you can specify an AND or OR operation to specify if the TAGS search result should be appended or filtered by the WHERE clause.<br><br>
+            <strike>
+                The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
+                The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
+                An offset of 0 will only return numbers that match all of the search tags.<br>
+                An offset of 1 will return all numbers that match the search tags or all the search tags minus one.<br>
+                For example if 3 tags are sent, the numbers returned would have to have matched all of the tags or 2 of the tags.
+                The results would return with the most matching numbers first.<br><br>
+                In the new API, the search <b id="offset">offset</b> will simply offset the results returned, it will no longer change how the search algorithm scores results.<br><br>
+                The search <b id="order">order</b> will determine which way the results are ordered. E.g: Not defined or 0 will sort ascending, and a value of 1 will sort descending.<br><br>
+            </strike>
         </p>
         <h4><i>POST Request Header</i></h4>
         <pre>
 api: search
+        </pre>
+        <strike>
+        <pre>
 offset: 0
 count: 100
-sort: objectid
-order: 0
-search: ["example","search","tags"]
+        </pre>
+        </strike>
+        <pre>
+search: {"TAGS":["example","search","tags"],"WHERE"{"AND":{"modified[<>]":[1561900000,1561901285],"firstname[~]":"john"},"OR":{"lastname":"smith"}}}
         </pre>
         <h4><i>POST JSON Search Request Syntax</i></h4>
         <pre>
@@ -249,18 +256,6 @@ search: ["example","search","tags"]
     }
 }
         </pre>
-
-
-
-
-
-
-
-
-
-
-
-
         <h4><i>WHERE Order Conditions</i></h4>
         <p>Where results are ordered by "firstname"</p>
         <pre>
@@ -281,18 +276,6 @@ search: ["example","search","tags"]
     }
 }
         </pre>
-
-
-
-
-
-
-
-
-
-
-
-
         <h4><i>WHERE Limits and Offsets</i></h4>
         <p>Where the number of results is limited to 100.</p>
         <pre>
@@ -302,32 +285,17 @@ search: ["example","search","tags"]
     }
 }
         </pre>
-        <p>Where the number of results returned must be 100 or under.</p>
+        <p>Get 100 results starting at the 200th result.</p>
         <pre>
 {
     "WHERE": {
         "LIMIT": [
-            100,
-            200
+            200,
+            100
         ]
     }
 }
         </pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <h4><i>POST JSON Response Example</i></h4>
         <pre>
 {
@@ -352,16 +320,26 @@ search: ["example","search","tags"]
         </pre>
         <h4><i>POST JSON Live Demo</i></h4>
         <form target="search" method="post">
-            <input type="number" name="offset" placeholder="Offset: 0">
-            <input type="number" name="count" placeholder="Count: 100">
-            <input type="text" name="sort" placeholder="Sort: objectid">
-            Order: 0 - <input type="radio" name="order" value="0" checked>
-            Order: 1 - <input type="radio" name="order" value="1">
+            <strike>
+                <input type="number" name="offset" placeholder="Offset: 0" disabled>
+                <input type="number" name="count" placeholder="Count: 100" disabled>
+            </strike><br><br>
             <button>Send</button><br><br>
             <textarea name="search" style="width:800px;height:300px;">
-[
-    "manager"
-]
+{
+    "TAGS": [
+        "manager"
+    ],
+    "WHERE" {
+        "ORDER": {
+            "number": "ASC"
+        },
+        "LIMIT": {
+            100,
+            0
+        }
+    }
+}
             </textarea>
             <input type="hidden" name="api" value="search">
             <input type="hidden" name="prettyprint">
