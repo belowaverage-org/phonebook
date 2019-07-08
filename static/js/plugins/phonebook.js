@@ -281,9 +281,14 @@ function searchTagsRaw(callback) {
 		dataType: 'json',
 		data: {
 			api: 'search',
-			sort: 'number',
-			count: 10000,
-			search: JSON.stringify(getSearchTags())
+			search: JSON.stringify({
+			    'TAGS': getSearchTags(),
+			    'WHERE': {
+			        'ORDER': {
+			            'number': 'ASC'
+			        }
+			    }
+			})
 		},
 		success: function(results) {
 			callback.call(results);
@@ -319,10 +324,18 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 			dataType: 'json',
 			data: {
 				api: 'search',
-				sort: 'number',
-				count: loadCount,
-				offset: mem.scrollPageOffset,
-				search: jtags
+				search: JSON.stringify({
+                    'TAGS': tags,
+                    'WHERE': {
+                        'ORDER': {
+                            'number': 'ASC'
+                        },
+                        'LIMIT': [
+                            mem.scrollPageOffset,
+                            loadCount
+                        ]
+                    }
+                })
 			},
 			success: function(results) { //On success
 				$('.resultsMessage').hide();

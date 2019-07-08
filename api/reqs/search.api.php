@@ -38,16 +38,34 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
             $databaseQuery['GROUP'] = 'tags_objects.objectid';
             $databaseQuery['HAVING'] = $db->raw('COUNT(tags_objects.objectid) = '.count($searchTags));
         }
-        if(isset($searchQuery['WHERE']) && !empty($searchQuery['WHERE'])) {
+        if(isset($searchQuery['WHERE']) && !empty($searchQuery['WHERE'])) { //If WHERE is specified, add it to the query.
             $databaseQuery = array_merge($databaseQuery, $searchQuery['WHERE']);
         }
-        $objects = $db->select('tags', array(
+        $objects = $db->select('tags', array( //Query the database.
             '[>]tags_objects' => array(
                 'tags.tagid' => 'tagid'
             ), '[>]objects' => array(
                 'tags_objects.objectid' => 'objectid'
             )
         ), '*', $databaseQuery);
+
+
+
+
+
+
+echo $db->debug()->select('tags', array( //Query the database.
+            '[>]tags_objects' => array(
+                'tags.tagid' => 'tagid'
+            ), '[>]objects' => array(
+                'tags_objects.objectid' => 'objectid'
+            )
+        ), '*', $databaseQuery);
+
+
+
+
+
         if(is_array($objects) && !empty($objects)) { //If the search returned objects.
             foreach($objects as $k => $object) { //For each object in the array, remove the tagid, text, and objectid fields, and apply a count and offset.
                 $objectid = $object['objectid'];
