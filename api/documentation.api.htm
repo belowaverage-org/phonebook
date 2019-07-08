@@ -438,24 +438,29 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         </form>
         <hr>
         <h2 id="import">Export API</h2>
+        <span style="color:red;font-weight:bolder;">API Requires Authentication: </span><span style="color:#ff7b7b;">When using "export: all"</span>
         <p>
             The Export API is split into three methods:<br><br>
             <strike>The <b id="number">number</b> method will export a number's data from the provided number.</strike>
             <br><br>
             The <b id="tags">tags</b> method will export all tags at one time.<br><br>
             The <b id="numbers">numbers</b> method will export all numbers.<br><br>
+            The <b>all</b> method will generate a JSON dump of the entire phonebook database. <span style="color:red;">This method requires authentication</span>.<br><br>
         </p>
         <h4><i>POST Request Headers</i></h4>
-        <pre>
-<strike>api: export
+        <strike><pre>
+api: export
 export: number
-number: 1234</strike>
-        </pre>
+number: 1234
+        </pre></strike>
         <pre>
 api: export
 export: tags
         </pre>
-        <pre><strike>
+        <pre style="color:red;">
+api: export
+export: all
+        </pre><strike><pre>
 api: export
 export: numbers
 numbers: [1234, 5678]
@@ -465,7 +470,7 @@ api: export
 export: numbers
 includeTags: 1
 numbers: [1234, 5678]
-        </strike></pre>
+        </pre></strike>
         <pre>
 api: export
 export: numbers
@@ -485,6 +490,7 @@ objects: [2834fa80ac, 3e834d4674]
                 <option value="numbers" disabled>numbers</option>
                 <option value="tags">tags</option>
                 <option value="objects">objects</option>
+                <option value="all" style="color:red;">all</option>
             </select><br><br>
             includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
             <strike>number:</strike> <input type="number" name="number" disabled><br><br>

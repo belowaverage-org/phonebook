@@ -110,13 +110,13 @@ function leet_text($value)
 /* ---- Advanced options ---- */
 
 //changing the following variable allows multiple phpLiteAdmin installs to work under the same domain.
-$cookie_name = 'pla3412';
+$cookie_name = 'PhoneBookDBA';
 
 //whether or not to put the app in debug mode where errors are outputted
 $debug = false;
 
 // the user is allowed to create databases with only these extensions
-$allowed_extensions = array('db','db3','sqlite','sqlite3');
+$allowed_extensions = array('sqlite3');
 
 
 // English language-texts.
@@ -4936,12 +4936,11 @@ class Database
 					}
 					$newcolumns = '';
 					$oldcolumns = '';
-					reset($newcols);
-					while(list($key, $val) = each($newcols))
-					{
+					foreach($newcols as $key => $val) {
 						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
 						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
 					}
+					
 					$copytotempsql = 'INSERT INTO '.$this->quote_id($tmpname).'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$this->quote_id($table);
 					$dropoldsql = 'DROP TABLE '.$this->quote_id($table);
 					$createtesttableSQL = $createtemptableSQL;
@@ -5197,14 +5196,10 @@ class Database
 						}
 					}
 					$droptempsql = 'DROP TABLE '.$this->quote_id($tmpname);
-
 					$createnewtableSQL = "CREATE TABLE ".$this->quote($table_new)." ".preg_replace("/^\s*CREATE\s+TABLE\s+'?".str_replace("'","''",preg_quote($tmpname,"/"))."'?\s+(.*)$/is", '$1', $createtesttableSQL, 1);
-
 					$newcolumns = '';
 					$oldcolumns = '';
-					reset($newcols);
-					while(list($key,$val) = each($newcols))
-					{
+					foreach($newcols as $key => $val) {
 						$newcolumns .= ($newcolumns?', ':'').$this->quote_id($val);
 						$oldcolumns .= ($oldcolumns?', ':'').$this->quote_id($key);
 					}
@@ -5218,7 +5213,6 @@ class Database
 			$alter_transaction .= $createnewtableSQL.'; ';   //recreate original table
 			$alter_transaction .= $copytonewsql.'; ';        //copy back to original table
 			$alter_transaction .= $droptempsql.'; ';         //drop temp table
-
 			$preg_index="/^\s*(CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*ON\s+)(".$this->sqlite_surroundings_preg($table).")(\s*\((?:".$this->sqlite_surroundings_preg("+",false," '\"\[`")."\s*)*\)\s*)\s*$/i";				
 			foreach($recreateQueries as $recreate_query)
 			{

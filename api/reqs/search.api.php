@@ -10,6 +10,7 @@ Searches the database for objects using search tags.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
 if(isset($_POST['search']) && !empty($_POST['search'])) {
+    require('library.lib.php');
     //Initialize Variables.
     $count = 100;
     $offset = 0;
@@ -54,32 +55,20 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
 
 
 
-echo $db->debug()->select('tags', array( //Query the database.
+/*echo $db->debug()->select('tags', array( //Query the database.
             '[>]tags_objects' => array(
                 'tags.tagid' => 'tagid'
             ), '[>]objects' => array(
                 'tags_objects.objectid' => 'objectid'
             )
-        ), '*', $databaseQuery);
+        ), '*', $databaseQuery);*/
 
 
 
 
 
         if(is_array($objects) && !empty($objects)) { //If the search returned objects.
-            foreach($objects as $k => $object) { //For each object in the array, remove the tagid, text, and objectid fields, and apply a count and offset.
-                $objectid = $object['objectid'];
-                unset($object['tagid']);
-                unset($object['text']);
-                unset($object['objectid']);
-                $tagSearchObjects[$k] = $objectid;
-                if($count > 0 && $offset <= 0) {
-                    $count--;
-                    $organizedObjects[$objectid] = $object;
-                } else {
-                    $offset--;
-                }
-            }
+            $organizedObjects = organizeDatabaseObjects($objects);
             $filteredTags = $db->select('tags_objects', array( //Search the database for tags associated with the searched results.
                 '[>]tags' => array(
                      'tags_objects.tagid' => 'tagid'
@@ -87,7 +76,7 @@ echo $db->debug()->select('tags', array( //Query the database.
             ), array(
                 'tags.text'
             ), array(
-                'tags_objects.objectid' => $tagSearchObjects,
+                'tags_objects.objectid' => array_keys($organizedObjects),
                 'GROUP' => 'tags.text'
             ));
             if(is_array($filteredTags)) { //If filteredTags is an array.

@@ -18,8 +18,8 @@ if(isset($_POST['import']) && auth_authenticated()) {
 		foreach($import as $key => $object) { //For every number being imported...
 			$tags = array();
 			$row = array();
-			foreach($object as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row
-				if(isset(SCHEMA[$attribute]) && $attribute !== 'tags') { //If an attribute in the schema and not a tag list
+			foreach($object as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
+				if(isset(SCHEMA[$attribute]) && $attribute !== 'tags' && !empty($value)) { //If an attribute in the schema and not a tag list or empty.
 					if(isset(SCHEMA[$attribute]['type'])) { //Check type constraints
 						if(SCHEMA[$attribute]['type'] == 'number') { //Check number constraint
 							if(ctype_digit($value)) {

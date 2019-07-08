@@ -126,4 +126,25 @@ function tagFilter($string) {
     }
     return $return;
 }
+function organizeDatabaseObjects($objects, $includeTags = false) {
+    foreach($objects as $k => $object) {
+        if($includeTags) {
+            $tags = getTagsFromObject($object['objectid'], true);
+            if($tags) {
+                $object['tags'] = $tags;
+            }
+        }
+        $objects[$object['objectid']] = $object;
+        unset($objects[$k]);
+        unset($objects[$object['objectid']]['objectid']);
+        unset($objects[$object['objectid']]['tagid']);
+        unset($objects[$object['objectid']]['text']);
+        foreach($object as $attributeName => $attributeValue) {
+            if(empty($attributeValue)) {
+                unset($objects[$object['objectid']][$attributeName]);
+            }
+        }
+    }
+    return $objects;
+}
 ?>
