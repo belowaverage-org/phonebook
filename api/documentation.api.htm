@@ -95,7 +95,7 @@ count: 100
         </pre>
         </strike>
         <pre>
-search: {"TAGS":["example","search","tags"],"WHERE"{"AND":{"modified[<>]":[1561900000,1561901285],"firstname[~]":"john"},"OR":{"lastname":"smith"}}}
+search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561900000,1561901285],"firstname[~]":"john"},"OR":{"lastname":"smith"}}}
         </pre>
         <h4><i>POST JSON Search Request Syntax</i></h4>
         <pre>
@@ -105,7 +105,7 @@ search: {"TAGS":["example","search","tags"],"WHERE"{"AND":{"modified[<>]":[15619
         "search",
         "tags"
     ],
-    "WHERE" {
+    "WHERE": {
         "AND": {
             "modified[&lt;&gt;]": [
                 1561900000,
@@ -330,14 +330,14 @@ search: {"TAGS":["example","search","tags"],"WHERE"{"AND":{"modified[<>]":[15619
     "TAGS": [
         "manager"
     ],
-    "WHERE" {
+    "WHERE": {
         "ORDER": {
             "number": "ASC"
         },
-        "LIMIT": {
-            100,
-            0
-        }
+        "LIMIT": [
+            0,
+            100
+        ]
     }
 }
             </textarea>
