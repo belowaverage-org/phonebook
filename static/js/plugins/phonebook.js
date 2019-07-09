@@ -357,7 +357,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-						$('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
+						var number = $('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
 						.appendTo('#numbers');
 					});
 					if(keepContent) {
