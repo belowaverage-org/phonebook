@@ -17,7 +17,7 @@ if(isset($_POST['import']) && auth_authenticated()) {
 		$db->pdo->beginTransaction();
 		foreach($import as $key => $object) { //For every number being imported...
 			$tags = array();
-			$row = array();
+			$row = array("objectid" => $key);
 			foreach($object as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
 				if(isset(SCHEMA[$attribute]) && $attribute !== 'tags' && !empty($value)) { //If an attribute in the schema and not a tag list or empty.
 					if(isset(SCHEMA[$attribute]['type'])) { //Check type constraints
@@ -45,6 +45,7 @@ if(isset($_POST['import']) && auth_authenticated()) {
 					}
 				}
 			}
+			print_r($row);
 			$objectID = createModifyOrFindObject($row);
 			if($objectID !== false) {
 				clearTagsFromObject($objectID);
