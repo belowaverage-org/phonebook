@@ -387,7 +387,7 @@ function toggleMenu(id) {
 		descriptionMode = true;
 	}
 }
-function filterprintRows(cols) {
+function filterPrintRows(cols) {
 	$.each(cols, function() {
 		allEmpty = true;
 		$.each(this, function() {
@@ -447,8 +447,9 @@ function printResults() {
 			var cols = {};
 			var count = printRows;
 			$.each(result.objects, function() {
+				var row = this;
 				if(count-- == 0) {
-					filterprintRows(cols);
+					filterPrintRows(cols);
 					cols = {};
 					tabl = $('<table></table>').appendTo(psrn);
 					thed = $('<tr></tr>').appendTo(tabl);
@@ -456,7 +457,10 @@ function printResults() {
 				}
 				var tr = $('<tr></tr>').appendTo(tabl);
 				var col = 0;
-				$.each(this, function(k, v) {
+				$.each(mem.schema, function(k, v) {
+					if(!(typeof v['print'] !== 'undefined' && v['print'])) {
+						return true;
+					}
 					if(typeof cols[++col] == 'undefined') {
 						cols[col] = $();
 					}
@@ -464,12 +468,12 @@ function printResults() {
 						v = '';
 					}
 					if(count + 1 == printRows) {
-						cols[col] = cols[col].add($('<th></th>').text(mem.schema[k].name).appendTo(thed));
+						cols[col] = cols[col].add($('<th></th>').text(v.name).appendTo(thed));
 					}
-					cols[col] = cols[col].add($('<td></td>').text(v).appendTo(tr));
+					cols[col] = cols[col].add($('<td></td>').text(row[k]).appendTo(tr));
 				});
 			});
-			filterprintRows(cols);
+			filterPrintRows(cols);
 			$('#loading').hide();
 			window.print();
 		}, 100);
