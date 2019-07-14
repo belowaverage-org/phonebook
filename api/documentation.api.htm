@@ -71,8 +71,7 @@ password: pass123
         <hr>
         <h2 id="search">Search API</h2>
         <p>
-            The search API method will respond with a list of phone numbers that best matches the list of search tags given.<br><br>
-            You can search either by TAGS and/or WHERE. In the WHERE clause, you can specify an AND or OR operation to specify if the TAGS search result should be appended or filtered by the WHERE clause.<br><br>
+            The search API method will respond with a list of phone numbers that best matches the list of search tags / conditions given.<br><br>
             <strike>
                 The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
                 The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>
@@ -95,7 +94,7 @@ count: 100
         </pre>
         </strike>
         <pre>
-search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561900000,1561901285],"firstname[~]":"john"},"OR":{"lastname":"smith"}}}
+search: {"SEARCH":{"TAGS":["manager"],"ORDER":{"number":"ASC"},"LIMIT":[0,100]},"OUTPUT":{"OPTIONS":["showAvailableTags"],"ATTRIBUTES":["number","description"]}}
         </pre>
         <h4><i>POST JSON Search Request Syntax</i></h4>
         <pre>
@@ -105,7 +104,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         "search",
         "tags"
     ],
-    "WHERE": {
+    "SEARCH": {
         "AND": {
             "modified[&lt;&gt;]": [
                 1561900000,
@@ -119,11 +118,11 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
     }
 }
         </pre>
-        <h4><i>WHERE Basic Conditions</i></h4>
+        <h4><i>SEARCH Basic Conditions</i></h4>
         <p>Where "email" is "john.smith@contoso.com"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "email": "john.smith@contoso.com"
     }
 }
@@ -131,7 +130,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "number" is "8005882300"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "number": 8005882300
     }
 }
@@ -139,7 +138,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "modified" is greater than "1561901285"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "modified[&gt;]": 1561901285
     }
 }
@@ -147,7 +146,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "modified" is greater than or equal to "1561901285"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "modified[&gt;=]": 1561901285
     }
 }
@@ -155,7 +154,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "firstname" does not equal "john"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "firstname[!]": "john"
     }
 }
@@ -163,7 +162,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "created" is between "1561900000" and "1561901285"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "created[&lt;&gt;]": [
             1561900000,
             1561901285
@@ -174,7 +173,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "created" is not between "1561900000" and "1561901285"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "created[&gt;&lt;]": [
             1561900000,
             1561901285
@@ -182,12 +181,12 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
     }
 }
         </pre>
-        <h4><i>WHERE Wildcard Conditions</i></h4>
+        <h4><i>SEARCH Wildcard Conditions</i></h4>
         <p>Where "lastname" contains "ill"</p>
         <i>Results:</i><i style="color:gray;"> miller, williams, willson</i>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "lastname[~]": "ill"
     }
 }
@@ -196,7 +195,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <i>Results:</i><i style="color:gray;"> brandon, cameron, mason</i>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "firstname[~]": "~on"
     }
 }
@@ -205,7 +204,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <i>Results:</i><i style="color:gray;"> bob, tom</i>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "firstname[~]": "_o_"
     }
 }
@@ -214,7 +213,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <i>Results:</i><i style="color:gray;"> sam, pam</i>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "firstname[~]": "[sp]am"
     }
 }
@@ -223,7 +222,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <i>Results:</i><i style="color:gray;"> sam, pam </i><i>Exclude: </i><i style="color:red;">cam, bam</i>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "firstname[~]": "[!cb]am"
     }
 }
@@ -232,7 +231,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where ( "email" equals "john.smith@contoso.com" and "number" equals "8005882300" ) or ("created" is less than "1561901285" )</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "AND": {
             "email": "john.smith@contoso.com",
             "number": 8005882300
@@ -246,7 +245,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where "email" starts with "@contoso.com" or "@contoso.org"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "email[~]": {
             "OR" [
                 "%@contoso.com",
@@ -256,11 +255,11 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
     }
 }
         </pre>
-        <h4><i>WHERE Order Conditions</i></h4>
+        <h4><i>SEARCH Order Conditions</i></h4>
         <p>Where results are ordered by "firstname"</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "ORDER": "firstname"
     }
 }
@@ -268,7 +267,7 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Where results are ordered by "firstname" in ascending order, than secondly by "lastname" in descending order.</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "ORDER": {
             "firstname": "ASC",
             "lastname": "DESC"
@@ -276,11 +275,11 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
     }
 }
         </pre>
-        <h4><i>WHERE Limits and Offsets</i></h4>
+        <h4><i>SEARCH Limits and Offsets</i></h4>
         <p>Where the number of results is limited to 100.</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "LIMIT": 100
     }
 }
@@ -288,10 +287,26 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
         <p>Get 100 results starting at the 200th result.</p>
         <pre>
 {
-    "WHERE": {
+    "SEARCH": {
         "LIMIT": [
             200,
             100
+        ]
+    }
+}
+        </pre>
+        <h4><i>OUTPUT | OPTIONS | ATTRIBUTES</i></h4>
+        <p>Dictates the data presented in the search output.</p>
+        <pre>
+{
+    "OUTPUT": {
+        "OPTIONS": [
+            "showAvailableTags",     //Displays tags that can be used to further the search of the results.
+            "showObjectTags"         //Displays tags associated with the resulting objects.
+        ],
+        "ATTRIBUTES": [              //List of schema attributes to show in the object results.
+            "number",
+            "description"
         ]
     }
 }
@@ -301,19 +316,16 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
 {
     "tags": [
         "example",
-        "tags"
+        "tags",
     ],
     "objects": {
-        "49b4604ae1": {
-            "description":"Test Number",
-            "email":"example@example.com",
-            "firstname":"Test",
-            "latitude":"38.8951",
-            "lastname":"Number",
-            "longitude":"-77.0364",
-            "number":"1234",
-            "type":"Person",
-            "username":"test.number"
+        "49698a4ebf": {
+            "number": "1234",
+            "description": "Example Number",
+            "tags": [
+                "example",
+                "tags"
+            ]
         }
     }
 }
@@ -327,16 +339,25 @@ search: {"TAGS":["example","search","tags"],"WHERE":{"AND":{"modified[<>]":[1561
             <button>Send</button><br><br>
             <textarea name="search" style="width:800px;height:300px;">
 {
-    "TAGS": [
-        "manager"
-    ],
-    "WHERE": {
+    "SEARCH": {
+        "TAGS": [
+            "manager"
+        ],
         "ORDER": {
             "number": "ASC"
         },
         "LIMIT": [
             0,
             100
+        ]
+    },
+    "OUTPUT": {
+        "OPTIONS": [
+            "showAvailableTags"
+        ],
+        "ATTRIBUTES": [
+            "number",
+            "description"
         ]
     }
 }
