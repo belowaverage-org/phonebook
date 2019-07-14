@@ -99,22 +99,26 @@ search: {"SEARCH":{"TAGS":["manager"],"ORDER":{"number":"ASC"},"LIMIT":[0,100]},
         <h4><i>POST JSON Search Request Syntax</i></h4>
         <pre>
 {
-    "TAGS": [
-        "example",
-        "search",
-        "tags"
-    ],
     "SEARCH": {
-        "AND": {
-            "modified[&lt;&gt;]": [
-                1561900000,
-                1561901285
-            ],
-            "firstname[~]": "john"
+        "TAGS": [
+            "manager"
+        ],
+        "ORDER": {
+            "number": "ASC"
         },
-        "OR": {
-            "lastname": "smith"
-        }
+        "LIMIT": [
+            0,
+            100
+        ]
+    },
+    "OUTPUT": {
+        "OPTIONS": [
+            "showAvailableTags"
+        ],
+        "ATTRIBUTES": [
+            "number",
+            "description"
+        ]
     }
 }
         </pre>

@@ -273,7 +273,7 @@ function getSearchTags() {
 	}
 	return tags;
 }
-function searchTagsRaw(callback) {
+function searchTagsRaw(callback, attributes) {
 	ajaxSearchQuery = $.ajax({ //Send search query
 		type: 'post',
 		async: true,
@@ -282,11 +282,14 @@ function searchTagsRaw(callback) {
 		data: {
 			api: 'search',
 			search: JSON.stringify({
-			    'TAGS': getSearchTags(),
-			    'WHERE': {
+			    'SEARCH': {
+			    	'TAGS': getSearchTags(),
 			        'ORDER': {
 			            'number': 'ASC'
 			        }
+			    },
+			    'OUTPUT': {
+			    	'ATTRIBUTES': attributes
 			    }
 			})
 		},
@@ -325,8 +328,8 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 			data: {
 				api: 'search',
 				search: JSON.stringify({
-                    'TAGS': tags,
-                    'WHERE': {
+                    'SEARCH': {
+                    	'TAGS': tags,
                         'ORDER': {
                             'number': 'ASC'
                         },
@@ -334,7 +337,16 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                             mem.scrollPageOffset,
                             loadCount
                         ]
-                    }
+                    },
+                    'OUTPUT': {
+						'OPTIONS': [
+							'showAvailableTags'
+						],
+						'ATTRIBUTES': [
+							'number',
+							'description'
+						]
+					}
                 })
 			},
 			success: function(results) { //On success
@@ -401,6 +413,13 @@ function filterPrintRows(cols) {
 		}
 	});
 }
+function getObjectKeys(object) {
+	var keys = [];
+	$.each(object, function(k, v) {
+		keys.push(k);
+	});
+	return keys;
+}
 function exportResults() {
 	$('#loading').removeClass('hidden').find('h1').text('Sending request...');
 	$(blurToggle).addClass('blur');
@@ -431,12 +450,18 @@ function exportResults() {
 			}
 			$('#loading').addClass('hidden');
 			$(blurToggle).removeClass('blur');
-		});
+		}, getObjectKeys(mem.schema));
 	}
 	xport();
 }
 function printResults() {
 	$('#loading').show().find('h1').text('Requesting print info...');
+	printAttributes = [];
+	$.each(mem.schema, function(k, v) {
+		if(typeof v['print'] !== 'undefined' && v['print']) {
+			printAttributes.push(k);
+		}
+	});
 	searchTagsRaw(function() {
 		var result = this;
 		$('#loading h1').text('Generating print page...');
@@ -458,9 +483,6 @@ function printResults() {
 				var tr = $('<tr></tr>').appendTo(tabl);
 				var col = 0;
 				$.each(mem.schema, function(k, v) {
-					if(!(typeof v['print'] !== 'undefined' && v['print'])) {
-						return true;
-					}
 					if(typeof cols[++col] == 'undefined') {
 						cols[col] = $();
 					}
@@ -477,7 +499,7 @@ function printResults() {
 			$('#loading').hide();
 			window.print();
 		}, 100);
-	});
+	}, printAttributes);
 }
 //On doc ready
 $(document).on('bsloaded', function() {
