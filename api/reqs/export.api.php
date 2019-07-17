@@ -24,9 +24,7 @@ if(isset($_POST['export'])) {
             echo json_encode($results, $prettyPrintIfRequested);
         }
     } elseif($_POST['export'] == 'all' && auth_authenticated()) {
-        $objects = $db->select('objects', '*');
-        $objects = organizeDatabaseObjects($objects, isset($_POST['includeTags']));
-        echo json_encode($objects, $prettyPrintIfRequested);
+        echo json_encode(exportDatabaseObjects(), $prettyPrintIfRequested);
     }
 }
 ?>

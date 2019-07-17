@@ -8,9 +8,9 @@ Dylan Bickerstaff
 ----------
 Creates and updates the database schema as nessesary.
 */
-if(!isset($singlePointEntry)) { http_response_code(403); exit; }
+if(!isset($singlePointEntry)){http_response_code(403);exit;}
 require(__DIR__.'/../database.cfg.php');
-function insertLoop($table, $data) { //Function for inserting multiple rows into the database and splitting up the insert statements
+/*function insertLoop($table, $data) { //Function for inserting multiple rows into the database and splitting up the insert statements
 	global $db;
 	global $dbConfig;
 	$offset = 0;
@@ -18,37 +18,52 @@ function insertLoop($table, $data) { //Function for inserting multiple rows into
 		$db->insert($table, array_slice($data, $offset, $dbConfig['insertLoopLimit']));
 		$offset += $dbConfig['insertLoopLimit'];
 	}
-}
+}*/
 $schema_json_raw = json_encode(SCHEMA, true);
 $schema_json_raw_cache = '';
 if(file_exists(__DIR__.'/../../DB/schema.cache')) {
 	$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');
 }
 if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../DB/database.sqlite3')) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
-	$tags_objects = $db->select('tags_objects', '*'); //Copy the old database
-	$objects = $db->select('objects', '*');
+	require_once('library.lib.php');
+	$objects = exportDatabaseObjects();
 	$rows = '';
 	$rows_array = array();
 	$indexed_rows = '';
 	foreach(json_decode($schema_json_raw, true) as $row => $settings) { //Apply schema attributes
+		$typeSet = false;
 		foreach($settings as $setting => $v) {
 			array_push($rows_array, $row);
 			if($setting == 'indexed' && $v) {
 				$indexed_rows = $indexed_rows.','.$row;
 			}
+			if($setting == 'type' && $v !== '') {
+				if($v == 'number') {
+					$row = $row.' NUMERIC';
+					$typeSet = true;
+				}
+				if($v == 'text') {
+					$row = $row.' TEXT';
+					$typeSet = true;
+				}
+			}
 			if($setting == 'unique' && $v) {
 				$row = $row.' UNIQUE NOT NULL';
 			}
+		}
+		if(!$typeSet) {
+			$row = $row.' BLOB';
 		}
 		$rows = $rows.','.$row;
 	}
 	/* Create tables */
 	$db->query('DROP TABLE IF EXISTS tags_objects;');
+	$db->query('DROP TABLE IF EXISTS tags;');
 	$db->query('DROP TABLE IF EXISTS objects;');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS tags (
-			tagid PRIMARY KEY UNIQUE NOT NULL,
-			text UNIQUE NOT NULL
+			tagid BLOB PRIMARY KEY UNIQUE NOT NULL,
+			text TEXT UNIQUE NOT NULL
 		);
 	');
 	$db->query('
@@ -59,7 +74,7 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS objects (
-			objectid PRIMARY KEY UNIQUE NOT NULL
+			objectid BLOB PRIMARY KEY UNIQUE NOT NULL
 			'.$rows.'
 		);
 	');
@@ -71,8 +86,8 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS tags_objects (
-			tagid NOT NULL REFERENCES tags (tagid),
-			objectid  NOT NULL REFERENCES objects (objectid) 
+			tagid BLOB NOT NULL REFERENCES tags (tagid),
+			objectid BLOB NOT NULL REFERENCES objects (objectid) 
 		);
 	');
 	$db->query('
@@ -83,31 +98,19 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS sessions (
-			id PRIMARY KEY NOT NULL,
-			expire NOT NULL,
-			username NOT NULL
+			id BLOB PRIMARY KEY NOT NULL,
+			expire INT NOT NULL,
+			username TEXT NOT NULL
 		);
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS translations (
-			\'from\' NOT NULL,
-			\'to\'
+			\'from\' TEXT NOT NULL,
+			\'to\' TEXT
 		);
 	');
 	/* End create tables */
-	if(!empty($objects)) { //Check if any old database columns exist in the new schema, if not delete the column from each data point
-		foreach($objects as $obj_k => $obj_v) {
-			foreach($obj_v as $row_k => $row_v) {
-				if(!in_array($row_k, $rows_array) && $row_k !== 'objectid') {
-					unset($objects[$obj_k][$row_k]);
-				}
-			}
-		}
-		insertLoop('objects', $objects); //Insert old database into the new one
-	}
-	if(!empty($tags_objects)) {
-		insertLoop('tags_objects', $tags_objects); //Insert old database into the new one
-	}
+	importDatabaseObjects($objects);
 	file_put_contents(__DIR__.'/../../DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 ?>

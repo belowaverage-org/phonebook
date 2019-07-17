@@ -14,11 +14,22 @@
         "print": true,
         "tagged": true,
         "visible": {
-            "Type": [
+            "type": [
                 "Business",
                 "Person"
             ]
         }
+    },
+    "employeeid": {
+        "export": true,
+        "indexed": false,
+        "length": 10,
+        "name": "Employee ID",
+        "print": false,
+        "tagged": false,
+        "type": "number",
+        "unique": false,
+        "visible": false
     },
     "firstname": {
         "export": true,
@@ -27,20 +38,10 @@
         "print": true,
         "tagged": true,
         "visible": {
-            "Type": [
+            "type": [
                 "Person"
             ]
         }
-    },
-    "latitude": {
-        "length": 100,
-        "name": "Latitude",
-        "type": "number",
-        "tagged": false,
-        "visible": [
-            "Business",
-            "Location"
-        ]
     },
     "lastname": {
         "export": true,
@@ -49,20 +50,10 @@
         "print": true,
         "tagged": true,
         "visible": {
-            "Type": [
+            "type": [
                 "Person"
             ]
         }
-    },
-    "longitude": {
-        "length": 100,
-        "name": "Longitude",
-        "type": "number",
-        "tagged": false,
-        "visible": [
-            "Business",
-            "Location"
-        ]
     },
     "number": {
         "export": true,
