@@ -1,11 +1,59 @@
 {
+    "created": {
+        "export": false,
+        "name": "Created",
+        "print": false,
+        "tagged": false,
+        "visible": false,
+        "type": "timestamp",
+        "sortable": true
+    },
+    "modified": {
+        "export": false,
+        "length": 10,
+        "name": "Modified",
+        "print": false,
+        "tagged": false,
+        "visible": false,
+        "type": "timestamp",
+        "sortable": true
+    },
     "description": {
         "export": true,
         "length": 1000,
         "name": "Description",
         "print": true,
         "tagged": true,
-        "visible": true
+        "visible": true,
+        "sortable": true
+    },
+    "type": {
+        "choices": [
+            "Business",
+            "Fax",
+            "Location",
+            "Person"
+        ],
+        "export": true,
+        "length": 10,
+        "name": "Type",
+        "print": true,
+        "tagged": true,
+        "type": "choice",
+        "visible": true,
+        "sortable": true
+    },
+    "number": {
+        "export": true,
+        "indexed": true,
+        "length": 50,
+        "name": "Phone Number",
+        "print": true,
+        "tagged": false,
+        "type": "number",
+        "unique": true,
+        "visible": true,
+        "sortable": true
     },
     "email": {
         "export": true,
@@ -41,7 +89,8 @@
             "type": [
                 "Person"
             ]
-        }
+        },
+        "sortable": true
     },
     "lastname": {
         "export": true,
@@ -53,33 +102,8 @@
             "type": [
                 "Person"
             ]
-        }
-    },
-    "number": {
-        "export": true,
-        "indexed": true,
-        "length": 50,
-        "name": "Phone Number",
-        "print": true,
-        "tagged": false,
-        "type": "number",
-        "unique": true,
-        "visible": true
-    },
-    "type": {
-        "choices": [
-            "Business",
-            "Fax",
-            "Location",
-            "Person"
-        ],
-        "export": true,
-        "length": 10,
-        "name": "Type",
-        "print": true,
-        "tagged": true,
-        "type": "choice",
-        "visible": true
+        },
+        "sortable": true
     },
     "username": {
         "length": 50,

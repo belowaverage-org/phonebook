@@ -42,6 +42,10 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 					$row = $row.' NUMERIC';
 					$typeSet = true;
 				}
+				if($v == 'timestamp') {
+					$row = $row.' DATETIME NOT NULL';
+					$typeSet = true;
+				}
 				if($v == 'text') {
 					$row = $row.' TEXT';
 					$typeSet = true;

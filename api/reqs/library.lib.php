@@ -31,11 +31,20 @@ function createModifyOrFindObject($row = array()) {
         if(empty($rowWithoutUnique)) {
             removeObject($objectID);
         } else {
+            if(!isset($row['modified'])) {
+                $row['modified'] = time();
+            }
             $db->update('objects', $row, array('objectid' => $objectID));
         }
     } else { //Insert the data
         if(!empty($rowWithoutUnique)) {
             $row['objectid'] = $objectID = bin2hex(random_bytes(5));
+            if(!isset($row['created'])) {
+                $row['created'] = time();
+            }
+            if(!isset($row['modified'])) {
+                $row['modified'] = time();
+            }
             $db->insert('objects', $row);
         } else {
             $objectID = false;
@@ -163,9 +172,11 @@ function importDatabaseObjects($objects) {
         foreach($object as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
             if(isset(SCHEMA[$attribute]) && $attribute !== 'tags' && !empty($value)) { //If an attribute in the schema and not a tag list or empty.
                 if(isset(SCHEMA[$attribute]['type'])) { //Check type constraints
-                    if(SCHEMA[$attribute]['type'] == 'number') { //Check number constraint
+                    if(SCHEMA[$attribute]['type'] == 'number' || SCHEMA[$attribute]['type'] == 'timestamp') { //Check number constraint
                         if(ctype_digit($value)) {
                             $value = intval($value); //Convert string to number if it is a string.
+                        } elseif(SCHEMA[$attribute]['type'] == 'timestamp') {
+                            $value = strtotime($value);
                         } else {
                             break;
                         }
