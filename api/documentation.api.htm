@@ -463,14 +463,13 @@ import: {"1234":{"description":"Test Number","tags":["example","tags"]}}
         </form>
         <hr>
         <h2 id="import">Export API</h2>
-        <span style="color:red;font-weight:bolder;">API Requires Authentication: </span><span style="color:#ff7b7b;">When using "export: all"</span>
         <p>
-            The Export API is split into three methods:<br><br>
-            <strike>The <b id="number">number</b> method will export a number's data from the provided number.</strike>
-            <br><br>
+            The Export API is split into <strike>three</strike> one method:<br><br>
             The <b id="tags">tags</b> method will export all tags at one time.<br><br>
-            The <b id="numbers">numbers</b> method will export all numbers.<br><br>
-            The <b>all</b> method will generate a JSON dump of the entire phonebook database. <span style="color:red;">This method requires authentication</span>.<br><br>
+            <strike>The <b id="number">number</b> method will export a number's data from the provided number.
+            <br><br>
+            The <b id="numbers">numbers</b> method will export all numbers.<br><br></strike>
+            
         </p>
         <h4><i>POST Request Headers</i></h4>
         <strike><pre>
@@ -481,10 +480,6 @@ number: 1234
         <pre>
 api: export
 export: tags
-        </pre>
-        <pre style="color:red;">
-api: export
-export: all
         </pre><strike><pre>
 api: export
 export: numbers
@@ -495,7 +490,7 @@ api: export
 export: numbers
 includeTags: 1
 numbers: [1234, 5678]
-        </pre></strike>
+        </pre>
         <pre>
 api: export
 export: numbers
@@ -506,7 +501,7 @@ api: export
 export: objects
 includeTags: 1
 objects: [2834fa80ac, 3e834d4674]
-        </pre>
+        </pre></strike>
         <h4><i>POST Live Demo</i></h4>
         <form target="export" method="post">
             <button>Send</button><br><br>
@@ -514,14 +509,13 @@ objects: [2834fa80ac, 3e834d4674]
                 <option value="number" disabled>number</option>
                 <option value="numbers" disabled>numbers</option>
                 <option value="tags">tags</option>
-                <option value="objects">objects</option>
-                <option value="all" style="color:red;">all</option>
+                <option value="objects" disabled>objects</option>
             </select><br><br>
-            includeTags: <input type="checkbox" name="includeTags" value="1"><br><br>
+            <strike>includeTags: <input type="checkbox" name="includeTags" value="1" disabled><br><br></strike>
             <strike>number:</strike> <input type="number" name="number" disabled><br><br>
-            <textarea name="objects" style="width:800px;height:300px;">
+            <strike><textarea name="objects" style="width:800px;height:300px;" disabled>
 ["2834fa80ac", "3e834d4674"]
-            </textarea>
+            </textarea></strike>
             <iframe style="width:800px;height:300px;resize:both;" name="export"></iframe>
             <input type="hidden" name="api" value="export">
             <input type="hidden" name="prettyprint">

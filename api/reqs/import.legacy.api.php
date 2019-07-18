@@ -19,8 +19,7 @@ if(isset($_POST['import']) && auth_authenticated()) {
 		    $attributes['number'] = $number;
 			array_push($objects, $attributes);
 		}
-		print_r($objects);
-		//importDatabaseObjects($objects);
+		importDatabaseObjects($objects);
 	}
 }
 ?>

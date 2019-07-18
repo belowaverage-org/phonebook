@@ -198,10 +198,10 @@ function importDatabaseObjects($objects) {
     }
     $db->pdo->commit();
 }
-function exportDatabaseObjects() {
+function exportDatabaseObjects($includeTags = false) {
     global $db;
     $objects = $db->select('objects', '*');
-    $objects = organizeDatabaseObjects($objects, isset($_POST['includeTags']));
+    $objects = organizeDatabaseObjects($objects, $includeTags);
     return $objects;
 }
 ?>

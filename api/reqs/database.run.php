@@ -26,7 +26,7 @@ if(file_exists(__DIR__.'/../../DB/schema.cache')) {
 }
 if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../DB/database.sqlite3')) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
 	require_once('library.lib.php');
-	$objects = exportDatabaseObjects();
+	$objects = exportDatabaseObjects(true);
 	$rows = '';
 	$rows_array = array();
 	$indexed_rows = '';
