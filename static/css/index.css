@@ -335,7 +335,7 @@ input[type=text] {
     margin-left: 20px;
 }
 
-#numbers .thumbnail {
+#numbers .tn-border {
     font-weight: bolder;
     color: white;
     background-color: rgba(0,0,0,.1);
@@ -348,7 +348,39 @@ input[type=text] {
     flex: none;
 }
 
-#numbers > div.loading .thumbnail {
+#numbers .tn-image {
+    margin:2px 0px 0px 2px;
+    width:34px;
+    height:34px;
+    border-radius:17px;
+    display:block;
+    background-repeat:no-repeat;
+    background-image:url('../img/phone.svg');
+    background-size:20px;
+    background-position:center;
+}
+
+#numbers [type=Business] .tn-image {
+    background-image:url('../img/business.svg');
+    background-size:30px;
+}
+
+#numbers [type=Fax] .tn-image {
+    background-image:url('../img/fax.svg');
+    background-size:22px;
+}
+
+#numbers [type=Person] .tn-image {
+    background-image:url('../img/person.svg');
+    background-size:30px;
+}
+
+#numbers [type=Location] .tn-image {
+    background-image:url('../img/location.svg');
+    background-size:24px;
+}
+
+#numbers > div.loading .tn-border {
     background-color: rgba(0,0,0,.1) !important;
 }
 

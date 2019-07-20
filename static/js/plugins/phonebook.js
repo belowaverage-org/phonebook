@@ -10,7 +10,7 @@ Contains the logic and communication between the API and the client.
 eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(7).8(0(){$(\'#6\').5(0(){3($(\'#4 > 9:a-g(2)\').e()==1(\'d==\')){$(\'b\').c(1(\'f\'))}})});',17,17,'function|atob||if|input|dblclick|info|document|ready|span|nth|body|append|MTQ3MjU4MzY5MA|text|PGltZyBjbGFzcz0iYyIgc3JjPSJzdGF0aWMvaW1nL2MuZ2lmIj4|child'.split('|'),0,{}));
 //Global Variables
 var apiURI = './api/';
-var mem = {
+window.mem = {
 	availableTags: [],
 	tagsFromLastCall: [],
 	allTags: {},
@@ -21,7 +21,8 @@ var mem = {
 	lastSearchTags: [],
 	lastSearchOffset: 0,
 	scrollPageEnd: false,
-	schema: {}
+	schema: {},
+	objectsFromLastCall: []
 };
 var printRows = 30;
 var firstLoad = true;
@@ -344,7 +345,8 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 						],
 						'ATTRIBUTES': [
 							'number',
-							'description'
+							'description',
+							'type'
 						]
 					}
                 })
@@ -365,17 +367,19 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
 						$('#noresult').show();
 					}
 				} else {
+				    mem.objectsFromLastCall = results.objects;
 					$.each(results.objects, function(k) {
 						var r1 = colorRangeMin;
 						var r2 = colorRangeMax;
 						var color = 'background-color:rgb('+seedRandom(k+1,r1,r2)+','+seedRandom(k+2,r1,r2)+','+seedRandom(k+3,r1,r2)+');';
-						var number = $('<div objectid="'+k+'"><div><span class="thumbnail" style="'+color+'"></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
+						var number = $('<div objectid="'+k+'" type="'+this.type+'"><div><span class="tn-border" style="'+color+'"><span class="tn-image"></span></span><span class="number">'+formatPhoneNumber(this.number)+'</span><span class="description">'+this.description+'</span></div></div>') //Show each number on screen
 						.appendTo('#numbers');
 					});
 					if(keepContent) {
 						mem.scrollPageOffset += loadCount;
 					}
 				}
+				$('#numbers').trigger('search');
 				callback.call();
 			}
 		});
