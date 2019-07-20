@@ -13,22 +13,25 @@ function createModifyOrFindObject($row = array()) {
     global $db;
     $unique = array();
     $rowWithoutUnique = $row;
-    if(isset($row['objectid']) && !empty($row['objectid'])) {
-        $unique['objectid'] = $row['objectid'];
+    if(isset($row['objectid'])) { //If objectid given...
+        if(!empty($row['objectid'])) { //If objectid is not empty or 0
+            $unique['objectid'] = $row['objectid']; //Add to unique array.
+        }
+        unset($row['objectid']); //Unset the objectid from the row.
     }
     foreach($row as $attribute => $value) { //For each attribute in a row
         if(isset(SCHEMA[$attribute]['unique']) && SCHEMA[$attribute]['unique']) { //If attribute is unique according to the schema
-            $unique[$attribute] = $value;
+            $unique[$attribute] = $value; //Add the value to the unique array.
         }
     }
-    foreach($unique as $uk => $uv) { //Remove unique stuff
+    foreach($unique as $uk => $uv) { //Remove unique stuff.
         unset($rowWithoutUnique[$uk]);
     }
     unset($rowWithoutUnique['objectid']);
-    $object = $db->get('objects', array('objectid'), array('OR' => $unique));
-    if(isset($object['objectid'])) { //Already exists, so just modify the data instead of inserting
+    $object = $db->get('objects', array('objectid'), array('OR' => $unique)); //Search via the unique array to find an object.
+    if(isset($object['objectid'])) { //If object found from the above search, just modify the data instead of inserting.
         $objectID = $object['objectid'];
-        if(empty($rowWithoutUnique)) {
+        if(empty($rowWithoutUnique)) { //If no data is to be modified, then delete.
             removeObject($objectID);
         } else {
             if(!isset($row['modified'])) {
