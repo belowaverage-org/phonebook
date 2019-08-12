@@ -9,7 +9,7 @@ Dylan Bickerstaff
 Functions used in other API implementations.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-function createModifyOrFindObject($row = array()) {
+function createModifyOrFindObject($row = array(), $rawTags = array()) {
     global $db;
     $unique = array();
     $rowWithoutUnique = $row;
@@ -28,16 +28,18 @@ function createModifyOrFindObject($row = array()) {
         unset($rowWithoutUnique[$uk]);
     }
     unset($rowWithoutUnique['objectid']);
-    $object = $db->get('objects', array('objectid'), array('OR' => $unique)); //Search via the unique array to find an object.
-    if(isset($object['objectid'])) { //If object found from the above search, just modify the data instead of inserting.
-        $objectID = $object['objectid'];
-        if(empty($rowWithoutUnique)) { //If no data is to be modified, then delete.
+    $existing_row = $db->get('objects', '*', array('OR' => $unique)); //Search via the unique array to find an existing_row.
+    if(isset($existing_row['objectid'])) { //If existing_row found from the above search, just modify the data instead of inserting.
+        $objectID = $existing_row['objectid'];
+        if(empty($rowWithoutUnique) && empty($rawTags)) { //If no data is to be modified, then delete.
             removeObject($objectID);
+            return false;
         } else {
             if(!isset($row['modified'])) {
                 $row['modified'] = time();
             }
             $db->update('objects', $row, array('objectid' => $objectID));
+            $row = array_merge($existing_row, $row);
         }
     } else { //Insert the data
         if(!empty($rowWithoutUnique)) {
@@ -50,10 +52,44 @@ function createModifyOrFindObject($row = array()) {
             }
             $db->insert('objects', $row);
         } else {
-            $objectID = false;
+            return false;
+        }
+    }
+    if($objectID !== false) { //Rebuild tags if object is found / not deleted.
+        $tags = array();
+        if(empty($rawTags)) {
+            $existing_tags = getTagsFromObject($objectID, true);
+            print_r($existing_tags);
+            foreach(rowToTags($existing_row) as $k => $existing_generated_tag) {
+                if(in_array($existing_generated_tag, $existing_tags)) {
+                    unset($existing_tags[$k]);
+                }
+            }
+            $tags = array_merge($tags, $existing_tags);
+        }
+        print_r($tags);
+        clearTagsFromObject($objectID);
+        $tags = array_merge($tags, rowToTags($row));
+        if(!empty($rawTags)) {
+            foreach($rawTags as $rawTag) { //Foreach tag
+                $tags = array_merge($tags, tagFilter($rawTag)); //Filter the input tag and append the output.
+            }
+        }
+        foreach($tags as $tag) {
+            $tagID = createOrFindTag($tag);
+            createTagLinkForObject($tagID, $objectID);
         }
     }
     return $objectID;
+}
+function rowToTags($row = array()) {
+    $tags = array();
+    foreach($row as $attribute => $value) {
+        if(isset(SCHEMA[$attribute]['tagged']) && SCHEMA[$attribute]['tagged']) { //Apply tagged constraint.
+            $tags = array_merge($tags, tagFilter($value));
+        }
+    }
+    return $tags;
 }
 function createOrFindTag($tag) {
     global $db;
@@ -169,10 +205,10 @@ function organizeDatabaseObjects($objects, $includeTags = false) {
 function importDatabaseObjects($objects) {
     global $db;
     $db->pdo->beginTransaction();
-    foreach($objects as $key => $object) { //For every number being imported...
+    foreach($objects as $key => $attributes) { //For every number being imported...
         $tags = array();
         $row = array("objectid" => $key);
-        foreach($object as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
+        foreach($attributes as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
             if(isset(SCHEMA[$attribute]) && $attribute !== 'tags' && !empty($value)) { //If an attribute in the schema and not a tag list or empty.
                 if(isset(SCHEMA[$attribute]['type'])) { //Check type constraints
                     if(SCHEMA[$attribute]['type'] == 'number' || SCHEMA[$attribute]['type'] == 'timestamp') { //Check number constraint
@@ -191,24 +227,12 @@ function importDatabaseObjects($objects) {
                 if(isset(SCHEMA[$attribute]['length']) && strlen($value) > SCHEMA[$attribute]['length']) { //Check string length constraint
                     break;
                 }
-                if(isset(SCHEMA[$attribute]['tagged']) && SCHEMA[$attribute]['tagged']) { //Apply tagged constraint.
-                    $tags = array_merge($tags, tagFilter($value));
-                }
                 $row[$attribute] = $value; //Add the attribute to the row
             } elseif($attribute == 'tags') { //If a tag list
-                foreach($value as $rawTag) { //Foreach tag
-                    $tags = array_merge($tags, tagFilter($rawTag)); //Filter the input tag and append the output.
-                }
+                $tags = $value;
             }
         }
-        $objectID = createModifyOrFindObject($row);
-        if($objectID !== false) {
-            clearTagsFromObject($objectID);
-            foreach($tags as $tag) {
-                $tagID = createOrFindTag($tag);
-                createTagLinkForObject($tagID, $objectID);
-            }
-        }
+        $objectID = createModifyOrFindObject($row, $tags);
     }
     $db->pdo->commit();
 }
