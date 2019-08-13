@@ -59,15 +59,14 @@ function createModifyOrFindObject($row = array(), $rawTags = array()) {
         $tags = array();
         if(empty($rawTags)) {
             $existing_tags = getTagsFromObject($objectID, true);
-            print_r($existing_tags);
-            foreach(rowToTags($existing_row) as $k => $existing_generated_tag) {
-                if(in_array($existing_generated_tag, $existing_tags)) {
+            foreach(rowToTags($existing_row) as $existing_generated_tag) {
+                $k = array_search($existing_generated_tag, $existing_tags);
+                if($k !== false) {
                     unset($existing_tags[$k]);
                 }
             }
             $tags = array_merge($tags, $existing_tags);
         }
-        print_r($tags);
         clearTagsFromObject($objectID);
         $tags = array_merge($tags, rowToTags($row));
         if(!empty($rawTags)) {
@@ -84,9 +83,11 @@ function createModifyOrFindObject($row = array(), $rawTags = array()) {
 }
 function rowToTags($row = array()) {
     $tags = array();
-    foreach($row as $attribute => $value) {
-        if(isset(SCHEMA[$attribute]['tagged']) && SCHEMA[$attribute]['tagged']) { //Apply tagged constraint.
-            $tags = array_merge($tags, tagFilter($value));
+    if(isset($row)) {
+        foreach($row as $attribute => $value) {
+            if(isset(SCHEMA[$attribute]['tagged']) && SCHEMA[$attribute]['tagged']) { //Apply tagged constraint.
+                $tags = array_merge($tags, tagFilter($value));
+            }
         }
     }
     return $tags;
