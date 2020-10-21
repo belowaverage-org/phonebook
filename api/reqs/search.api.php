@@ -74,8 +74,13 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
             }
             if(isset($filteredTags) && is_array($filteredTags)) { //If filteredTags is an array.
                 foreach($filteredTags as $k => $tag) { //Remove other database attributes like objectid and only use the tag text.
+                    if (in_array($tag['text'], $searchTags)) { //Remove tags that are used in the search query.
+                        unset($filteredTags[$k]);
+                        continue;
+                    }
                     $filteredTags[$k] = $tag['text'];
                 }
+                $filteredTags = array_values($filteredTags); //Remove numbered keys from array.
                 if($objects !== false && $filteredTags !== false) { //If objects and filteredTags is valid.
                     echo json_encode(array( //Return the results from this search request.
                         'tags' => $filteredTags,
