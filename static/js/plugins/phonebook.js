@@ -87,7 +87,13 @@ function autoFillTag(term) { //Returns rest of tag
 	if($.isEmptyObject(mem.availableTags) || $('#input > span').length == 1) {
 		$.each(mem.allTags, getAutoFill);
 	} else {
-		$.each(mem.availableTags, getAutoFill);
+		var availableMinusBubbles = [];
+		mem.availableTags.forEach(function(value) {
+			if (getSearchTags().includes(value)) return; //Do not allow duplicates through autofill.
+			availableMinusBubbles.push(value);
+		});
+
+		$.each(availableMinusBubbles, getAutoFill);
 	}
 	return ret;
 }
