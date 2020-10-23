@@ -53,13 +53,14 @@ function auth_get_password() { //Return the password from the POST header.
         return false;
     }
 }
-function auth_session_set() { //Generate a session and send a cookie.
+function auth_session_set($hasAdminPermission = false) { //Generate a session and send a cookie.
     global $db;
     global $auth_session_expire;
     $id = base64_encode(random_bytes(30));
     $db->insert('sessions', array(
         'id' => $id,
         'expire' => time() + $auth_session_expire,
+        'admin' => $hasAdminPermission,
         'username' => auth_get_username()
     ));
     setcookie('phonebook-api-cookie', $id, time() + $auth_session_expire, '', '', true);
@@ -96,10 +97,15 @@ function auth_session_clear() { //Remove the session from the server and client.
 }
 require_once($auth_lib_plugin); //Load the specified auth plugin.
 function auth_authenticated() { //Function called by other APIs to deterimine if user is authenticated as admin.
-    if(auth_session_get()) { //If session already exists
-        return true;
+    $session = auth_session_get();
+    if($session) { //If session already exists
+        if ($session['admin']) { //If session is an administrator session.
+            return true;
+        } else {
+            return false;
+        }
     } elseif(auth_plugin_authenticated()) { //If authentication plugin validates the credentials passed.
-        auth_session_set();
+        auth_session_set(true);
         return true;
     } else { //Otherwise the user is not authenticated.
         http_response_code(403);

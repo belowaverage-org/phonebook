@@ -104,6 +104,7 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 		CREATE TABLE IF NOT EXISTS sessions (
 			id BLOB PRIMARY KEY NOT NULL,
 			expire INT NOT NULL,
+			admin INT NOT NULL,
 			username TEXT NOT NULL
 		);
 	');
@@ -111,6 +112,14 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 		CREATE TABLE IF NOT EXISTS translations (
 			\'from\' TEXT NOT NULL,
 			\'to\' TEXT
+		);
+	');
+	$db->query('
+		CREATE TABLE IF NOT EXISTS statistics (
+			timestamp INT NOT NULL,
+			apispeed INT NOT NULL,
+			results INT NOT NULL,
+			query TEXT NOT NULL
 		);
 	');
 	/* End create tables */
