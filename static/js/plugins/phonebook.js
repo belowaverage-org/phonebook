@@ -20,6 +20,7 @@ window.mem = {
     scrollPageOffset: 0,
     lastSearchTags: [],
     lastSearchOffset: 0,
+    lastSearchSpeed: 0,
     scrollPageEnd: false,
     schema: {},
     objectsFromLastCall: []
@@ -356,7 +357,8 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                     }
                 })
             },
-            success: function(results) { //On success
+            success: function(results, status, xhr) { //On success
+                mem.lastSearchSpeed = Number.parseFloat(xhr.getResponseHeader('phonebook-api-response-time'));
                 $('.resultsMessage').hide();
                 if(!keepContent) {
                     mem.scrollPageEnd = false;
