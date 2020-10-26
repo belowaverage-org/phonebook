@@ -96,6 +96,10 @@ function auth_session_clear() { //Remove the session from the server and client.
     return true;
 }
 require_once($auth_lib_plugin); //Load the specified auth plugin.
+function auth_preauthenticate() { //Function called by other APIs to set the api cookie.
+    if(auth_session_get()) return; //If session exists, return.
+    auth_session_set(auth_plugin_authenticated()); //Otherwise set the cookie.
+}
 function auth_authenticated() { //Function called by other APIs to deterimine if user is authenticated as admin.
     $session = auth_session_get();
     if($session) { //If session already exists
