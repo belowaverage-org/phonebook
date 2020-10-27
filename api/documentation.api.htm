@@ -550,8 +550,12 @@ stats: count
         </pre>
         <pre>
 api: stats
+stats: results
+        </pre>
+        <pre>
+api: stats
 stats: feedback
-feedback: {"speed":0.00025,"count":10,"tags":["example","tags"]}
+feedback: {"apispeed":0.00025,"count":10,"query":["example","tags"]}
         </pre>
         <h4><i>POST Live Demo</i></h4>
         <form target="stats" method="post">
@@ -560,12 +564,13 @@ feedback: {"speed":0.00025,"count":10,"tags":["example","tags"]}
                 <option value="ping">ping</option>
                 <option value="count">count</option>
                 <option value="feedback">feedback</option>
+                <option value="results">results</option>
             </select><br><br>
             <textarea name="feedback" style="width:800px;height:300px;">
 {
-    "speed": 0.00025,
+    "apispeed": 0.00025,
     "count": 10,
-    "tags": [
+    "query": [
         "example",
         "tags"
     ]

@@ -14,9 +14,9 @@ function send() {
             api: 'stats',
             stats: 'feedback',
             feedback: JSON.stringify({
-                'speed': mem.lastSearchSpeed,
+                'apispeed': mem.lastSearchSpeed,
                 'count': Object.keys(mem.objectsFromLastCall).length,
-                'tags': mem.lastSearchTags.filter(tag => tag.length > 0)
+                'query': mem.lastSearchTags.filter(tag => tag.length > 0)
             })
         }
     });

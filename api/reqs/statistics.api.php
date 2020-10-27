@@ -38,22 +38,29 @@ if(isset($_POST['stats'])) {
     if($_POST['stats'] == 'count') { //Count active sessions.
         echo $db->count('sessions');
     }
-    if($_POST['stats'] == 'feedback' && isset($_POST['feedback']) && !empty($_POST['feedback'])) { 
+    if($_POST['stats'] == 'feedback' && isset($_POST['feedback']) && !empty($_POST['feedback'])) { //Filter and then commit incomming feedback.
         $feedback = json_decode($_POST['feedback'], true);
         if($feedback !== null) {
-            if(!isset($feedback['speed']) || !is_numeric($feedback['speed'])) return;
+            if(!isset($feedback['apispeed']) || !is_numeric($feedback['apispeed'])) return;
             if(!isset($feedback['count']) || !is_numeric($feedback['count'])) return;
-            if(!isset($feedback['tags']) || !is_array($feedback['tags']) || count($feedback['tags']) == 0) return;
+            if(!isset($feedback['query']) || !is_array($feedback['query']) || count($feedback['query']) == 0) return;
             $db->delete('statistics', [
                 "timestamp[<]" => (time() - $statistics_expire_time)
             ]);
             $db->insert('statistics', [
                 "timestamp" => time(),
-                "apispeed" => $feedback['speed'],
+                "apispeed" => $feedback['apispeed'],
                 "count" => $feedback['count'],
-                "query" => json_encode($feedback['tags'])
+                "query" => json_encode($feedback['query'])
             ]);
         }
+    }
+    if($_POST['stats'] == 'results') { //Compile feedback results.
+        $stats = $db->select('statistics', '*', ['ORDER' => ['timestamp' => 'DESC']]);
+        foreach($stats as $k => $stat) {
+            $stats[$k]['query'] = json_decode($stat['query'], true);
+        }
+        echo json_encode($stats, $prettyPrintIfRequested);
     }
 }
 ?>
