@@ -10,8 +10,8 @@ Functions that authenticate and cache sessions.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
 
-if(!file_exists('auth.ldap.cfg.php')) {
-    file_put_contents('auth.ldap.cfg.php',
+if(!file_exists('../data/conf/auth.ldap.cfg.php')) {
+    file_put_contents('../data/conf/auth.ldap.cfg.php',
 '<?php
 /*
 Phone Book
@@ -35,7 +35,7 @@ $auth_ldap_api_admin_groups = array(
 ?>'
     );
 }
-require_once('auth.ldap.cfg.php'); //Import config for LDAP.
+require_once('../data/conf/auth.ldap.cfg.php'); //Import config for LDAP.
 function auth_plugin_authenticated() { //Main function called by AUTH Lib.
     global $auth_ldap_domain_controller_hostname;
     global $auth_ldap_base_dn;

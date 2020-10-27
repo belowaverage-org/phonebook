@@ -9,15 +9,40 @@ Dylan Bickerstaff
 Creates and updates the database schema as nessesary.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-if(!file_exists('./DB/database.sqlite3')) { //Create SQLite DB if it doesn't exist.
-	if(!is_dir('./DB/')) mkdir('./DB/');
-	file_put_contents('./DB/database.sqlite3', '');
+if(!is_dir('../data/')) mkdir('../data/');
+if(!is_dir('../data/db/')) mkdir('../data/db/');
+if(!is_dir('../data/conf/')) mkdir('../data/conf/');
+if(!file_exists('../data/db/database.sqlite3')) { //Create SQLite DB if it doesn't exist.
+	file_put_contents('../data/db/database.sqlite3', '');
 }
-require('./database.cfg.php');
+if(!file_exists('../data/conf/database.cfg.php')) {
+    file_put_contents('../data/conf/database.cfg.php',
+'<?php
+if(!isset($singlePointEntry)){http_response_code(403);exit;}
+
+/* PhoneBook database settings */
+$dbConfig = array(
+	\'insertLoopLimit\' => 100 //Determines how many rows can be inserted at a time before the Phone Book API will start splitting the database calls.
+);
+
+/* Database connection settings */
+require_once(\'./reqs/medoo.lib.php\');
+use Medoo\Medoo;
+$db = new Medoo([
+	\'database_type\' => \'sqlite\',
+	\'database_file\' => \'../data/db/database.sqlite3\'
+]);
+
+/* Database technology specific settings */
+$db->query(\'PRAGMA foreign_keys = ON;\');
+?>'
+    );
+}
+require('../data/conf/database.cfg.php');
 $schema_json_raw = json_encode(SCHEMA, true);
 $schema_json_raw_cache = '';
-if(file_exists('./DB/schema.cache')) {
-	$schema_json_raw_cache = file_get_contents('./DB/schema.cache');
+if(file_exists('../data/db/schema.cache')) {
+	$schema_json_raw_cache = file_get_contents('../data/db/schema.cache');
 }
 if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
 	require_once('library.lib.php');
@@ -118,6 +143,6 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 	');
 	/* End create tables */
 	importDatabaseObjects($objects);
-	file_put_contents('./DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
+	file_put_contents('../data/db/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 ?>

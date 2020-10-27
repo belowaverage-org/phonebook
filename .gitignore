@@ -6,7 +6,7 @@ static/js/plugins/employeephoto.js
 Thumbs.db
 ehthumbs.db
 
-DB/
+/data
 
 # Folder config file
 Desktop.ini
@@ -52,6 +52,3 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /.vs
-api/auth.ldap.cfg.php
-api/auth.cfg.php
-api/auth.none.cfg.php

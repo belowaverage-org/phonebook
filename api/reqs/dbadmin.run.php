@@ -51,7 +51,7 @@ if(!auth_authenticated()){http_response_code(403);exit;}
 $password = '';
 
 //directory relative to this file to search for databases (if false, manually list databases in the $databases variable)
-$directory = './DB/';
+$directory = '../data/db/';
 
 //whether or not to scan the subdirectories of the above directory infinitely deep
 $subdirectories = false;

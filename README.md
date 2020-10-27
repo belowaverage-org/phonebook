@@ -11,8 +11,5 @@ Running the image:
 docker run -p 8081:80 -l PhoneBook -d belowaverageorg/phonebook
 ```
 Paths to mount for persistence:
-* /var/www/html/DB
-* /var/www/html/api/auth.cfg.php
-* /var/www/html/api/auth.ldap.cfg.php
-* /var/www/html/api/database.cfg.php
-* /var/www/html/api/schema.cfg.json
+* /var/www/html/data
+* /var/www/html/api/schema.cfg.json  (Optional)
