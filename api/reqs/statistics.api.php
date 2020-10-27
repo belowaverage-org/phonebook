@@ -41,13 +41,9 @@ if(isset($_POST['stats'])) {
     if($_POST['stats'] == 'feedback' && isset($_POST['feedback']) && !empty($_POST['feedback'])) { 
         $feedback = json_decode($_POST['feedback'], true);
         if($feedback !== null) {
-            print_r($feedback);
             if(!isset($feedback['speed']) || !is_numeric($feedback['speed'])) return;
-            echo '1';
             if(!isset($feedback['count']) || !is_numeric($feedback['count'])) return;
-            echo '1';
             if(!isset($feedback['tags']) || !is_array($feedback['tags']) || count($feedback['tags']) == 0) return;
-            echo '1';
             $db->delete('statistics', [
                 "timestamp[<]" => (time() - $statistics_expire_time)
             ]);
