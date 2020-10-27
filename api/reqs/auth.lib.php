@@ -63,7 +63,7 @@ function auth_session_set($hasAdminPermission = false) { //Generate a session an
         'admin' => $hasAdminPermission,
         'username' => auth_get_username()
     ));
-    setcookie('phonebook-api-cookie', $id, time() + $auth_session_expire, '', '', true);
+    setcookie('phonebook-api-cookie', $id, time() + $auth_session_expire, '', '', false);
 }
 function auth_session_get() { //Get and update session information from the database / cookie.
     global $db;
@@ -81,7 +81,7 @@ function auth_session_get() { //Get and update session information from the data
             'expire' => $expire
         ), $where);
     }
-    setcookie('phonebook-api-cookie', $_COOKIE['phonebook-api-cookie'], $expire, '', '', true);
+    setcookie('phonebook-api-cookie', $_COOKIE['phonebook-api-cookie'], $expire, '', '', false);
     return $session;
 }
 function auth_session_clear() { //Remove the session from the server and client.
@@ -92,7 +92,7 @@ function auth_session_clear() { //Remove the session from the server and client.
     $db->delete('sessions', array(
         'id' => $_COOKIE['phonebook-api-cookie']
     ));
-    setcookie('phonebook-api-cookie', '', 0, '', '', true); //Clear the cookie.
+    setcookie('phonebook-api-cookie', '', 0, '', '', false); //Clear the cookie.
     return true;
 }
 require_once($auth_lib_plugin); //Load the specified auth plugin.
