@@ -537,7 +537,15 @@ objects: [2834fa80ac, 3e834d4674]
             
             The <b>ping</b> method will register a session on the system.<br><br>
             
-            The <b>count</b> method will return the number of active sessions on the system. <i>Active on web page for last 60 seconds.</i>
+            The <b>count</b> method will return the number of active sessions on the system. <i>Active on web page for last 60 seconds.</i><br><br>
+
+            The <b>feedback</b> method will accept a JSON string with a few properties:<br>
+            <i>apispeed</i>: which is the delay between when the last API request was sent and then received.<br>
+            <i>count</i>: which is the number of objects returned from the last API search request.<br>
+            <i>query</i>: which is an array of tags used in the last API search request.<br>
+            These results are then compiled into the database to be processed by some other system or client.<br><br>
+
+            The <b>results</b> method will return the compiled list of feedback queries in reverse chronological order.
         </p>
         <h4><i>POST Request Headers</i></h4>
         <pre>
