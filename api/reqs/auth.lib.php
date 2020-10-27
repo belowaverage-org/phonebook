@@ -9,7 +9,6 @@ Dylan Bickerstaff
 Functions that authenticate and cache sessions.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-
 if(!file_exists('../data/conf/auth.cfg.php')) {
     file_put_contents('../data/conf/auth.cfg.php',
 '<?php

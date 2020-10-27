@@ -551,7 +551,7 @@ stats: count
         <pre>
 api: stats
 stats: feedback
-feedback: {"speed":0.00025,"tags":["example","tags"]}
+feedback: {"speed":0.00025,"count":10,"tags":["example","tags"]}
         </pre>
         <h4><i>POST Live Demo</i></h4>
         <form target="stats" method="post">
@@ -564,6 +564,7 @@ feedback: {"speed":0.00025,"tags":["example","tags"]}
             <textarea name="feedback" style="width:800px;height:300px;">
 {
     "speed": 0.00025,
+    "count": 10,
     "tags": [
         "example",
         "tags"

@@ -9,7 +9,7 @@ Contains the logic and communication between the API and the client.
 */
 eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(7).8(0(){$(\'#6\').5(0(){3($(\'#4 > 9:a-g(2)\').e()==1(\'d==\')){$(\'b\').c(1(\'f\'))}})});',17,17,'function|atob||if|input|dblclick|info|document|ready|span|nth|body|append|MTQ3MjU4MzY5MA|text|PGltZyBjbGFzcz0iYyIgc3JjPSJzdGF0aWMvaW1nL2MuZ2lmIj4|child'.split('|'),0,{}));
 //Global Variables
-var apiURI = './api/';
+window.apiURI = './api/';
 window.mem = {
     availableTags: [],
     tagsFromLastCall: [],
@@ -19,6 +19,7 @@ window.mem = {
     scrollTriggered: false,
     scrollPageOffset: 0,
     lastSearchTags: [],
+    jLastSearchTags: "",
     lastSearchOffset: 0,
     lastSearchSpeed: 0,
     scrollPageEnd: false,
@@ -319,8 +320,9 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
     });
     var tags = getSearchTags();
     jtags = JSON.stringify(tags);
-    if(jtags !== mem.lastSearchTags || (keepContent && !mem.scrollPageEnd) ) {
-        mem.lastSearchTags = jtags;
+    if(jtags !== mem.jLastSearchTags || (keepContent && !mem.scrollPageEnd) ) {
+        mem.lastSearchTags = tags;
+        mem.jLastSearchTags = jtags;
         ajaxSearchQuery.abort(); //Abort the previous requests.
         if(!keepContent) {
             mem.scrollPageOffset = 0;
@@ -387,6 +389,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                     }
                 }
                 $('#numbers').trigger('search');
+                $(document).trigger('search');
                 callback.call();
             }
         });

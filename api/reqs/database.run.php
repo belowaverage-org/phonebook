@@ -43,6 +43,8 @@ $schema_json_raw = json_encode(SCHEMA, true);
 $schema_json_raw_cache = '';
 if(file_exists('../data/db/schema.cache')) {
 	$schema_json_raw_cache = file_get_contents('../data/db/schema.cache');
+} else {
+	file_put_contents('../data/db/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
 	require_once('library.lib.php');
@@ -84,6 +86,8 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 	$db->query('DROP TABLE IF EXISTS tags_objects;');
 	$db->query('DROP TABLE IF EXISTS tags;');
 	$db->query('DROP TABLE IF EXISTS objects;');
+	$db->query('DROP TABLE IF EXISTS statistics;');
+	$db->query('DROP TABLE IF EXISTS sessions;');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS tags (
 			tagid BLOB PRIMARY KEY UNIQUE NOT NULL,
@@ -138,11 +142,11 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 		CREATE TABLE IF NOT EXISTS statistics (
 			timestamp INT NOT NULL,
 			apispeed INT NOT NULL,
+			count INT NOT NULL,
 			query TEXT NOT NULL
 		);
 	');
 	/* End create tables */
 	importDatabaseObjects($objects);
-	file_put_contents('../data/db/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 ?>
