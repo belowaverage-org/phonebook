@@ -123,6 +123,6 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 	');
 	/* End create tables */
 	importDatabaseObjects($objects);
-	file_put_contents(__DIR__.'/../../DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
+	file_put_contents(__DIR__.'/../DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 ?>
