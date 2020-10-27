@@ -9,22 +9,17 @@ Dylan Bickerstaff
 Creates and updates the database schema as nessesary.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-require(__DIR__.'/../database.cfg.php');
-/*function insertLoop($table, $data) { //Function for inserting multiple rows into the database and splitting up the insert statements
-	global $db;
-	global $dbConfig;
-	$offset = 0;
-	while(count($data) > $offset) {
-		$db->insert($table, array_slice($data, $offset, $dbConfig['insertLoopLimit']));
-		$offset += $dbConfig['insertLoopLimit'];
-	}
-}*/
+if(!file_exists('./DB/database.sqlite3')) { //Create SQLite DB if it doesn't exist.
+	if(!is_dir('./DB/')) mkdir('./DB/');
+	file_put_contents('./DB/database.sqlite3', '');
+}
+require('./database.cfg.php');
 $schema_json_raw = json_encode(SCHEMA, true);
 $schema_json_raw_cache = '';
-if(file_exists(__DIR__.'/../../DB/schema.cache')) {
-	$schema_json_raw_cache = file_get_contents(__DIR__.'/../../DB/schema.cache');
+if(file_exists('./DB/schema.cache')) {
+	$schema_json_raw_cache = file_get_contents('./DB/schema.cache');
 }
-if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../DB/database.sqlite3')) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
+if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cached copy of the schema and check if the database even exists, otherwise create the database.
 	require_once('library.lib.php');
 	$objects = exportDatabaseObjects(true);
 	$rows = '';
@@ -123,6 +118,6 @@ if($schema_json_raw !== $schema_json_raw_cache || !file_exists(__DIR__.'/../../D
 	');
 	/* End create tables */
 	importDatabaseObjects($objects);
-	file_put_contents(__DIR__.'/../DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
+	file_put_contents('./DB/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 }
 ?>

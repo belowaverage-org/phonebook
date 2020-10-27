@@ -31,6 +31,7 @@ $auth_none_everyone_is_admin = true;
 }
 require_once('auth.none.cfg.php'); //Import config for NONE.
 function auth_plugin_authenticated() { //Main function called by AUTH Lib.
+    global $auth_none_everyone_is_admin;
     return $auth_none_everyone_is_admin;
 }
 ?>

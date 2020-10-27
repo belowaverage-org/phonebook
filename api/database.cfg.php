@@ -7,11 +7,11 @@ $dbConfig = array(
 );
 
 /* Database connection settings */
-require_once(__DIR__.'/reqs/medoo.lib.php');
+require_once('./reqs/medoo.lib.php');
 use Medoo\Medoo;
 $db = new Medoo([
 	'database_type' => 'sqlite',
-	'database_file' => __DIR__.'../DB/database.sqlite3'
+	'database_file' => './DB/database.sqlite3'
 ]);
 
 /* Database technology specific settings */

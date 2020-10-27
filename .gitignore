@@ -54,3 +54,4 @@ Temporary Items
 /.vs
 api/auth.ldap.cfg.php
 api/auth.cfg.php
+api/auth.none.cfg.php
