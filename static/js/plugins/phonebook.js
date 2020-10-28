@@ -400,7 +400,7 @@ function toggleHamburger() {
     $('#main').toggleClass('hamburger');
     $('#hamopen').toggleClass('hidden');
 }
-function toggleMenu(id) {
+window.toggleMenu = function(id) {
     $(id).toggleClass('hidden');
     $(blurToggle).toggleClass('blur');
     if($(id).hasClass('hidden')) {
@@ -469,7 +469,7 @@ function exportResults() {
     xport();
 }
 function printResults() {
-    $('#loading').show().find('h1').text('Requesting print info...');
+    $('#loading').removeClass('hidden').find('h1').text('Requesting print info...');
     printAttributes = [];
     $.each(mem.schema, function(k, v) {
         if(typeof v['print'] !== 'undefined' && v['print']) {
@@ -510,7 +510,7 @@ function printResults() {
                 });
             });
             filterPrintRows(cols);
-            $('#loading').hide();
+            $('#loading').addClass('hidden');
             window.print();
         }, 100);
     }, printAttributes);

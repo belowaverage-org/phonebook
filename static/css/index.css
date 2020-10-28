@@ -40,8 +40,14 @@ body {
     margin-bottom: 40px;
 }
 
+.menu {
+    transition:.3s;
+    opacity:1;
+}
+
 .menu.hidden, .float.hidden:not(#hamopen) {
-    display: none;
+    pointer-events: none;
+    opacity: 0;
 }
 
 #numbers > div, .button:hover {
@@ -624,7 +630,7 @@ img.c {
     }
 }
 
-#about div {
+#about div, #statistics div {
     padding:0px 20px 0px 20px;
     max-width: 400px;
     text-align: left;
@@ -664,4 +670,23 @@ img.c {
 
 #feedback .button {
     height: 30px;
+}
+
+#statistics p {
+    height: 20px;
+}
+
+#statistics p.loading {
+    width: 200px;
+    background-color: whitesmoke;
+    animation: 0.8s ease-in-out infinite alternate stat-loading;
+}
+
+@keyframes stat-loading {
+    from {
+        opacity:0.3;
+    }
+    to {
+        opacity:1;
+    }
 }
