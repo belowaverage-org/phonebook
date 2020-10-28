@@ -114,6 +114,7 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS tags_objects (
+			referenceid INTEGER PRIMARY KEY,
 			tagid BLOB NOT NULL REFERENCES tags (tagid),
 			objectid BLOB NOT NULL REFERENCES objects (objectid) 
 		);
@@ -127,22 +128,23 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 	$db->query('
 		CREATE TABLE IF NOT EXISTS sessions (
 			id BLOB PRIMARY KEY NOT NULL,
-			expire INT NOT NULL,
-			admin INT NOT NULL,
+			expire INTEGER NOT NULL,
+			admin INTEGER NOT NULL,
 			username TEXT NOT NULL
 		);
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS translations (
-			\'from\' TEXT NOT NULL,
+			\'from\' TEXT PRIMARY KEY NOT NULL,
 			\'to\' TEXT
 		);
 	');
 	$db->query('
 		CREATE TABLE IF NOT EXISTS statistics (
-			timestamp INT NOT NULL,
-			apispeed INT NOT NULL,
-			count INT NOT NULL,
+			eventid INTEGER PRIMARY KEY,
+			timestamp INTEGER NOT NULL,
+			apispeed INTEGER NOT NULL,
+			count INTEGER NOT NULL,
 			query TEXT NOT NULL
 		);
 	');

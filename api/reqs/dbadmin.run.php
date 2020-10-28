@@ -216,7 +216,7 @@ $lang = array(
 	"not_dir" => "The directory you specified to scan for databases does not exist or is not a directory.",
 	"bad_php_directive" => "It appears that the PHP directive, 'register_globals' is enabled. This is bad. You need to disable it before continuing.",
 	"page_gen" => "Page generated in %s seconds.",
-	"powered" => "Powered by",
+	"powered" => "Dylan Bickerstaff 2020 | ",
 	"free_software" => "This is free software.",
 	"please_donate" => "Please donate.",
 	"remember" => "Remember me",
@@ -253,7 +253,7 @@ $lang = array(
 	"affected" => "affected",
 	"blank_index" => "Index name must not be blank.",
 	"one_index" => "You must specify at least one index column.",
-	"docu" => "Documentation",
+	"docu" => "Admin Documentation",
 	"license" => "License",
 	"proj_site" => "Project Site",
 	"bug_report" => "This may be a bug that needs to be reported at",
@@ -822,7 +822,7 @@ if ($auth->isAuthorized())
 		unset($_SESSION[COOKIENAME.'currentDB']);
 	
 	//- Delete an existing database
-	if(isset($_GET['database_delete']))
+	/*if(isset($_GET['database_delete']))
 	{
 		$dbpath = $_POST['database_delete'];
 		// check whether $dbpath really is a db we manage
@@ -833,10 +833,10 @@ if ($auth->isAuthorized())
 			unset($_SESSION[COOKIENAME.'currentDB']);
 			unset($databases[$checkDB]);
 		} else die($lang['err'].': '.$lang['delete_only_managed']);
-	}
+	}*/
 	
 	//- Rename an existing database
-	if(isset($_GET['database_rename']))
+	/*if(isset($_GET['database_rename']))
 	{
 		$oldpath = $_POST['oldname'];
 		$newpath = $_POST['newname'];
@@ -876,7 +876,7 @@ if ($auth->isAuthorized())
 			if(is_file($newpath) || is_dir($newpath)) $dbexists = true;
 			else $extension_not_allowed = true;	
 		}
-	}
+	}*/
 
 	
 	//- Export (download a dump) an existing database
@@ -967,7 +967,7 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
 <!-- Copyright <?php echo date("Y").' '.PROJECT.' ('.PROJECT_URL.')'; ?> -->
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-<link rel="shortcut icon" href="?db&resource=favicon" />
+<link rel="shortcut icon" href="../static/img/ico.png" />
 <title><?php echo PROJECT ?></title>
 
 <?php
@@ -983,6 +983,33 @@ if (file_exists($theme))
 else
 	// only use the default stylesheet if an external one does not exist
 	echo "<link href='?db&resource=css' rel='stylesheet' type='text/css' />", PHP_EOL;
+
+
+?>
+
+<style>
+	body {
+		background-color:#ffe9dc;
+	}
+	a {
+		color:#0032bf;
+	}
+	input,
+	textarea,
+	fieldset,
+	select,
+	#headerlinks,
+	#leftNav,
+	#main,
+	.tdheader,
+	.tab,
+	.tab_pressed
+	{
+		border-color:#0000009e;
+	}
+</style>
+
+<?php
 
 // HTML: output help text, then exit
 if(isset($_GET['help']))
@@ -1654,7 +1681,7 @@ echo "<h1><a href='".PAGE."'>";
 echo "<span id='logo'>".PROJECT."</span> <span id='version'>v".VERSION."</span>";
 echo "</a></h1>";
 echo "<div id='headerlinks'>";
-echo "<a href='javascript:void' onclick='openHelp(\"top\");'>".$lang['docu']."</a>";
+echo "<a href=\"../\">PhoneBook</a><br><a href=\"./\">API Documentation</a><br><a href='javascript:void' onclick='openHelp(\"top\");'>".$lang['docu']."</a>";
 echo "</div>";
 
 //- HTML: database list
@@ -1690,6 +1717,7 @@ if($j==0)
 echo "</fieldset>";
 
 //- HTML: form to create a new database
+/*
 if($directory!==false && is_writable($directory))
 {
 	echo "<fieldset style='margin:15px;'><legend><b>".$lang['db_create']."</b> ".helpLink($lang['help2'])."</legend>"; 
@@ -1707,6 +1735,7 @@ if($directory!==false && is_writable($directory))
 	echo "</form>";
 	echo "</fieldset>";
 }
+*/
 
 echo "<div style='text-align:center;'>";
 echo "<form action='".PAGE."' method='post'>";
@@ -3673,7 +3702,7 @@ if(!$target_table && !isset($_GET['confirm']) && (!isset($_GET['action']) || (is
 	else
 		echo "class='tab'";
 	echo ">".$lang['vac']."</a>";
-	if($directory!==false && is_writable($directory))
+	/*if($directory!==false && is_writable($directory))
 	{
 		echo "<a href='?db&view=rename' ";
 		if($view=="rename")
@@ -3688,7 +3717,7 @@ if(!$target_table && !isset($_GET['confirm']) && (!isset($_GET['action']) || (is
 		else
 			echo "class='tab delete_db'";
 		echo "><span>".$lang['db_del']."</span></a>";
-	}
+	}*/
 	echo "<div style='clear:both;'></div>";
 	echo "<div id='main'>";
 
@@ -4474,6 +4503,7 @@ class Database
 	// print the list of databases
 	public function print_db_list()
 	{
+		/*
 		global $databases, $lang;
 		echo "<fieldset style='margin:15px;' class='databaseList'><legend><b>".$lang['db_ch']."</b></legend>";
 		if(sizeof($databases)<10) //if there aren't a lot of databases, just show them as a list of links instead of drop down menu
@@ -4511,7 +4541,8 @@ class Database
 			echo "<input type='submit' value='".$lang['go']."' class='btn'>";
 			echo "</form>";
 		}
-		echo "</fieldset>";	
+		echo "</fieldset>";
+		*/
 	}
 
 	public function __destruct()
