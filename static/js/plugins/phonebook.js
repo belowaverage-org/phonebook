@@ -91,7 +91,7 @@ function autoFillTag(term) { //Returns rest of tag
     } else {
         var availableMinusBubbles = [];
         mem.availableTags.forEach(function(value) {
-            if (getSearchTags().includes(value)) return; //Do not allow duplicates through autofill.
+            if ($.inArray(value, getSearchTags()) > -1) return; //Do not allow duplicates through autofill.
             availableMinusBubbles.push(value);
         });
         $.each(availableMinusBubbles, getAutoFill);
@@ -360,7 +360,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                 })
             },
             success: function(results, status, xhr) { //On success
-                mem.lastSearchSpeed = Number.parseFloat(xhr.getResponseHeader('phonebook-api-response-time'));
+                mem.lastSearchSpeed = parseFloat(xhr.getResponseHeader('phonebook-api-response-time'));
                 $('.resultsMessage').hide();
                 if(!keepContent) {
                     mem.scrollPageEnd = false;

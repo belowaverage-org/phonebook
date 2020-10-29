@@ -1,12 +1,17 @@
-var oldTimeout = 0;
+var oldTimeoutID = 0;
+var refreshIntervalID = 0;
 $(document).on('search', function() {
-    clearTimeout(oldTimeout);
-    oldTimeout = setTimeout(send, 1000);
+    clearTimeout(oldTimeoutID);
+    oldTimeoutID = setTimeout(send, 1000);
 });
 $(document).on('bsloaded', function() {
     $('#hamburger .stats').click(function() {
         toggleMenu('#statistics');
+        refreshIntervalID = setInterval(gather, 5000);
         gather();
+    });
+    $('#exit').click(function() {
+        clearInterval(refreshIntervalID);
     });
 });
 function send() {
@@ -22,7 +27,9 @@ function send() {
             feedback: JSON.stringify({
                 'apispeed': mem.lastSearchSpeed,
                 'count': Object.keys(mem.objectsFromLastCall).length,
-                'query': mem.lastSearchTags.filter(tag => tag.length > 0)
+                'query': mem.lastSearchTags.filter(function(tag) {
+                    return tag.length > 0
+                })
             })
         }
     });
@@ -36,6 +43,20 @@ function databaseCounts(data) {
     updateStatistic('termsIndexed', data.tags + data.tags_objects);
     updateStatistic('queriesPerformed', data.statistics);
 }
+function resultsCounts(data) {
+    var averageApiTime = 0;
+    var averageResults = 0;
+    var popularQueries = [];
+    data.forEach(function(event, index) {
+        averageApiTime += parseFloat(event.apispeed);
+        averageResults += parseInt(event.count);
+    });
+    averageApiTime = averageApiTime / data.length;
+    averageResults = averageResults / data.length;
+    updateStatistic('averageResponseTime', averageApiTime + ' seconds');
+    updateStatistic('averageResultsReturned', averageResults);
+    updateStatistic('popularQueries', 'yee');
+}
 function gather() {
     $.ajax({
         type: 'post',
@@ -47,5 +68,16 @@ function gather() {
             stats: 'count'
         },
         success: databaseCounts
+    });
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: apiURI,
+        dataType: 'json',
+        data: {
+            api: 'stats',
+            stats: 'results'
+        },
+        success: resultsCounts
     });
 }

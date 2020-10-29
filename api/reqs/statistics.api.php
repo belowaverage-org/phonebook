@@ -43,6 +43,7 @@ if(isset($_POST['stats'])) {
         auth_preauthenticate();
     }
     if($_POST['stats'] == 'count') { //Count database entries.
+        deleteOldStatistics();
         echo json_encode(array(
             'objects' => $db->count('objects'),
             'sessions' => $db->count('sessions'),
