@@ -28,7 +28,7 @@ function send() {
                 'apispeed': mem.lastSearchSpeed,
                 'count': Object.keys(mem.objectsFromLastCall).length,
                 'query': mem.lastSearchTags.filter(function(tag) {
-                    return tag.length > 0
+                    return tag.length > 0;
                 })
             })
         }
@@ -46,16 +46,24 @@ function databaseCounts(data) {
 function resultsCounts(data) {
     var averageApiTime = 0;
     var averageResults = 0;
-    var popularQueries = [];
-    data.forEach(function(event, index) {
+    var popularQueries = {};
+    data.forEach(function(event) {
+        event.query.forEach(function(term) {
+            if(popularQueries[term] == null) {
+                popularQueries[term] = 0;
+            } else {
+                popularQueries[term] += 1;
+            }
+        });
         averageApiTime += parseFloat(event.apispeed);
         averageResults += parseInt(event.count);
     });
+    console.log(popularQueries);
     averageApiTime = averageApiTime / data.length;
     averageResults = averageResults / data.length;
     updateStatistic('averageResponseTime', averageApiTime + ' seconds');
     updateStatistic('averageResultsReturned', averageResults);
-    updateStatistic('popularQueries', 'yee');
+    updateStatistic('popularQueries', '<b>asdf</b>');
 }
 function gather() {
     $.ajax({
