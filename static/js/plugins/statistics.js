@@ -38,47 +38,21 @@ function updateStatistic(className, data) {
     $('#statistics .' + className).removeClass('loading').text(data);
 }
 function databaseCounts(data) {
-    $('#statistics .stat-l1').addClass('loading').text('');
+    $('#statistics .stat').addClass('loading').text('');
+    var topQueries = '';
     updateStatistic('usersOnline', data.sessions);
     updateStatistic('numbersStored', data.objects);
     updateStatistic('termsIndexed', data.tags + data.tags_objects);
     updateStatistic('queriesPerformed', data.statistics);
-}
-function resultsCounts(data) {
-    var averageApiTime = 0;
-    var averageResults = 0;
-    var popularQueries = {};
-    var popularQueriesSorted = [];
-    var popularQueriesString = "";
-    $('#statistics .stat-l2').addClass('loading').text('');
-    data.forEach(function(event) {
-        event.query.forEach(function(term) {
-            if(popularQueries[term] == null) {
-                popularQueries[term] = 1;
-            } else {
-                popularQueries[term] += 1;
-            }
-        });
-        averageApiTime += parseFloat(event.apispeed);
-        averageResults += parseInt(event.count);
+    if(data.statistics == 0) return;
+    updateStatistic('averageResponseTime', data.average_response_speed + ' seconds');
+    updateStatistic('averageResultsReturned', Math.round(data.average_results_returned));
+    Object.keys(data.top_search_queries).forEach(function(query, index) {
+        if(index >= 20) return;
+        topQueries += query + ', '
     });
-    Object.keys(popularQueries).forEach(function(key) {
-        popularQueriesSorted.push([key, popularQueries[key]]);
-    });
-    popularQueriesSorted = popularQueriesSorted.sort(function(a, b) {
-        return b[1] - a[1];
-    });
-    averageApiTime = averageApiTime / data.length;
-    averageResults = averageResults / data.length;
-    if(!isNaN(averageApiTime)) updateStatistic('averageResponseTime', averageApiTime + ' seconds');
-    if(!isNaN(averageResults)) updateStatistic('averageResultsReturned', Math.round(averageResults));
-    popularQueriesSorted.some(function(query, index, array) {
-        if(index < 20) {
-            popularQueriesString += query[0] + ', ';
-        }
-    });
-    popularQueriesString = popularQueriesString.substr(0, popularQueriesString.length - 2);
-    if(popularQueriesString !== '') updateStatistic('popularQueries', popularQueriesString + '.');
+    topQueries = topQueries.substr(0, topQueries.length - 2);
+    updateStatistic('popularQueries', topQueries + '.');
 }
 function gather() {
     $.ajax({
@@ -91,16 +65,5 @@ function gather() {
             stats: 'count'
         },
         success: databaseCounts
-    });
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: apiURI,
-        dataType: 'json',
-        data: {
-            api: 'stats',
-            stats: 'results'
-        },
-        success: resultsCounts
     });
 }

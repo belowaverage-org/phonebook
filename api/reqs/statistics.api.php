@@ -44,14 +44,38 @@ if(isset($_POST['stats'])) {
     }
     if($_POST['stats'] == 'count') { //Count database entries.
         deleteOldStatistics();
-        echo json_encode(array(
+        $statisticCount = $db->count('statistics');
+        $topSearchQueries = [];
+        $averageResponseObjects = 0;
+        $averageResponseSpeed = 0;
+        foreach($db->select('statistics', ['count', 'apispeed', 'query']) as $row) { //Compile random statistics.
+            $averageResponseObjects += $row['count'];
+            $averageResponseSpeed += $row['apispeed'];
+            foreach(json_decode($row['query']) as $query) {
+                if(isset($topSearchQueries[$query])) {
+                    $topSearchQueries[$query] += 1;
+                } else {
+                    $topSearchQueries[$query] = 1;
+                }
+            }
+        }
+        if($statisticCount !== 0) {
+            $averageResponseObjects = $averageResponseObjects / $statisticCount;
+            $averageResponseSpeed = $averageResponseSpeed / $statisticCount;
+            arsort($topSearchQueries);
+            $topSearchQueries = array_slice($topSearchQueries, 0, 100, true); //Limit queries to return to 100.
+        }
+        echo json_encode([
             'objects' => $db->count('objects'),
             'sessions' => $db->count('sessions'),
-            'statistics' => $db->count('statistics'),
+            'statistics' => $statisticCount,
             'tags' => $db->count('tags'),
             'tags_objects' => $db->count('tags_objects'),
-            'translations' => $db->count('translations')
-        ), $prettyPrintIfRequested);
+            'translations' => $db->count('translations'),
+            'average_results_returned' => $averageResponseObjects,
+            'average_response_speed' => $averageResponseSpeed,
+            'top_search_queries' => $topSearchQueries
+        ], $prettyPrintIfRequested);
     }
     if($_POST['stats'] == 'feedback' && isset($_POST['feedback']) && !empty($_POST['feedback'])) { //Filter and then commit incomming feedback.
         $feedback = json_decode($_POST['feedback'], true);
