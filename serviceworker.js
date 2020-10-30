@@ -1,4 +1,4 @@
-var CACHE_NAME = 'phonebook-v2.0.0.1';
+var CACHE_NAME = 'phonebook-v2.0.0.2';
 var urlsToCache = [
     './index.htm',
     './static/font.ttf',
@@ -21,7 +21,8 @@ var urlsToCache = [
     './static/js/plugins/keyboard.js',
     './static/js/plugins/phonebook.js',
     './static/js/plugins/seedrandom.js',
-    './static/js/plugins/startswith.js'
+    './static/js/plugins/startswith.js',
+    './static/js/plugins/statistics.js'
 ];
 self.addEventListener('install', function(event) {
     event.waitUntil(caches.open(CACHE_NAME).then(function(cache) {

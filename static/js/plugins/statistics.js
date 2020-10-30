@@ -38,6 +38,7 @@ function updateStatistic(className, data) {
     $('#statistics .' + className).removeClass('loading').text(data);
 }
 function databaseCounts(data) {
+    $('#statistics .stat-l1').addClass('loading').text('');
     updateStatistic('usersOnline', data.sessions);
     updateStatistic('numbersStored', data.objects);
     updateStatistic('termsIndexed', data.tags + data.tags_objects);
@@ -47,10 +48,13 @@ function resultsCounts(data) {
     var averageApiTime = 0;
     var averageResults = 0;
     var popularQueries = {};
+    var popularQueriesSorted = [];
+    var popularQueriesString = "";
+    $('#statistics .stat-l2').addClass('loading').text('');
     data.forEach(function(event) {
         event.query.forEach(function(term) {
             if(popularQueries[term] == null) {
-                popularQueries[term] = 0;
+                popularQueries[term] = 1;
             } else {
                 popularQueries[term] += 1;
             }
@@ -58,12 +62,23 @@ function resultsCounts(data) {
         averageApiTime += parseFloat(event.apispeed);
         averageResults += parseInt(event.count);
     });
-    console.log(popularQueries);
+    Object.keys(popularQueries).forEach(function(key) {
+        popularQueriesSorted.push([key, popularQueries[key]]);
+    });
+    popularQueriesSorted = popularQueriesSorted.sort(function(a, b) {
+        return b[1] - a[1];
+    });
     averageApiTime = averageApiTime / data.length;
     averageResults = averageResults / data.length;
-    updateStatistic('averageResponseTime', averageApiTime + ' seconds');
-    updateStatistic('averageResultsReturned', averageResults);
-    updateStatistic('popularQueries', '<b>asdf</b>');
+    if(!isNaN(averageApiTime)) updateStatistic('averageResponseTime', averageApiTime + ' seconds');
+    if(!isNaN(averageResults)) updateStatistic('averageResultsReturned', Math.round(averageResults));
+    popularQueriesSorted.some(function(query, index, array) {
+        if(index < 20) {
+            popularQueriesString += query[0] + ', ';
+        }
+    });
+    popularQueriesString = popularQueriesString.substr(0, popularQueriesString.length - 2);
+    if(popularQueriesString !== '') updateStatistic('popularQueries', popularQueriesString + '.');
 }
 function gather() {
     $.ajax({

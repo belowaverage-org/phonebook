@@ -46,56 +46,33 @@ The initial HTML for the client.
 			<div id="endresult" class="resultsMessage" style="display:none;">End of search results.</div>
 		</div>
 		<div id="legend" class="menu hidden">
-			<h1>Phone Book Guide</h1>
-			<h3>Bubble / Tag Legend</h3>
-			<div class="leg blue"> - Phone number</div>
-			<div class="leg green"> - Existing tag</div>
-			<div class="leg yellow"> - Saved tag</div>
-			<div class="leg gray"> - Non existing tag</div>
-			<h3>Dictionary</h3>
-			<ul>
-				<li><b>Tag</b> - A word or phrase without a number or space that describes what you are looking for.</li>
-				<li><b>Bubble</b> - The colored background surrounding and seperating the tags.</li>
-				<li><b>Autofill</b> - A function of the Phone Book that automaticly predicts and completes any tag that you are typing.</li>
-				<li><b>Search Mode</b> - A mode of Phone Book that allows you to search for a phone number by tags.</li>
-				<li><b>Edit Mode</b> - A mode of Phone Book that allows you to edit numbers, create numbers, edit tags and create tags on a number.</li>
-			</ul>
-			<h3>Key Mappings / Shortcuts</h3>
-			<h4>Both Modes</h4>
-			<ul>
-				<li><b>Tab</b> - Complete autofilled text.</li>
-				<li><b>Space</b> - Create blank tag</li>
-				<li><b>End</b> - Remove all tags and return to Search Mode</li>
-				<li><b>Delete</b> - Remove selected tag.</li>
-				<li><b>Left Arrow</b> - Select tag to the left. (If exists)</li>
-				<li><b>Right Arrow</b> - Select tag to the right. (If exists)</li>
-			</ul>
-			<h4>Edit Mode</h4>
-			<ul>
-				<li><b>Up Arrow</b> - Select tag input.</li>
-				<li><b>Down Arrow</b> - Select description input.</li>
-				<li><b>Enter</b> - Save changed data.</li>
-			</ul>
-			<h3>Searching Numbers</h3>
-			To search for a number just start typing.<br><br>
-			While typing, you cannot type a tag that does not exist.<br><br>
-			The autofill system will stop you from typing if the tag you are trying to type does not exist.
-			<h3>Editing Numbers</h3>
-			<ol>
-				<li>Press <b>[End]</b> to clear your screen.</li>
-				<li>Type in an existing Phone Number.</li>
-				<li>Press <b>[Space]</b> to create a new tag
-					<ul>
-						<li><span class="leg green"></span> - A green tag indicates an existing tag on another number.</li>
-						<li><span class="leg yellow"></span> - A yellow tag indicates a saved/unedited tag already associated with this number.</li>
-						<li><span class="leg"></span> - A gray tag indicates a non existing tag.</li>
-					</ul>
-				</li>
-				<li>Type a tag you would like to associate with this number.</li>
-				<li>Use the <b>[Down Arrow]</b> key to select the "description" input.</li>
-				<li>Type a description of the Phone Number.</li>
-				<li>Press <b>[Enter]</b> to save your changes.</li>
-			</ol>
+			<div>
+				<h1>Phone Book Guide</h1>
+				<h3>Bubble / Tag Legend</h3>
+				<div class="leg green"> - Existing tag</div>
+				<div class="leg gray"> - Non existing tag</div>
+				<h3>Dictionary</h3>
+				<ul>
+					<li><b>Tag</b> - A word or phrase without a number or space that describes what you are looking for.</li>
+					<li><b>Bubble</b> - The colored background surrounding and seperating the tags.</li>
+					<li><b>Autofill</b> - A function of the Phone Book that automaticly predicts and completes any tag that you are typing.</li>
+				</ul>
+				<h3>Key Mappings / Shortcuts</h3>
+				<ul>
+					<li><b>Tab</b> - Complete autofilled text.</li>
+					<li><b>Space</b> - Create blank tag</li>
+					<li><b>End</b> - Remove all tags and return to Search Mode</li>
+					<li><b>Delete</b> - Remove selected tag.</li>
+					<li><b>Left Arrow</b> - Select tag to the left. (If exists)</li>
+					<li><b>Right Arrow</b> - Select tag to the right. (If exists)</li>
+				</ul>
+				<h3>Searching Numbers</h3>
+				<p>
+					To search for a number just start typing.<br><br>
+					While typing, you cannot type a tag that does not exist.<br><br>
+					The autofill system will stop you from typing if the tag you are trying to type does not exist.
+				</p>
+			</div>
 		</div>
 		<div id="about" class="menu hidden">
 			<div>
@@ -137,29 +114,29 @@ The initial HTML for the client.
 			<div>
 				<hr>
 				<h3>Users online:</h3>
-				<p class="loading usersOnline"></p>
+				<p class="stat-l1 loading usersOnline"></p>
 				<hr>
 				<h3>Numbers stored:</h3>
-				<p class="loading numbersStored"></p>
+				<p class="stat-l1 loading numbersStored"></p>
 				<hr>
 				<h3>Search terms indexed:</h3>
-				<p class="loading termsIndexed"></p>
+				<p class="stat-l1 loading termsIndexed"></p>
 				<hr>
 			</div>
 			<p>In the last hour...</p>
 			<div>
 				<hr>
 				<h3>Queries performed:</h3>
-				<p class="loading queriesPerformed"></p>
+				<p class="stat-l1 loading queriesPerformed"></p>
 				<hr>
 				<h3>Average response time:</h3>
-				<p class="loading averageResponseTime"></p>
+				<p class="stat-l2 loading averageResponseTime"></p>
 				<hr>
 				<h3>Average results returned:</h3>
-				<p class="loading averageResultsReturned"></p>
+				<p class="stat-l2 loading averageResultsReturned"></p>
 				<hr>
-				<h3>Most popular queries:</h3>
-				<p class="loading popularQueries"></p>
+				<h3>Top search terms:</h3>
+				<p class="stat-l2 loading popularQueries"></p>
 			</div>
 		</div>
 		<div id="printscrn"></div>
