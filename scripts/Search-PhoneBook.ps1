@@ -4,7 +4,7 @@
     .LINK
         https://github.com/belowaverage-org/phonebook/blob/master/scripts/Search-PhoneBook.ps1
 #>
-$PhoneBookAPI = "https://cpit/phonebook/api/"
+$global:PhoneBookAPI = "https://cpit/phonebook/api/"
 class Number {
     [System.Int64]$Number
     [System.String]$Description
@@ -13,7 +13,7 @@ class Number {
         $this.Description = $Description
     }
 }
-function Query-PhoneBookAPI($Query) {
+function global:Query-PhoneBookAPI($Query) {
     $response = Invoke-WebRequest -UseBasicParsing -Uri $PhoneBookAPI -UseDefaultCredentials -Method Post -Body $Query
     return ConvertFrom-Json $response.Content
 }
