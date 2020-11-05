@@ -26,7 +26,7 @@ function global:Search-PhoneBook([System.String]$SearchTerms) {
         .LINK
             https://github.com/belowaverage-org/phonebook/blob/master/scripts/Search-PhoneBook.ps1
     #>
-    if($SearchTerms -eq $null) {
+    if($SearchTerms -eq "") {
         Write-Host "What are you looking for? > " -NoNewline -ForegroundColor Yellow
         $SearchTerms = Read-Host
     }
