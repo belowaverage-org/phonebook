@@ -45,7 +45,7 @@ require_once('../data/conf/feedback.cfg.php');
 if(isset($_POST['feedback']) && $_POST['feedback'] == 'submit') {
     if(!isset($_POST['subject']) || empty($_POST['subject'])) return;
     if(!isset($_POST['body']) || empty($_POST['body'])) return;
-    if(array_search($_POST['subject'], $feedback_smtp_allowed_subjects) == false) return;
+    if(array_search($_POST['subject'], $feedback_smtp_allowed_subjects) === false) return;
     ini_set('SMTP', $feedback_smtp_server);
     ini_set('smtp_port', $feedback_smtp_port);
     ini_set('sendmail_from', $feedback_smtp_from);

@@ -6,5 +6,6 @@
     "startswith.js",
     "csv.js",
     "keyboard.js",
-    "statistics.js"
+    "statistics.js",
+    "feedback.js"
 ]
