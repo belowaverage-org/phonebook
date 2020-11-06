@@ -36,6 +36,8 @@ if(isset($_POST['api']) && !empty($_POST['api'])) {
 		require('./reqs/search.api.php');
 	} elseif($_POST['api'] == 'stats') {
 		require('./reqs/statistics.api.php');
+	} elseif($_POST['api'] == 'feedback') {
+		require('./reqs/feedback.api.php');
 	}
 } elseif(isset($_GET['db'])) {
 	require('./reqs/dbadmin.run.php');

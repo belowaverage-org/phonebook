@@ -41,19 +41,19 @@ password: pass123
                 <ul>
                     <li><a href="#search">search</a>
                         <ul>
-                            <li><a href="#offset">offset</a></li>
+                            <strike><li><a href="#offset">offset</a></li>
                             <li><a href="#count">count</a></li>
-                            <li><a href="#order">order</a></li>
+                            <li><a href="#order">order</a></li></strike>
                         </ul>
                     </li>
                     <li><a href="#import">import</a></li>
                     <li><a href="#export">export</a>
                         <ul>
                             <li><a href="#tags">tags</a></li>
-                            <li><strike><a href="#number">number</a></strike></li>
+                            <strike><li><a href="#number">number</a></li>
                             <li><a href="#numbers">numbers</a>
                                 <ul>
-                                    <li><a href="#includeTags">includeTags</a></li>
+                                    <li><a href="#includeTags">includeTags</a></li></strike>
                                 </ul>
                             </li>
                         </ul>
@@ -61,8 +61,10 @@ password: pass123
                     <li><a href="#schema">schema</a></li>
                     <li><a href="#stats">stats</a>
                         <ul>
-                            <li><a href="#stats">ping</a></li>
-                            <li><a href="#stats">count</a></li>
+                            <li><a href="#stat_ping">ping</a></li>
+                            <li><a href="#stat_count">count</a></li>
+                            <li><a href="#stat_feedback">feedback</a></li>
+                            <li><a href="#stat_results">results</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -525,6 +527,8 @@ objects: [2834fa80ac, 3e834d4674]
         <p>
             This API returns the current schema in json format. This is the only method that uses the GET HTTP method.
         </p>
+        <h4><i>GET Request</i></h4>
+        ./schema.cfg.json
         <h4><i>GET Live Demo</i></h4>
         <form action="./schema.cfg.json" target="schema" method="get">
             <button>Send</button><br><br>
@@ -535,17 +539,34 @@ objects: [2834fa80ac, 3e834d4674]
         <p>
             The statistics API will return stats about active sessions, phone lookup counts, and lookup tags.<br><br>
             
-            The <b>ping</b> method will register a session on the system.<br><br>
+            The <b id="stat_ping">ping</b> method will register a session on the system.<br><br>
             
-            The <b>count</b> method will return the number of active sessions on the system. <i>Active on web page for last 60 seconds.</i><br><br>
+            The <b id="stat_count">count</b> method will return a JSON object containing counts of various statistics, for example: <br><br>
 
-            The <b>feedback</b> method will accept a JSON string with a few properties:<br>
+            <pre>
+{
+    "objects": 100,                      //Objects stored in the database (Phone Numbers)
+    "sessions": 10,                      //Current sessions in the last 5 minutes.
+    "statistics": 10,                    //Statistic events gathered in the last hour.
+    "tags": 1000,                        //Tags stored in the database. (Search Terms)
+    "tags_objects": 10000,               //Tag to Object cross references in the database.
+    "translations": 30,                  //Translation instructions stored in the database.
+    "average_results_returned": 10,      //The average result amount reported back from Phone Book clients.
+    "average_response_speed": 0.00025,   //The average response speed of the API as reported from the Phone Book clients.
+    "top_search_queries": {              //The top 100 search queries (key) with how many times they have been searched (value) in the last hour.
+        "example": 5,
+        "tags": 3
+    }
+}
+            </pre>
+
+            The <b id="stat_feedback">feedback</b> method will accept a JSON string with a few properties:<br>
             <i>apispeed</i>: which is the delay between when the last API request was sent and then received.<br>
             <i>count</i>: which is the number of objects returned from the last API search request.<br>
             <i>query</i>: which is an array of tags used in the last API search request.<br>
             These results are then compiled into the database to be processed by some other system or client.<br><br>
 
-            The <b>results</b> method will return the compiled list of feedback queries in reverse chronological order.
+            The <b id="stat_results">results</b> method will return the compiled list of feedback queries in reverse chronological order.
         </p>
         <h4><i>POST Request Headers</i></h4>
         <pre>
@@ -586,6 +607,38 @@ feedback: {"apispeed":0.00025,"count":10,"query":["example","tags"]}
             </textarea>
             <iframe style="width:800px;height:300px;resize:both;" name="stats"></iframe>
             <input type="hidden" name="api" value="stats">
+            <input type="hidden" name="prettyprint">    
+        </form>
+        <hr>
+        <h2 id="feedback">Feedback API</h2>
+        <p>
+            The feedback API will send an SMTP email to the configured email with whatever is submitted via this API.<br><br>
+        </p>
+        <h4><i>POST Request Headers</i></h4>
+        <pre>
+api: feedback
+feedback: subjects
+        </pre>
+        <pre>
+api: feedback
+feedback: submit
+subject: Accepted Subject
+body: Any Body
+        </pre>
+        <h4><i>POST Live Demo</i></h4>
+        <form target="feedback" method="post">
+            <button>Send</button><br><br>
+            feedback: <select name="feedback">
+                <option value="subjects">subjects</option>
+                <option value="submit">submit</option>
+            </select>
+            <br><br>
+            subject: <input name="subject" type="text">
+            <br><br>
+            body: <input name="body" type="text">
+            <br><br>
+            <iframe style="width:800px;height:300px;resize:both;" name="feedback"></iframe>
+            <input type="hidden" name="api" value="feedback">
             <input type="hidden" name="prettyprint">    
         </form>
         <br><br><br><br><br><br><br><br>
