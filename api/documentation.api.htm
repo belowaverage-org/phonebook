@@ -73,6 +73,13 @@ password: pass123
                             <li><a href="#feedback-submit">submit</a></li>
                         </ul>
                     </li>
+                    <li><a href="#translations">translations</a>
+                        <ul>
+                            <li><a href="#translations-list">list</a></li>
+                            <li><a href="#translations-set">set</a></li>
+                            <li><a href="#translations-remove">remove</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>
@@ -630,8 +637,8 @@ feedback: subjects
         <pre>
 api: feedback
 feedback: submit
-subject: Accepted Subject
-body: Any Body
+subject: [string]
+body: [string]
         </pre>
         <h4><i>POST Live Demo</i></h4>
         <form target="feedback" method="post">
@@ -647,6 +654,49 @@ body: Any Body
             <br><br>
             <iframe style="width:800px;height:300px;resize:both;" name="feedback"></iframe>
             <input type="hidden" name="api" value="feedback">
+            <input type="hidden" name="prettyprint">
+        </form>
+        <hr>
+        <h2 id="translations">Translations API</h2>
+        <p>The translations api is used to set and remove translation instructions the import API uses when importing new objects.</p>
+        <p>The <b id="translations-list">list</b> api will return all translations as JSON object with the key values being the "from" parameter, and the value being the "to" parameter.</p>
+        <p>
+            The <b id="translations-set">set</b> api takes a <i>from</i> and <i>to</i> parameter. The "from" parameter is the translation of what the
+            tag is when it is imported via the API, and the "to" parameter is what the tag(s) (space delimited) will be translated into when stored in the database.
+            <br><i>The "from" parameter must have a value. The "to" parameter can be blank (meaning that a tag will be removed when translated).</i>
+        </p>
+        <p>The <b id="translations-remove">remove</b> api will remove the specified instruction from the database.</p>
+        <h4><i>POST Request Headers</i></h4>
+        <pre>
+api: translations
+translations: list
+        </pre>
+        <pre>
+api: translations
+translations: set
+from: [string]
+to: [string]
+        </pre>
+        <pre>
+api: translations
+translations: remove
+from: [string]
+        </pre>
+        <h4><i>POST Live Demo</i></h4>
+        <form target="translations" method="post">
+            <button>Send</button><br><br>
+            translations: <select name="translations">
+                <option value="list">list</option>
+                <option value="set">set</option>
+                <option value="remove">remove</option>
+            </select>
+            <br><br>
+            from: <input name="from" type="text">
+            <br><br>
+            to: <input name="to" type="text">
+            <br><br>
+            <iframe style="width:800px;height:300px;resize:both;" name="translations"></iframe>
+            <input type="hidden" name="api" value="translations">
             <input type="hidden" name="prettyprint">
         </form>
         <br><br><br><br><br><br><br><br>
