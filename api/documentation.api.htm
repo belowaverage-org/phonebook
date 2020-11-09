@@ -80,6 +80,11 @@ password: pass123
                             <li><a href="#translations-remove">remove</a></li>
                         </ul>
                     </li>
+                    <li><a href="#misc">misc</a>
+                        <ul>
+                            <li><a href="#misc-rebuild">rebuild</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>
@@ -699,6 +704,26 @@ from: [string]
             <br><br>
             <iframe style="width:800px;height:300px;resize:both;" name="translations"></iframe>
             <input type="hidden" name="api" value="translations">
+            <input type="hidden" name="prettyprint">
+        </form>
+        <hr>
+        <h2 id="misc">Misc API</h2>
+        <span style="color:red;font-weight:bolder;">API Requires Authentication</span>
+        <p>The <b id="misc-rebuild">rebuild</b> api will purge and rebuild the object / tags index.</p>
+        <h4><i>POST Request Headers</i></h4>
+        <pre>
+api: misc
+misco: rebuild
+        </pre>
+        <h4><i>POST Live Demo</i></h4>
+        <form target="misc" method="post">
+            <button>Send</button><br><br>
+            misc: <select name="misc">
+                <option value="rebuild">rebuild</option>
+            </select>
+            <br><br>
+            <iframe style="width:800px;height:300px;resize:both;" name="misc"></iframe>
+            <input type="hidden" name="api" value="misc">
             <input type="hidden" name="prettyprint">
         </form>
         <br><br><br><br><br><br><br><br>
