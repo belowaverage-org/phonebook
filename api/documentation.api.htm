@@ -658,8 +658,10 @@ body: [string]
         </form>
         <hr>
         <h2 id="translations">Translations API</h2>
+        <span style="color:red;font-weight:bolder;">API Requires Authentication</span>
+        <p><i>Only the "set" and "remove" api's require authentication. The "list" api is public.</i></p>
         <p>The translations api is used to set and remove translation instructions the import API uses when importing new objects.</p>
-        <p>The <b id="translations-list">list</b> api will return all translations as JSON object with the key values being the "from" parameter, and the value being the "to" parameter.</p>
+        <p>The <b id="translations-list">list</b> api will return all translations as a JSON array.</p>
         <p>
             The <b id="translations-set">set</b> api takes a <i>from</i> and <i>to</i> parameter. The "from" parameter is the translation of what the
             tag is when it is imported via the API, and the "to" parameter is what the tag(s) (space delimited) will be translated into when stored in the database.

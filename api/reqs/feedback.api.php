@@ -9,7 +9,7 @@ Dylan Bickerstaff
 Sends feedback via SMTP.
 */
 if(!isset($singlePointEntry)){http_response_code(403);exit;}
-if(!file_exists('../data/conf/feedback.cfg.php')) {
+if(!file_exists('../data/conf/feedback.cfg.php')) { //Build config file.
     file_put_contents('../data/conf/feedback.cfg.php',
 '<?php
 /*
@@ -42,7 +42,7 @@ $feedback_smtp_allowed_subjects = [
     );
 }
 require_once('../data/conf/feedback.cfg.php');
-if(isset($_POST['feedback']) && $_POST['feedback'] == 'submit') {
+if(isset($_POST['feedback']) && $_POST['feedback'] == 'submit') { //Send feedback message to SMTP server.
     if(!isset($_POST['subject']) || empty($_POST['subject'])) return;
     if(!isset($_POST['body']) || empty($_POST['body'])) return;
     if(array_search($_POST['subject'], $feedback_smtp_allowed_subjects) === false) return;
@@ -51,7 +51,7 @@ if(isset($_POST['feedback']) && $_POST['feedback'] == 'submit') {
     ini_set('sendmail_from', $feedback_smtp_from);
     mail($feedback_smtp_to, $feedback_smtp_subject_prefix.$_POST['subject'], $_POST['body']);
 }
-if(isset($_POST['feedback']) && $_POST['feedback'] == 'subjects') {
+if(isset($_POST['feedback']) && $_POST['feedback'] == 'subjects') { //Return JSON list of approved subjects.
     echo json_encode($feedback_smtp_allowed_subjects, $prettyPrintIfRequested);
 }
 ?>
