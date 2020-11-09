@@ -67,6 +67,12 @@ password: pass123
                             <li><a href="#stat_results">results</a></li>
                         </ul>
                     </li>
+                    <li><a href="#feedback">feedback</a>
+                        <ul>
+                            <li><a href="#feedback-subjects">subjects</a></li>
+                            <li><a href="#feedback-submit">submit</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>
@@ -607,13 +613,15 @@ feedback: {"apispeed":0.00025,"count":10,"query":["example","tags"]}
             </textarea>
             <iframe style="width:800px;height:300px;resize:both;" name="stats"></iframe>
             <input type="hidden" name="api" value="stats">
-            <input type="hidden" name="prettyprint">    
+            <input type="hidden" name="prettyprint">
         </form>
         <hr>
         <h2 id="feedback">Feedback API</h2>
         <p>
-            The feedback API will send an SMTP email to the configured email with whatever is submitted via this API.<br><br>
+            The feedback API will send an SMTP email to the configured email with whatever is submitted via this API.
         </p>
+        <p>The <b id="feedback-subjects">subjects</b> api will return a JSON array with the allowed subjects for the feedback request.</p>
+        <p>The <b id="feedback-submit">submit</b> api requires two extra fields, <i>subject</i> and <i>body</i>. This api will send an email to the configured recipient.</p>
         <h4><i>POST Request Headers</i></h4>
         <pre>
 api: feedback
@@ -639,7 +647,7 @@ body: Any Body
             <br><br>
             <iframe style="width:800px;height:300px;resize:both;" name="feedback"></iframe>
             <input type="hidden" name="api" value="feedback">
-            <input type="hidden" name="prettyprint">    
+            <input type="hidden" name="prettyprint">
         </form>
         <br><br><br><br><br><br><br><br>
     </body>
