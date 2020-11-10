@@ -52,6 +52,7 @@ if($schema_json_raw !== $schema_json_raw_cache) { //Compare the schmea to a cach
 	$rows = '';
 	$rows_array = array();
 	$indexed_rows = '';
+	file_put_contents('../data/db/schema.cache', $schema_json_raw); //Cache a new copy of the schema.
 	foreach(json_decode($schema_json_raw, true) as $row => $settings) { //Apply schema attributes
 		$typeSet = false;
 		foreach($settings as $setting => $v) {

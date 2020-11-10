@@ -109,5 +109,8 @@
         "length": 50,
         "tagged": true,
         "visible": false
+    },
+    "importsource": {
+        "length": 50
     }
 }
