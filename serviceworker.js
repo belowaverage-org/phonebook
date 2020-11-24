@@ -1,4 +1,4 @@
-var CACHE_NAME = 'phonebook-v2.0.0.6';
+var CACHE_NAME = 'phonebook-v2.0.0.8';
 var urlsToCache = [
     './index.htm',
     './static/font.ttf',
