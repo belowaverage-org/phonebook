@@ -36,7 +36,7 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
         }
         if($queryContainsTags) {
             foreach($searchQuery['SEARCH']['TAGS'] as $tag) { //For each tag in the search input.
-                if(!empty($tag) && ctype_alpha($tag) && $tag !== '' && strlen($tag) >= 2) { //If tag is longer than 2 characters and only contains alpha characters.
+                if(!empty($tag) && ctype_alnum($tag) && $tag !== '' && strlen($tag) >= 2) { //If tag is longer than 2 characters and only contains alpha-numeric characters.
                     array_push($searchTags, $tag); //Add the tag to the $searchTags array.
                 }
             }

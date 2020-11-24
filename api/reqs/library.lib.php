@@ -163,7 +163,7 @@ function tagTranslate($tag) {
 function tagFilter($string) {
     $return = array();
     $string = strtolower($string);
-    $string = preg_replace('/[^a-z?![:space:]]/', ' ', $string);
+    $string = preg_replace('/[^a-z0-9?![:space:]]/', ' ', $string);
     $string = trim($string);
     foreach(explode(' ', $string) as $rawTag) {
         $return = array_merge($return, tagTranslate($rawTag));

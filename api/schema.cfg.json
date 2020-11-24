@@ -49,7 +49,7 @@
         "length": 50,
         "name": "Phone Number",
         "print": true,
-        "tagged": false,
+        "tagged": true,
         "type": "number",
         "unique": true,
         "visible": true,
