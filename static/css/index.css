@@ -647,7 +647,7 @@ img.c {
 #about .logo {
     width: 110px;
     height: 150px;
-    background-image: url('../img/ico.png');
+    background-image: url('../img/logo.svg');
     background-size: 100%;
     margin: 30px auto 0px auto;
 }

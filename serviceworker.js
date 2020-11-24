@@ -1,4 +1,4 @@
-var CACHE_NAME = 'phonebook-v2.0.0.5';
+var CACHE_NAME = 'phonebook-v2.0.0.6';
 var urlsToCache = [
     './index.htm',
     './static/font.ttf',
@@ -10,7 +10,9 @@ var urlsToCache = [
     './static/img/feedb.svg',
     './static/img/hamburger.svg',
     './static/img/help.svg',
-    './static/img/ico.png',
+    './static/img/logo.png',
+    './static/img/logo.svg',
+    './static/img/logo_tiny.svg',
     './static/img/info.svg',
     './static/img/load.gif',
     './static/img/print.svg',

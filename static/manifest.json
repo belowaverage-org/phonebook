@@ -4,8 +4,13 @@
   "description": "A Fast and Easy Phone Book.",
   "icons": [
     {
-      "src": "./img/ico.png",
-      "type": "image/png",
+      "src": "./img/logo_tiny.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./img/logo.svg",
+      "type": "image/svg+xml",
       "sizes": "512x512"
     }
   ],
@@ -14,5 +19,5 @@
   "display": "standalone",
   "scope": "../",
   "theme_color": "#383838",
-  "version": "2.0.5"
+  "version": "2.0.7"
 }
