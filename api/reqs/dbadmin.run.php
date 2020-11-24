@@ -500,7 +500,7 @@ define("COOKIENAME", preg_replace('/[^a-zA-Z0-9_]/', '_', $cookie_name . '_' . V
 // stripslashes if MAGIC QUOTES is turned on
 // This is only a workaround. Please better turn off magic quotes!
 // This code is from http://php.net/manual/en/security.magicquotes.disabling.php
-if (get_magic_quotes_gpc()) {
+/*if (get_magic_quotes_gpc()) {
 	$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
 	while (list($key, $val) = each($process)) {
 		foreach ($val as $k => $v) {
@@ -514,7 +514,7 @@ if (get_magic_quotes_gpc()) {
 		}
 	}
 	unset($process);
-}
+}*/
 
 
 //data types array
