@@ -24,7 +24,7 @@
         "name": "Description",
         "print": true,
         "tagged": true,
-        "visible": true,
+        "visible": false,
         "sortable": true
     },
     "type": {
@@ -61,23 +61,18 @@
         "name": "Email",
         "print": true,
         "tagged": true,
-        "visible": {
-            "type": [
-                "Business",
-                "Person"
-            ]
-        }
+        "visible": true
     },
     "employeeid": {
         "export": true,
-        "indexed": false,
+        "indexed": true,
         "length": 10,
         "name": "Employee ID",
-        "print": false,
+        "print": true,
         "tagged": false,
         "type": "number",
         "unique": false,
-        "visible": false
+        "visible": true
     },
     "firstname": {
         "export": true,
@@ -85,11 +80,7 @@
         "name": "First Name",
         "print": true,
         "tagged": true,
-        "visible": {
-            "type": [
-                "Person"
-            ]
-        },
+        "visible": true,
         "sortable": true
     },
     "lastname": {
@@ -98,11 +89,7 @@
         "name": "Last Name",
         "print": true,
         "tagged": true,
-        "visible": {
-            "type": [
-                "Person"
-            ]
-        },
+        "visible": true,
         "sortable": true
     },
     "username": {

@@ -268,13 +268,6 @@ input[type=text] {
     cursor: pointer;
 }
 
-#numbers > div {
-    height: 40px;
-    position: relative;
-    margin-bottom: 15px;
-    margin-top: 15px;
-}
-
 #numbers > div.loading::after {
     content: "";
     display: inline-block;
@@ -303,31 +296,81 @@ input[type=text] {
     0% {
         opacity: 1;
     }
-
     50% {
         opacity: .5;
     }
 }
 
-#numbers > div.visible {
-    height: 400px;
+#numbers > div {
+    min-height: 40px;
+    max-height: 40px;
+    position: relative;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    overflow: hidden;
 }
 
-#numbers > div > div {
+#numbers > div.visible {
+    max-height: 600px;
+}
+
+#numbers > div > div:first-child {
     height: 40px;
     font-size: 20px;
     border-radius: 20px;
     cursor: pointer;
     line-height: 40px;
     display: flex;
-    position: absolute;
     top: 0px;
     left: 0px;
     width: 100%;
     transition: .3s;
 }
+#numbers .details {
+    max-height:500px;
+    overflow:hidden;
+    overflow-y:auto;
+}
+#numbers .details .detail {
+    height:40px;
+    border-bottom:1px solid rgba(0, 0, 0, 0.096);
+    display:flex;
+    padding:0px 20px 0px 20px;
+}
+#numbers .details .detail:last-child {
+    border-bottom:0px;
+}
+#numbers .details .detail > span {
+    line-height: 40px;
+    white-space: nowrap;
+}
+#numbers .details .detail .key {
+    text-align: left;
+    font-weight: bolder;
+    margin-right:20px;
+}
+#numbers .details .detail .value {
+    text-align: right;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    flex:auto;
+    user-select: text;
+}
+#numbers .details.loading .detail > span::before {
+    content:'';
+    margin-top:12px;
+    display: inline-block;
+    background-color:rgba(0, 0, 0, 0.1);
+    height: 15px;
+    width: 100px;
+    animation: 0.8s ease-in-out infinite alternate text-loading;
+}
+#numbers .details.loading .detail > span:last-child::before {
+    width: 300px;
+    animation-delay: -1.2s;
+}
 
-#numbers > div.visible > div {
+#numbers > div.visible > div:first-child {
     transition: 0s;
     box-shadow: 0px 1px 2px rgba(0,0,0,.25);
 }
@@ -683,10 +726,10 @@ img.c {
     height: 20px;
     width: 200px;
     background-color: whitesmoke;
-    animation: 0.8s ease-in-out infinite alternate stat-loading;
+    animation: 0.8s ease-in-out infinite alternate text-loading;
 }
 
-@keyframes stat-loading {
+@keyframes text-loading {
     from {
         opacity:0.3;
     }

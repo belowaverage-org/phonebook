@@ -551,9 +551,6 @@ $(document).on('bsloaded', function() {
             alertToSend();
         }
     });
-    $('#numbers').on('click', 'div .description', function() { //If description is clicked in number list
-        $(this).parent('div').parent('div').toggleClass('visible'); //Expand the description in case it overflows
-    });
     $('#numbers').on('click', 'div .number', function() { //If number is clicked
         document.location.href = 'tel:' + $(this).text();
     });

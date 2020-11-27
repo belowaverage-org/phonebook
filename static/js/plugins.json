@@ -7,5 +7,6 @@
     "csv.js",
     "keyboard.js",
     "statistics.js",
-    "feedback.js"
+    "feedback.js",
+    "details.js"
 ]
