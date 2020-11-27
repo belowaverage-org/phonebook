@@ -26,8 +26,7 @@ self.addEventListener('fetch', function (event) {
                 return fetch(event.request.clone()).then(function (response) {
                     if (
                         response.status == 200 &&
-                        !response.url.includes('/api/') &&
-                        !response.url.includes('chrome-extension')
+                        !response.url.includes('/api/')
                     ) {
                         cache.put(event.request, response.clone());
                     }
