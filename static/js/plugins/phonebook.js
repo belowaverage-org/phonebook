@@ -23,6 +23,7 @@ window.mem = {
     lastSearchOffset: 0,
     lastSearchSpeed: 0,
     scrollPageEnd: false,
+    offline: false,
     schema: {},
     objectsFromLastCall: []
 };
@@ -38,7 +39,7 @@ var searchOffset = 0;
 var cacheTimeout = 10; //Seconds
 var ajaxSearchQuery = {abort: function() {}};
 var ajaxSearchNumbers = {abort: function() {}};
-var pingInterval = 59; //Seconds
+var pingInterval = 10; //Seconds
 var placeDashes = true;
 var blurToggle = '#main, #hamburger, #hamopen';
 //Functions
@@ -565,10 +566,25 @@ $(document).on('bsloaded', function() {
         document.location.href = 'tel:' + $(this).text();
     });
     if(pingInterval !== 0) {
-        $.post(apiURI, {api: 'stats', stats: 'ping'});
-        setInterval(function() {
-            $.post(apiURI, {api: 'stats', stats: 'ping'});
-        }, pingInterval * 1000);
+        ping = function() {
+            $.ajax({
+                type: "POST",
+                url: apiURI,
+                dataType: 'text',
+                data: {api: 'stats', stats: 'ping'},
+                error: function() {
+                    $(blurToggle).addClass('blur');
+                    $('#loading').addClass('hidden');
+                    $('#offline').removeClass('hidden');
+                    mem.offline = true;
+                },
+                success: function() {
+                    if(mem.offline) location.reload();
+                }
+            });
+        };
+        setInterval(ping, pingInterval * 1000);
+        ping();
     }
     //On page scroll
     $('#main').on('scroll', function(e) {

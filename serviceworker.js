@@ -1,6 +1,6 @@
 var CACHE_VERSION = '2.0.10';
 var CURRENT_CACHES = {
-    font: 'phonebook-v' + CACHE_VERSION
+    cache: 'phonebook-v' + CACHE_VERSION
 };
 self.addEventListener('activate', function (event) {
     var expectedCacheNamesSet = new Set(Object.values(CURRENT_CACHES));
@@ -18,7 +18,7 @@ self.addEventListener('activate', function (event) {
 });
 self.addEventListener('fetch', function (event) {
     event.respondWith(
-        caches.open(CURRENT_CACHES.font).then(function (cache) {
+        caches.open(CURRENT_CACHES.cache).then(function (cache) {
             return cache.match(event.request).then(function (response) {
                 if (response) {
                     return response;
