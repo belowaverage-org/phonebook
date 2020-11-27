@@ -17,7 +17,7 @@ function retrieveDetails(targetObject, contentObject) {
     targetObject.find('div:not(:first-child)').remove();
     var objectId = targetObject.attr('objectid');
     var contentObject = $('<div class="details loading"></div>').appendTo(targetObject);
-    for(var c = 0; c < 5; c++) {
+    for(var c = 0; c < 3; c++) {
         $(detailItem).appendTo(contentObject);
     }
     $.ajax({

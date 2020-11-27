@@ -122,10 +122,16 @@ function allFilled() { //Check bubbles to see if they all contain text
 }
 function allValid() { //Check all bubbles to see if they are all valid
     var result = true;
-    $.each($('#input > span'), function() {
+    $.each($('#input > span'), function(index) {
         if(!$(this).hasClass('valid')) { //If is valid
             result = false;
             return;
+        }
+        if(index == 0) {
+            if($(this).text().replace($(this).find('.autofill').text(), '').length <= 1) {
+                result = false;
+                return;
+            }
         }
     });
     return result;
@@ -139,9 +145,10 @@ function typeFilled() { //Check if type is filled
 }
 function typeValid() { //Check if type is a valid tag
     if(typeFilled()) {
-        if($('#input > span').length > 1 && mem.availableTags.indexOf($('#input span.type').text()) !== -1) {
+        var typeBubbleText = $('#input span.type').text();
+        if($('#input > span').length > 1 && mem.availableTags.indexOf(typeBubbleText) !== -1) {
             return true;
-        } else if($('#input > span').length == 1 && mem.allTags.indexOf($('#input span.type').text()) !== -1) {
+        } else if($('#input > span').length == 1 && mem.allTags.indexOf(typeBubbleText) !== -1) {
             return true;
         } else {
             return false;
@@ -328,6 +335,9 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
             mem.scrollPageOffset = 0;
         } else if(mem.scrollPageOffset == 0) {
             mem.scrollPageOffset += loadCount;
+        }
+        if(!keepContent && $('#numbers').html() == '') {
+            $('#numbers').html('<div class="loading"><div><span class="tn-border"><span class="tn-image"></span></span><span class="number"></span><span class="description"></span></div></div>');
         }
         ajaxSearchQuery = $.ajax({ //Send search query
             type: 'post',

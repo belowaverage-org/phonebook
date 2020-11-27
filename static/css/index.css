@@ -326,29 +326,35 @@ input[type=text] {
     width: 100%;
     transition: .3s;
 }
+
 #numbers .details {
     max-height:500px;
     overflow:hidden;
     overflow-y:auto;
 }
+
 #numbers .details .detail {
     height:40px;
     border-bottom:1px solid rgba(0, 0, 0, 0.096);
     display:flex;
     padding:0px 20px 0px 20px;
 }
+
 #numbers .details .detail:last-child {
     border-bottom:0px;
 }
+
 #numbers .details .detail > span {
     line-height: 40px;
     white-space: nowrap;
 }
+
 #numbers .details .detail .key {
     text-align: left;
     font-weight: bolder;
     margin-right:20px;
 }
+
 #numbers .details .detail .value {
     text-align: right;
     text-overflow: ellipsis;
@@ -356,6 +362,7 @@ input[type=text] {
     flex:auto;
     user-select: text;
 }
+
 #numbers .details.loading .detail > span::before {
     content:'';
     margin-top:12px;
@@ -365,6 +372,7 @@ input[type=text] {
     width: 100px;
     animation: 0.8s ease-in-out infinite alternate text-loading;
 }
+
 #numbers .details.loading .detail > span:last-child::before {
     width: 300px;
     animation-delay: -1.2s;
