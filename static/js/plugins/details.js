@@ -51,4 +51,9 @@ function displayDetails(data, contentObject, objectId) {
         item.find('.key').text(schema.name);
         item.find('.value').text(value);
     });
+    var tagList = $(detailItem).addClass('tags').appendTo(contentObject);
+    tagList.html('');
+    $.each(data.tags, function() {
+        $('<span class="type"></span>').text(this).appendTo(tagList);
+    });
 }
