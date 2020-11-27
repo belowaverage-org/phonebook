@@ -69,7 +69,7 @@
         "length": 10,
         "name": "Employee ID",
         "print": true,
-        "tagged": false,
+        "tagged": true,
         "type": "number",
         "unique": false,
         "visible": true
