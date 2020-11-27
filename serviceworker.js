@@ -1,43 +1,41 @@
-var CACHE_NAME = 'phonebook-v2.0.0.9';
-var urlsToCache = [
-    './index.htm',
-    './static/font.ttf',
-    './static/css/index.css',
-    './static/css/keyboard.css',
-    './static/img/back.svg',
-    './static/img/c.gif',
-    './static/img/export.svg',
-    './static/img/feedb.svg',
-    './static/img/hamburger.svg',
-    './static/img/help.svg',
-    './static/img/logo.png',
-    './static/img/logo.svg',
-    './static/img/logo_tiny.svg',
-    './static/img/info.svg',
-    './static/img/load.gif',
-    './static/img/print.svg',
-    './static/img/stats.svg',
-    './static/img/x.svg',
-    './static/js/plugins/csv.js',
-    './static/js/plugins/jquery.js',
-    './static/js/plugins/keyboard.js',
-    './static/js/plugins/phonebook.js',
-    './static/js/plugins/seedrandom.js',
-    './static/js/plugins/startswith.js',
-    './static/js/plugins/statistics.js',
-    './static/js/plugins/feedback.js',
-    './static/js/plugins/details.js'
-];
-self.addEventListener('install', function(event) {
-    event.waitUntil(caches.open(CACHE_NAME).then(function(cache) {
-        return cache.addAll(urlsToCache);
-    }));
+var CACHE_VERSION = '2.0.10';
+var CURRENT_CACHES = {
+    font: 'phonebook-v' + CACHE_VERSION
+};
+self.addEventListener('activate', function (event) {
+    var expectedCacheNamesSet = new Set(Object.values(CURRENT_CACHES));
+    event.waitUntil(
+        caches.keys().then(function (cacheNames) {
+            return Promise.all(
+                cacheNames.map(function (cacheName) {
+                    if (!expectedCacheNamesSet.has(cacheName)) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
 });
-self.addEventListener('fetch', function(event) {
-    event.respondWith(caches.match(event.request).then(function(response) {
-        if(response) {
-            return response;
-        }
-        return fetch(event.request);
-    }));
+self.addEventListener('fetch', function (event) {
+    event.respondWith(
+        caches.open(CURRENT_CACHES.font).then(function (cache) {
+            return cache.match(event.request).then(function (response) {
+                if (response) {
+                    return response;
+                }
+                return fetch(event.request.clone()).then(function (response) {
+                    if (
+                        response.status == 200 &&
+                        !response.url.includes('/api/') &&
+                        !response.url.includes('chrome-extension')
+                    ) {
+                        cache.put(event.request, response.clone());
+                    }
+                    return response;
+                });
+            }).catch(function (error) {
+                throw error;
+            });
+        })
+    );
 });
