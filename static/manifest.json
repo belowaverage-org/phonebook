@@ -4,13 +4,31 @@
   "description": "A Fast and Easy Phone Book.",
   "icons": [
     {
-      "src": "./img/logo.png",
+      "src": "./img/logo_32_square.png",
+      "type": "image/png",
+      "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "./img/logo_192_circle.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "./img/logo_192_mask.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/logo_512_circle.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "./img/logo_mask.png",
+      "src": "./img/logo_512_mask.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
@@ -21,6 +39,6 @@
   "display": "standalone",
   "scope": "../",
   "theme_color": "#ffffff",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "orientation": "portrait-primary"
 }

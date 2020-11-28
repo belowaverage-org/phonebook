@@ -24,6 +24,7 @@ window.mem = {
     lastSearchSpeed: 0,
     scrollPageEnd: false,
     offline: false,
+    waitingOnPing: false,
     schema: {},
     objectsFromLastCall: []
 };
@@ -567,6 +568,8 @@ $(document).on('bsloaded', function() {
     });
     if(pingInterval !== 0) {
         ping = function() {
+            if(mem.waitingOnPing) return;
+            mem.waitingOnPing = true;
             $.ajax({
                 type: "POST",
                 url: apiURI,
@@ -579,6 +582,7 @@ $(document).on('bsloaded', function() {
                     mem.offline = true;
                 },
                 success: function() {
+                    mem.waitingOnPing = false;
                     if(mem.offline) location.reload();
                 }
             });
