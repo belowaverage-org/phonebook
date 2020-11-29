@@ -2,7 +2,7 @@
 🔎 A fast, tag based, flat file, PHP Phone Book.
 
 ### Demo
-[https://phonebook.demo.belowaverage.org](https://phonebook.demo.belowaverage.org)
+[https://phonebook-demo.belowaverage.org](https://phonebook-demo.belowaverage.org)
 
 ### How to use this image:
 Pulling the image:
