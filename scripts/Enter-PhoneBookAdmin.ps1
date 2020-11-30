@@ -281,3 +281,102 @@ function Global:Get-PBLog() {
         stats = "results"
     } | Sort-Object -Property "timestamp"
 }
+function Global:Enter-PhoneBookAdmin() {
+    <#
+        .SYNOPSIS
+            This command enters the Phone Book administration shell.
+    #>
+    Write-Host "Welcome to the Phone Book!" -ForegroundColor Green
+    while($true) {
+        $option = Read-Host -Prompt "
+-------------------------
+Phone Numbers
+-------------------------
+0) Search the Phone Book.
+1) Edit a Phone Number.
+2) Add a Phone Number.
+3) Remove a Phone Number.
+-------------------------
+Translations
+-------------------------
+5) View translations.
+6) Add / set a translation.
+7) Remove a translation.
+-------------------------
+Statistics
+-------------------------
+8) View query logs.
+9) View statistics.
+-------------------------
+Other
+-------------------------
+10) Rebuild database.
+-------------------------
+"
+        if($option -eq 0) {
+            Write-Output ""
+            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
+        }
+        if(($option -eq 1) -or ($option -eq 2)) {
+            Write-Output ""
+            $number = $null
+            if($option -eq 2) { $number = New-PBNumber -Number $(Read-Host -Prompt "Enter a Phone Number.") -Description $(Read-Host -Prompt "Enter a description.") }
+            if($option -eq 1) { $number = Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.") }
+            if($number.Count -eq 1) {
+                while($true) {
+                    try {
+                        Write-Output ""
+                        Write-Output $number
+                        Write-Output ""
+                        $param = Read-Host -Prompt "What parameter would you like to change?"
+                        $value = Read-Host -Prompt "What is the new value?"
+                        $number.$param = $value
+                        Write-Output "`nParameter changed."
+                    } catch {
+                        Write-Output "`nInvalid parameter."
+                    }
+                    if($(Read-Host -Prompt "1) Again`n2) Done`n") -eq 2) { break }
+                }
+                Write-Output ""
+                $number | Set-PBNumber
+            } else {
+                Write-Output "`nQuery was not unique enough. More than one result was returned."
+            }
+            Write-Output "`nPhone Number data committed."
+        }
+        if($option -eq 3) {
+            Write-Output ""
+            $number = Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
+            if($number.Count -eq 1) {
+                Global:Remove-PBNumber $number
+            } else {
+                Write-Output "`nQuery was not unique enough. More than one result was returned."
+            }
+            Write-Output "`nPhone Number removed."
+        }
+        if($option -eq 5) {
+            Write-Output ""
+            Global:Get-PBTranslation | Format-Table
+        }
+        if($option -eq 6) {
+            Write-Output ""
+            Global:Set-PBTranslation -From $(Read-Host -Prompt "From?") -To $(Read-Host -Prompt "To?")
+        }
+        if($option -eq 7) {
+            Write-Output ""
+            Global:Remove-PBTranslation -From $(Read-Host -Prompt "Translation to remove?")
+        }
+        if($option -eq 8) {
+            Write-Output ""
+            Global:Get-PBLog
+        }
+        if($option -eq 9) {
+            Write-Output ""
+            Global:Get-PBStatistics
+        }
+        if($option -eq 10) {
+            Write-Output ""
+            Global:Invoke-PBRebuild
+        }
+    }
+}
