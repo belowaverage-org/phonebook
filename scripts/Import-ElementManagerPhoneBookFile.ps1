@@ -25,6 +25,9 @@ foreach($CSVEntry in $CSVData) {
     $NewEntry = [PhoneBookEntry]::new()
     $NewEntry.number = $CSVEntry.PRIMEDN
     $NewEntry.description = $CSVEntry.CPND_NAME
+    if($CSVEntry["CPND_NAME"].ToLower().Contains("fax")) {
+        $NewEntry.type = "Fax"
+    }
     $PhoneBookEntries.Add($NewEntry)
 }
 Write-Host "Generating JSON API request..."
