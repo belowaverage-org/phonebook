@@ -315,7 +315,7 @@ Other
 "
         if($option -eq 0) {
             Write-Output ""
-            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.") | Out-GridView
+            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.") | Out-GridView -Title "Search Results."
         }
         if(($option -eq 1) -or ($option -eq 2)) {
             Write-Output ""
@@ -358,7 +358,7 @@ Other
         }
         if($option -eq 5) {
             Write-Output ""
-            Global:Get-PBTranslation | Out-GridView
+            Global:Get-PBTranslation | Out-GridView -Title "All Translations."
         }
         if($option -eq 6) {
             Write-Output ""
@@ -370,7 +370,7 @@ Other
         }
         if($option -eq 8) {
             Write-Output ""
-            Global:Get-PBLog | Out-GridView
+            Global:Get-PBLog | Out-GridView -Title "All Logs."
         }
         if($option -eq 9) {
             Write-Output ""
@@ -385,7 +385,7 @@ Other
             $(Global:Invoke-PhoneBookAPI @{
                 api = "export"
                 export = "tags"
-            }).SyncRoot | Out-GridView
+            }).SyncRoot | Out-GridView -Title "All Tags."
         }
     }
 }
