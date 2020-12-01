@@ -328,6 +328,8 @@ Other
                     try {
                         Write-Output ""
                         Write-Output $number
+                        Write-Output "`nTags`n-----"
+                        Write-Output $number.Tags
                         Write-Output ""
                         $param = Read-Host -Prompt "What parameter would you like to change?"
                         $value = Read-Host -Prompt "What is the new value?"
