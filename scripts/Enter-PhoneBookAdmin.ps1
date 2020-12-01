@@ -327,7 +327,7 @@ Other
                     try {
                         Write-Output ""
                         Write-Output $number
-                        Write-Output "`nTags`n-----"
+                        Write-Output "`nTags`n--------"
                         Write-Output $number.Tags
                         Write-Output ""
                         $param = Read-Host -Prompt "What parameter would you like to change?"
@@ -382,10 +382,10 @@ Other
         }
         if($option -eq 11) {
             Write-Output ""
-            Global:Invoke-PhoneBookAPI @{
+            $(Global:Invoke-PhoneBookAPI @{
                 api = "export"
                 export = "tags"
-            } | Out-GridView
+            }).SyncRoot | Out-GridView
         }
     }
 }
