@@ -285,9 +285,9 @@ function Global:Enter-PhoneBookAdmin() {
         .SYNOPSIS
             This command enters the Phone Book administration shell.
     #>
-    Write-Host "Welcome to the Phone Book!" -ForegroundColor Green
     while($true) {
-        $option = Read-Host -Prompt "
+        Clear-Host
+        $option = Read-Host -Prompt "    Phone Book Admin
 -------------------------
 Phone Numbers
 -------------------------
@@ -345,6 +345,8 @@ Other
             } else {
                 Write-Output "`nQuery was not unique enough. More than one result was returned."
             }
+            Write-Host -ForegroundColor Yellow "Press enter to continue..."
+            Read-Host
         }
         if($option -eq 3) {
             Write-Output ""
@@ -355,6 +357,8 @@ Other
             } else {
                 Write-Output "`nQuery was not unique enough. More than one result was returned."
             }
+            Write-Host -ForegroundColor Yellow "Press enter to continue..."
+            Read-Host
         }
         if($option -eq 5) {
             Write-Output ""
@@ -375,10 +379,14 @@ Other
         if($option -eq 9) {
             Write-Output ""
             Global:Get-PBStatistics
+            Write-Host -ForegroundColor Yellow "Press enter to continue..."
+            Read-Host
         }
         if($option -eq 10) {
             Write-Output ""
             Global:Invoke-PBRebuild
+            Write-Host -ForegroundColor Yellow "Press enter to continue..."
+            Read-Host
         }
         if($option -eq 11) {
             Write-Output ""
