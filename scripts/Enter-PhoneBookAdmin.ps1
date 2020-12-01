@@ -374,7 +374,7 @@ Other
         }
         if($option -eq 8) {
             Write-Output ""
-            Global:Get-PBLog | Out-GridView -Title "All Logs."
+            $(Global:Get-PBLog).SyncRoot | Out-GridView -Title "All Logs."
         }
         if($option -eq 9) {
             Write-Output ""
