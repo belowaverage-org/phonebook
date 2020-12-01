@@ -298,14 +298,13 @@ Phone Numbers
 -------------------------
 Translations
 -------------------------
-4) Search translations.
 5) View all translations.
 6) Add / set a translation.
 7) Remove a translation.
 -------------------------
 Statistics
 -------------------------
-8) View query logs.
+8) View all query logs.
 9) View statistics.
 -------------------------
 Other
@@ -356,10 +355,6 @@ Other
             } else {
                 Write-Output "`nQuery was not unique enough. More than one result was returned."
             }
-        }
-        if($option -eq 4) {
-            Write-Output ""
-            Global:Get-PBTranslation -From $(Read-Host -Prompt "From?") | Format-Table
         }
         if($option -eq 5) {
             Write-Output ""
