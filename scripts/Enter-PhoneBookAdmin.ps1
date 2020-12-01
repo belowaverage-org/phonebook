@@ -56,9 +56,8 @@ function Global:Search-PBNumber([Parameter(Mandatory)][System.String]$Query) {
                 TAGS = $SearchTermList;
                 ORDER = @{
                     number = "ASC"
-                };
-                LIMIT = 0,50
-            };
+                }
+            }
             OUTPUT = @{
                 OPTIONS = @("showObjectTags")
                 ATTRIBUTES = "created","modified","number","description","type","email","employeeid","firstname","lastname","username","importsource"
@@ -73,8 +72,8 @@ function Global:Search-PBNumber([Parameter(Mandatory)][System.String]$Query) {
         $pbNumber.Description = $number.description
         $pbNumber.FirstName = $number.firstname
         $pbNumber.LastName = $number.lastname
-        $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created)
-        $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified)
+        $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created).ToLocalTime()
+        $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified).ToLocalTime()
         $pbNumber.Type = $number.type
         $pbNumber.Username = $number.username
         $pbNumber.Email = $number.email
@@ -113,8 +112,8 @@ function Global:Get-PBNumber([Parameter(Mandatory)][string]$ObjectID) {
     $pbNumber.Description = $number.description
     $pbNumber.FirstName = $number.firstname
     $pbNumber.LastName = $number.lastname
-    $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created)
-    $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified)
+    $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created).ToLocalTime()
+    $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified).ToLocalTime()
     $pbNumber.Type = $number.type
     $pbNumber.Username = $number.username
     $pbNumber.Email = $number.email
@@ -299,7 +298,8 @@ Phone Numbers
 -------------------------
 Translations
 -------------------------
-5) View translations.
+4) Search translations.
+5) View all translations.
 6) Add / set a translation.
 7) Remove a translation.
 -------------------------
@@ -311,11 +311,12 @@ Statistics
 Other
 -------------------------
 10) Rebuild database.
+11) View all tags.
 -------------------------
 "
         if($option -eq 0) {
             Write-Output ""
-            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
+            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.") | Out-GridView
         }
         if(($option -eq 1) -or ($option -eq 2)) {
             Write-Output ""
@@ -339,24 +340,28 @@ Other
                 }
                 Write-Output ""
                 $number | Set-PBNumber
+                Write-Output "`nPhone Number data committed."
             } else {
                 Write-Output "`nQuery was not unique enough. More than one result was returned."
             }
-            Write-Output "`nPhone Number data committed."
         }
         if($option -eq 3) {
             Write-Output ""
             $number = Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
             if($number.Count -eq 1) {
                 Global:Remove-PBNumber $number
+                Write-Output "`nPhone Number removed."
             } else {
                 Write-Output "`nQuery was not unique enough. More than one result was returned."
             }
-            Write-Output "`nPhone Number removed."
+        }
+        if($option -eq 4) {
+            Write-Output ""
+            Global:Get-PBTranslation -From $(Read-Host -Prompt "From?") | Format-Table
         }
         if($option -eq 5) {
             Write-Output ""
-            Global:Get-PBTranslation | Format-Table
+            Global:Get-PBTranslation | Out-GridView
         }
         if($option -eq 6) {
             Write-Output ""
@@ -368,7 +373,7 @@ Other
         }
         if($option -eq 8) {
             Write-Output ""
-            Global:Get-PBLog
+            Global:Get-PBLog | Out-GridView
         }
         if($option -eq 9) {
             Write-Output ""
@@ -377,6 +382,13 @@ Other
         if($option -eq 10) {
             Write-Output ""
             Global:Invoke-PBRebuild
+        }
+        if($option -eq 11) {
+            Write-Output ""
+            Global:Invoke-PhoneBookAPI @{
+                api = "export"
+                export = "tags"
+            } | Out-GridView
         }
     }
 }
