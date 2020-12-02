@@ -317,6 +317,7 @@ Other
             Write-Output ""
             $results = Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
             if($results.Count -eq 1) {
+                Write-Output ""
                 Write-Output $results[0]
                 Write-Output "`nTags`n--------"
                 Write-Output $results[0].Tags
