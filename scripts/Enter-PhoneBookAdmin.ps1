@@ -6,7 +6,7 @@
     .YEAR
         2020
     .VERSION
-        1.0
+        1.1
     .LINK
         https://github.com/belowaverage-org/phonebook/blob/master/scripts/Enter-PhoneBookAdmin.ps1
 #>
@@ -315,7 +315,17 @@ Other
 "
         if($option -eq 0) {
             Write-Output ""
-            Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.") | Out-GridView -Title "Search Results."
+            $results = Global:Search-PBNumber -Query $(Read-Host -Prompt "Enter a search query.")
+            if($results.Count -eq 1) {
+                Write-Output $results[0]
+                Write-Output "`nTags`n--------"
+                Write-Output $results[0].Tags
+                Write-Output ""
+                Write-Host -ForegroundColor Yellow "Press enter to continue..."
+                Read-Host
+            } else {
+                $results | Out-GridView -Title "Search Results."
+            }
         }
         if(($option -eq 1) -or ($option -eq 2)) {
             Write-Output ""
