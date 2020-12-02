@@ -54,6 +54,7 @@ try {
             $this.number = $number
             $this.description = $description
             $this.type = $type
+            $this.importsource = "Import-NortelCS1000"
         }
     }
     $pbNumbers = [System.Collections.Generic.List[PBNumber]]::new()
