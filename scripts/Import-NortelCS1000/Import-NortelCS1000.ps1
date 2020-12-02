@@ -50,6 +50,7 @@ try {
         [long]$number
         [string]$description
         [string]$type
+        [string]$importsource
         PBNumber($number, $description, $type) {
             $this.number = $number
             $this.description = $description
