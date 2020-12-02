@@ -210,7 +210,7 @@ function importDatabaseObjects($objects) {
         $tags = array();
         $row = array("objectid" => $key);
         foreach($attributes as $attribute => $value) { //For every attribute in an import object, check that the attribute exists, otherwise do not add it to the row.
-            if(isset(SCHEMA[$attribute]) && $attribute !== 'tags' && !empty($value)) { //If an attribute in the schema and not a tag list or empty.
+            if(isset(SCHEMA[$attribute]) && $attribute !== 'tags') { //If an attribute in the schema and not a tag list.
                 if(isset(SCHEMA[$attribute]['type'])) { //Check type constraints
                     if(SCHEMA[$attribute]['type'] == 'number' || SCHEMA[$attribute]['type'] == 'timestamp') { //Check number constraint
                         if(ctype_digit($value)) {
@@ -221,7 +221,7 @@ function importDatabaseObjects($objects) {
                             break;
                         }
                     }
-                    if(SCHEMA[$attribute]['type'] == 'choice' && isset(SCHEMA[$attribute]['choices']) && !in_array($value, SCHEMA[$attribute]['choices'])) { //Check choice constraint
+                    if(SCHEMA[$attribute]['type'] == 'choice' && !empty($value) && isset(SCHEMA[$attribute]['choices']) && !in_array($value, SCHEMA[$attribute]['choices'])) { //Check choice constraint
                         break;
                     }
                 }
