@@ -42,14 +42,23 @@ $feedback_smtp_allowed_subjects = [
     );
 }
 require_once('../data/conf/feedback.cfg.php');
+require_once('./reqs/phpmailer.lib.php');
 if(isset($_POST['feedback']) && $_POST['feedback'] == 'submit') { //Send feedback message to SMTP server.
     if(!isset($_POST['subject']) || empty($_POST['subject'])) return;
     if(!isset($_POST['body']) || empty($_POST['body'])) return;
     if(array_search($_POST['subject'], $feedback_smtp_allowed_subjects) === false) return;
-    ini_set('SMTP', $feedback_smtp_server);
-    ini_set('smtp_port', $feedback_smtp_port);
-    ini_set('sendmail_from', $feedback_smtp_from);
-    mail($feedback_smtp_to, $feedback_smtp_subject_prefix.$_POST['subject'], $_POST['body']);
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = $feedback_smtp_server;
+    $mail->SMTPAuth = false;
+    $mail->Port = $feedback_smtp_port;
+    $mail->SMTPAutoTLS = false;
+    $mail->setFrom($feedback_smtp_from, 'Phone Book');
+    $mail->addAddress($feedback_smtp_to);
+    $mail->isHTML(false);
+    $mail->Subject = $feedback_smtp_subject_prefix.$_POST['subject'];
+    $mail->Body = $_POST['body'];
+    $mail->send();
 }
 if(isset($_POST['feedback']) && $_POST['feedback'] == 'subjects') { //Return JSON list of approved subjects.
     echo json_encode($feedback_smtp_allowed_subjects, $prettyPrintIfRequested);
