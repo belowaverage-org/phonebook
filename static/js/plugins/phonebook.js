@@ -339,7 +339,12 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
             mem.scrollPageOffset += loadCount;
         }
         if(!keepContent && $('#numbers').html() == '') {
-            $('#numbers').html('<div class="loading"><div><span class="tn-border"><span class="tn-image"></span></span><span class="number"></span><span class="description"></span></div></div>');
+            var lhtml = '';
+            var loading = '<div class="loading"><div><span class="tn-border"><span class="tn-image"></span></span><span class="number"></span><span class="description"></span></div></div>';
+            for(var count = 0; count < 3; count++) {
+                lhtml += loading;
+            }
+            $('#numbers').html(lhtml);
         }
         ajaxSearchQuery = $.ajax({ //Send search query
             type: 'post',

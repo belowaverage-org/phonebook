@@ -292,6 +292,14 @@ input[type=text] {
     animation: loadingPulse linear infinite 1s;
 }
 
+#numbers > div.loading:nth-child(2) {
+    opacity: .666;
+}
+
+#numbers > div.loading:nth-child(3) {
+    opacity: .333;
+}
+
 @keyframes loadingPulse {
     0% {
         opacity: 1;
