@@ -64,6 +64,7 @@ function auth_plugin_authenticated() { //Main function called by AUTH Lib.
         $results = ldap_search($ldap, $auth_ldap_base_dn, '(&(sAMAccountName='.ldap_escape($username, '', LDAP_ESCAPE_FILTER).')(objectClass=user))'); //Search the username in LDAP.
         if($results) { //If result is found.
             $result = ldap_first_entry($ldap, $results); //Grab the first entry.
+            if($result == false) return false;
             $groups = ldap_get_values($ldap, $result, 'memberOf'); //Get the groups the user is a member of.
             $in_admin_group = false;
             foreach($auth_ldap_api_admin_groups as $admin_group) { //Cycle through each admin group specified in the config and compare to what the user has.
