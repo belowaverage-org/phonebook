@@ -49,6 +49,7 @@ function databaseCounts(data) {
     updateStatistic('averageResultsReturned', Math.round(data.average_results_returned));
     Object.keys(data.top_search_queries).forEach(function(query, index) {
         if(index >= 20) return;
+        query = query.replace('~', '');
         topQueries += query + ', '
     });
     topQueries = topQueries.substr(0, topQueries.length - 2);

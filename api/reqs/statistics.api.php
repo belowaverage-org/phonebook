@@ -52,6 +52,7 @@ if(isset($_POST['stats'])) {
             $averageResponseObjects += $row['count'];
             $averageResponseSpeed += $row['apispeed'];
             foreach(json_decode($row['query']) as $query) {
+                $query = '~' . $query;
                 if(isset($topSearchQueries[$query])) {
                     $topSearchQueries[$query] += 1;
                 } else {
