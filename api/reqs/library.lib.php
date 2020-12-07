@@ -43,7 +43,7 @@ function createModifyOrFindObject($row = array(), $rawTags = array()) {
         }
     } else { //Insert the data
         if(!empty($rowWithoutUnique)) {
-            $row['objectid'] = $objectID = bin2hex(random_bytes(5));
+            $row['objectid'] = $objectID = 'x'.bin2hex(random_bytes(5));
             if(!isset($row['created'])) {
                 $row['created'] = time();
             }
@@ -96,7 +96,7 @@ function createOrFindTag($tag) {
     global $db;
     $tagID = $db->get('tags', array('tagid'), array('text' => $tag));
     if(empty($tagID)) {
-        $tagID = bin2hex(random_bytes(5));
+        $tagID = 'x'.bin2hex(random_bytes(5));
         $db->insert('tags', array(
             'tagid' => $tagID,
             'text' => $tag
