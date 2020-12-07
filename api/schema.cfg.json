@@ -37,7 +37,7 @@
         "export": true,
         "length": 10,
         "name": "Type",
-        "print": true,
+        "print": false,
         "tagged": true,
         "type": "choice",
         "visible": true,
@@ -68,7 +68,7 @@
         "indexed": true,
         "length": 10,
         "name": "Employee ID",
-        "print": true,
+        "print": false,
         "tagged": true,
         "type": "number",
         "unique": false,
@@ -78,7 +78,7 @@
         "export": true,
         "length": 100,
         "name": "First Name",
-        "print": true,
+        "print": false,
         "tagged": true,
         "visible": true,
         "sortable": true
@@ -87,17 +87,20 @@
         "export": true,
         "length": 100,
         "name": "Last Name",
-        "print": true,
+        "print": false,
         "tagged": true,
         "visible": true,
         "sortable": true
     },
     "username": {
+        "export": true,
         "length": 50,
         "tagged": true,
         "visible": false
     },
     "importsource": {
+        "export": true,
+        "print": false,
         "length": 50
     }
 }
