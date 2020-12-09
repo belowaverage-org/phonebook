@@ -41,11 +41,11 @@ try {
     Send-ExpectCommand -Expect "SHRT" -Command "yes"
     Write-Output "-----------------------------"
     Write-Output "Receiving DNs..."
-    $numbers = $Global:stream.Expect("DN")
+    $numbers = $Global:stream.Expect("`nDN")
     Write-Output "Disconnecting..."
     $client.Disconnect()
     Write-Output "Formatting data..."
-    $selection = Select-String -InputObject $numbers -AllMatches -Pattern "( {4}[0-9]+ {5})(.*)"
+    $selection = Select-String -InputObject $numbers -AllMatches -Pattern "( {3,4}[0-9]+ {5})(.*)"
     class PBNumber {
         [long]$number
         [string]$description
