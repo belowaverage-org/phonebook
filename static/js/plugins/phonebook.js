@@ -7,7 +7,6 @@ Dylan Bickerstaff
 ----------
 Contains the logic and communication between the API and the client.
 */
-eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(7).8(0(){$(\'#6\').5(0(){3($(\'#4 > 9:a-g(2)\').e()==1(\'d==\')){$(\'b\').c(1(\'f\'))}})});',17,17,'function|atob||if|input|dblclick|info|document|ready|span|nth|body|append|MTQ3MjU4MzY5MA|text|PGltZyBjbGFzcz0iYyIgc3JjPSJzdGF0aWMvaW1nL2MuZ2lmIj4|child'.split('|'),0,{}));
 //Global Variables
 window.apiURI = './api/';
 window.mem = {
@@ -47,8 +46,7 @@ var blurToggle = '#main, #hamburger, #hamopen';
 function time() { //Return unix timestamp
     return Math.round((new Date()).getTime() / 1000);
 }
-function seedRandom(seed, min, max)
-{
+function seedRandom(seed, min, max) {
     Math.seedrandom(seed);
     return Math.floor(Math.random()*(max-min+1)+min);
 }
@@ -587,8 +585,10 @@ $(document).on('bsloaded', function() {
                     mem.offline = true;
                 },
                 success: function() {
-                    mem.waitingOnPing = false;
                     if(mem.offline) location.reload();
+                },
+                complete: function() {
+                    mem.waitingOnPing = false;
                 }
             });
         };
