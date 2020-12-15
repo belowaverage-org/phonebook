@@ -91,7 +91,9 @@ password: pass123
         <hr>
         <h2 id="search">Search API</h2>
         <p>
-            The search API method will respond with a list of phone numbers that best matches the list of search tags / conditions given.<br><br>
+            The search API method will respond with a list of phone numbers that best matches the list of search tags / conditions given.<br>
+            <i>When sending tags, the first tag sent will be used as a wildcard for searching. To disable the wildcard, send another tag with a blank value.</i>
+            <br><br>
             <strike>
                 The search <b id="count">count</b> will limit the results returned to the number provided.<br><br>
                 The search <b id="offset">offset</b> will offset the filter anding algortithm. For example:<br><br>

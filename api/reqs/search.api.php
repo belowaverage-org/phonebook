@@ -35,12 +35,17 @@ if(isset($_POST['search']) && !empty($_POST['search'])) {
             }
         }
         if($queryContainsTags) {
+            $atLeastOneTagIsBlank = false;
             foreach($searchQuery['SEARCH']['TAGS'] as $tag) { //For each tag in the search input.
-                if(!empty($tag) && ctype_alnum($tag) && $tag !== '' && strlen($tag) >= 2) { //If tag is longer than 2 characters and only contains alpha-numeric characters.
+                if($tag == '') {
+                    $atLeastOneTagIsBlank = true;
+                    continue;
+                }
+                if(!empty($tag) && ctype_alnum($tag) && strlen($tag) >= 2) { //If tag is longer than 2 characters and only contains alpha-numeric characters.
                     array_push($searchTags, $tag); //Add the tag to the $searchTags array.
                 }
             }
-            if(count($searchTags) == 1) { //If there is only one tag present. 
+            if(count($searchTags) == 1 && !$atLeastOneTagIsBlank) { //If there is only one tag present. And at least one tag is not blank.
                 $databaseQuery['tags.text[~]'] = $searchTags[0].'%';  
             } else { //If there are more than 1 search tags.
                 $databaseQuery['tags.text'] = $searchTags;

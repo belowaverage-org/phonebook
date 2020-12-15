@@ -90,8 +90,10 @@ function autoFillTag(term) { //Returns rest of tag
         $.each(mem.allTags, getAutoFill);
     } else {
         var availableMinusBubbles = [];
+        var searchTags = getSearchTags();
+        searchTags.pop();
         mem.availableTags.forEach(function(value) {
-            if ($.inArray(value, getSearchTags()) > -1) return; //Do not allow duplicates through autofill.
+            if ($.inArray(value, searchTags) > -1) return; //Do not allow duplicates through autofill.
             availableMinusBubbles.push(value);
         });
         $.each(availableMinusBubbles, getAutoFill);
@@ -381,8 +383,13 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                     mem.scrollPageEnd = false;
                     $('#numbers').html(''); //Clear numbers
                 }
-                var validTagCount = $('#input > span.valid').length;
-                mem.tagsFromLastCall = results.tags;
+                if(results.tags != undefined) {
+                    mem.tagsFromLastCall = results.tags.sort(function(a, b) { //Create an array from data object, then sort it by string length
+                        return b.length - a.length;
+                    });
+                } else {
+                    mem.tagsFromLastCall = [];
+                }
                 if($.isEmptyObject(results.objects)) {
                     mem.scrollPageEnd = true;
                     if(keepContent) {

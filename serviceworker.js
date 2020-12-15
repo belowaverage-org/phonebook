@@ -1,4 +1,4 @@
-var CACHE_VERSION = '2.1.0';
+var CACHE_VERSION = '2.2.0';
 var CURRENT_CACHES = {
     cache: 'phonebook-v' + CACHE_VERSION
 };
