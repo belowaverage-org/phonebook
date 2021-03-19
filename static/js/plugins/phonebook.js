@@ -617,6 +617,17 @@ $(document).on('bsloaded', function() {
 });
 //Keypress action
 $(document).on('keydown', function (e) {
+    if (e.ctrlKey) { //If a CTRL key is being pressed.
+        if (e.keyCode == 80) { //CTRL + P
+            printResults();
+            e.preventDefault();
+        }
+        if (e.keyCode == 69) { //CTRL + E
+            exportResults();
+            e.preventDefault();
+        }
+        return;
+    }
     var type = $('#input .type');
     if(firstType) {
         firstType = false;

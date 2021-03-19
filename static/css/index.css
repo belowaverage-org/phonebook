@@ -41,14 +41,14 @@ body {
 }
 
 .menu {
-    transition:.3s;
-    opacity:1;
+    transition: .3s;
+    opacity: 1;
 }
 
-.menu.hidden, .float.hidden:not(#hamopen) {
-    pointer-events: none;
-    opacity: 0;
-}
+    .menu.hidden, .float.hidden:not(#hamopen) {
+        pointer-events: none;
+        opacity: 0;
+    }
 
 #numbers > div, .button:hover, #exit {
     border-radius: 20px;
@@ -70,15 +70,15 @@ body {
     font-size: 20px;
 }
 
-#input .type::after {
-    content: '';
-    display: inline-block;
-    height: 20px;
-    width: 2px;
-    background-color: #000000;
-    animation: blink 1s infinite;
-    vertical-align: -2px;
-}
+    #input .type::after {
+        content: '';
+        display: inline-block;
+        height: 20px;
+        width: 2px;
+        background-color: #000000;
+        animation: blink 1s infinite;
+        vertical-align: -2px;
+    }
 
 #tip {
     color: #656565;
@@ -148,18 +148,18 @@ body {
     z-index: 10;
 }
 
-#info:hover {
-    background-color: gray;
-    color: white;
-}
+    #info:hover {
+        background-color: gray;
+        color: white;
+    }
 
-#info:hover::before {
-    content: 'Guide';
-    display: inline-block;
-    position: absolute;
-    left: -45px;
-    color: black;
-}
+        #info:hover::before {
+            content: 'Guide';
+            display: inline-block;
+            position: absolute;
+            left: -45px;
+            color: black;
+        }
 
 img.l {
     position: fixed;
@@ -203,10 +203,10 @@ body > .menu {
     min-width: 300px;
 }
 
-#main.hamburger {
-    margin-left: 270px;
-    width: calc(100% - 290px);
-}
+    #main.hamburger {
+        margin-left: 270px;
+        width: calc(100% - 290px);
+    }
 
 .blur {
     filter: blur(5px);
@@ -216,27 +216,27 @@ body > .menu {
     margin-bottom: 10px;
 }
 
-#legend .leg::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    background-color: whitesmoke;
-    vertical-align: -4px;
-}
+    #legend .leg::before {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        background-color: whitesmoke;
+        vertical-align: -4px;
+    }
 
-#legend .leg.green::before {
-    background-color: #dfffdf;
-}
+    #legend .leg.green::before {
+        background-color: #dfffdf;
+    }
 
-#legend .leg.blue::before {
-    background-color: #e1f6ff;
-}
+    #legend .leg.blue::before {
+        background-color: #e1f6ff;
+    }
 
-#legend .leg.yellow::before {
-    background-color: #feffbd;
-}
+    #legend .leg.yellow::before {
+        background-color: #feffbd;
+    }
 
 hr {
     border: none;
@@ -304,24 +304,27 @@ input[type=text] {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: .5;
     }
 }
+
 #numbers .tags {
     text-align: center;
-    display:block !important;
-    padding:10px !important;
+    display: block !important;
+    padding: 10px !important;
 }
-#numbers .tags .type {
-    display:inline-block;
-    font-size:16px;
-    line-height: 16px !important;
-    background-color:whitesmoke;
-    padding:10px;
-    border-radius:18px;
-    margin:5px;
-}
+
+    #numbers .tags .type {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 16px !important;
+        background-color: whitesmoke;
+        padding: 10px;
+        border-radius: 18px;
+        margin: 5px;
+    }
 
 #numbers > div {
     min-height: 40px;
@@ -332,74 +335,92 @@ input[type=text] {
     overflow: hidden;
 }
 
-#numbers > div.visible {
-    max-height: 600px;
-}
+    #numbers > div.visible {
+        max-height: 600px;
+    }
 
-#numbers > div > div:first-child {
-    height: 40px;
-    font-size: 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    line-height: 40px;
-    display: flex;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    transition: .3s;
-}
+        #numbers > div.visible .description {
+            color: transparent;
+        }
+
+    #numbers > div .description::before {
+        content: 'Click here to close.';
+        color: transparent;
+        position: absolute;
+        right: 20px;
+        transition: .3s;
+        font-size: 14px;
+    }
+
+    #numbers > div.visible .description::before {
+        color: dimgray;
+    }
+
+    #numbers > div > div:first-child {
+        height: 40px;
+        font-size: 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        line-height: 40px;
+        display: flex;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        transition: .3s;
+    }
 
 #numbers .details {
-    max-height:500px;
-    overflow:hidden;
-    overflow-y:auto;
+    max-height: 500px;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
-#numbers .details .detail {
-    height:40px;
-    border-bottom:1px solid rgba(0, 0, 0, 0.096);
-    display:flex;
-    padding:0px 20px 0px 20px;
-}
+    #numbers .details .detail {
+        height: 40px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.096);
+        display: flex;
+        padding: 0px 20px 0px 20px;
+        user-select: text;
+    }
 
-#numbers .details .detail:last-child {
-    border-bottom:0px;
-    height:auto;
-}
+        #numbers .details .detail:last-child {
+            border-bottom: 0px;
+            height: auto;
+            user-select: text;
+        }
 
-#numbers .details .detail > span {
-    line-height: 40px;
-    white-space: nowrap;
-}
+        #numbers .details .detail > span {
+            line-height: 40px;
+            white-space: nowrap;
+        }
 
-#numbers .details .detail .key {
-    text-align: left;
-    font-weight: bolder;
-    margin-right:20px;
-}
+        #numbers .details .detail .key {
+            text-align: left;
+            font-weight: bolder;
+            margin-right: 20px;
+        }
 
-#numbers .details .detail .value {
-    text-align: right;
-    text-overflow: ellipsis;
-    overflow:hidden;
-    flex:auto;
-    user-select: text;
-}
+        #numbers .details .detail .value {
+            text-align: right;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            flex: auto;
+        }
 
-#numbers .details.loading .detail > span::before {
-    content:'';
-    margin-top:12px;
-    display: inline-block;
-    background-color:rgba(0, 0, 0, 0.1);
-    height: 15px;
-    width: 100px;
-    animation: 0.8s ease-in-out infinite alternate text-loading;
-}
+    #numbers .details.loading .detail > span::before {
+        content: '';
+        margin-top: 12px;
+        display: inline-block;
+        background-color: rgba(0, 0, 0, 0.1);
+        height: 15px;
+        width: 100px;
+        animation: 0.8s ease-in-out infinite alternate text-loading;
+    }
 
-#numbers .details.loading .detail > span:last-child::before {
-    width: 300px;
-    animation-delay: -1.2s;
-}
+    #numbers .details.loading .detail > span:last-child::before {
+        width: 300px;
+        animation-delay: -1.2s;
+    }
 
 #numbers > div.visible > div:first-child {
     transition: 0s;
@@ -426,35 +447,35 @@ input[type=text] {
 }
 
 #numbers .tn-image {
-    margin:2px 0px 0px 2px;
-    width:34px;
-    height:34px;
-    border-radius:17px;
-    display:block;
-    background-repeat:no-repeat;
-    background-image:url('../img/phone.svg');
-    background-size:20px;
-    background-position:center;
+    margin: 2px 0px 0px 2px;
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    display: block;
+    background-repeat: no-repeat;
+    background-image: url('../img/phone.svg');
+    background-size: 20px;
+    background-position: center;
 }
 
 #numbers [type=Business] .tn-image {
-    background-image:url('../img/business.svg');
-    background-size:30px;
+    background-image: url('../img/business.svg');
+    background-size: 30px;
 }
 
 #numbers [type=Fax] .tn-image {
-    background-image:url('../img/fax.svg');
-    background-size:22px;
+    background-image: url('../img/fax.svg');
+    background-size: 22px;
 }
 
 #numbers [type=Person] .tn-image {
-    background-image:url('../img/person.svg');
-    background-size:30px;
+    background-image: url('../img/person.svg');
+    background-size: 30px;
 }
 
 #numbers [type=Location] .tn-image {
-    background-image:url('../img/location.svg');
-    background-size:24px;
+    background-image: url('../img/location.svg');
+    background-size: 24px;
 }
 
 #numbers > div.loading .tn-border {
@@ -471,6 +492,7 @@ input[type=text] {
     text-overflow: ellipsis;
     font-size: 16px;
     margin-right: 20px;
+    transition: .3s;
 }
 
 #numbers div.expand .description {
@@ -540,9 +562,9 @@ img.c {
     z-index: 1000;
 }
 
-#exit:hover {
-    box-shadow: 0px 4px 7px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
-}
+    #exit:hover {
+        box-shadow: 0px 4px 7px rgba(0,0,0,.21), 0px -1px 0px rgba(0,0,0,.05);
+    }
 
 #hamopen.hidden {
     left: 50px;
@@ -569,39 +591,39 @@ img.c {
     transition: .3s;
 }
 
-#hamburger.hidden #hamclose {
-    left: -20px;
-    opacity: 0;
-}
+    #hamburger.hidden #hamclose {
+        left: -20px;
+        opacity: 0;
+    }
 
-#hamburger.hidden {
-    width: 30px;
-}
+    #hamburger.hidden {
+        width: 30px;
+    }
 
-#hamburger hr {
-    margin: 20px 0px 20px 0px;
-    transition: .3s;
-}
+    #hamburger hr {
+        margin: 20px 0px 20px 0px;
+        transition: .3s;
+    }
 
-#hamburger h1 {
-    font-size: 22px;
-    height: 22px;
-    font-weight: normal;
-    margin: 0px;
-    transition: .3s;
-    width: 250px;
-}
+    #hamburger h1 {
+        font-size: 22px;
+        height: 22px;
+        font-weight: normal;
+        margin: 0px;
+        transition: .3s;
+        width: 250px;
+    }
 
-#hamburger.hidden hr:not(.nocollapse), #hamburger.hidden h1:not(:nth-child(2)) {
-    height: 0px;
-    margin: 0px;
-    background-color: transparent;
-    border: 0px;
-}
+    #hamburger.hidden hr:not(.nocollapse), #hamburger.hidden h1:not(:nth-child(2)) {
+        height: 0px;
+        margin: 0px;
+        background-color: transparent;
+        border: 0px;
+    }
 
-#hamburger.hidden h1 {
-    color: transparent;
-}
+    #hamburger.hidden h1 {
+        color: transparent;
+    }
 
 .button {
     display: block;
@@ -679,27 +701,27 @@ img.c {
     width: 100%;
 }
 
-#printscrn table {
-    text-align: left;
-    border-collapse: collapse;
-    font-size: 14px;
-    page-break-after: always;
-    page-break-inside: avoid;
-    width: 100%;
-}
+    #printscrn table {
+        text-align: left;
+        border-collapse: collapse;
+        font-size: 14px;
+        page-break-after: always;
+        page-break-inside: avoid;
+        width: 100%;
+    }
 
-#printscrn table th {
-    padding: 5px 0px 5px 0px;
-}
+        #printscrn table th {
+            padding: 5px 0px 5px 0px;
+        }
 
-#printscrn table td {
-    border: 1px solid #e2e2e2;
-    padding: 5px;
-}
+        #printscrn table td {
+            border: 1px solid #e2e2e2;
+            padding: 5px;
+        }
 
-#printscrn table tr:nth-child(even) {
-    background-color: #efefef;
-}
+        #printscrn table tr:nth-child(even) {
+            background-color: #efefef;
+        }
 
 @media print {
     #main, #hamburger, #hamopen {
@@ -712,7 +734,7 @@ img.c {
 }
 
 #about div, #statistics div {
-    padding:0px 20px 0px 20px;
+    padding: 0px 20px 0px 20px;
     max-width: 400px;
     text-align: left;
     margin: 0px auto 0px auto;
@@ -762,15 +784,16 @@ img.c {
 
 @keyframes text-loading {
     from {
-        opacity:0.3;
+        opacity: 0.3;
     }
+
     to {
-        opacity:1;
+        opacity: 1;
     }
 }
 
 #legend > div {
-    max-width:800px;
-    margin-left:auto;
-    margin-right:auto;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }

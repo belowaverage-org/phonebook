@@ -24,7 +24,7 @@
         "name": "Description",
         "print": true,
         "tagged": true,
-        "visible": false,
+        "visible": true,
         "sortable": true
     },
     "type": {

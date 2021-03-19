@@ -1,5 +1,4 @@
 $(document).on('bsloaded', function() {
-   $('<link rel="stylesheet" href="static/css/demo.css">').appendTo('head');
     typeOut(
         'Hi!--------+--------' +
         'W---elc-ome t---o th-e Pho--ne Book!----------------^^' +

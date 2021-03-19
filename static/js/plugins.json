@@ -8,5 +8,6 @@
     "keyboard.js",
     "statistics.js",
     "feedback.js",
-    "details.js"
+    "details.js",
+    "details_autoexpand.js"
 ]

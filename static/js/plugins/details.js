@@ -13,11 +13,11 @@ $(document).on('bsloaded', function() {
         }
     });
 });
-function retrieveDetails(targetObject, contentObject) {
+window.retrieveDetails = function (targetObject, contentObject) {
     targetObject.find('div:not(:first-child)').remove();
     var objectId = targetObject.attr('objectid');
     var contentObject = $('<div class="details loading"></div>').appendTo(targetObject);
-    for(var c = 0; c < 3; c++) {
+    for (var c = 0; c < 3; c++) {
         $(detailItem).appendTo(contentObject);
     }
     $.ajax({
@@ -38,22 +38,22 @@ function retrieveDetails(targetObject, contentObject) {
                 }
             })
         }
-    }).done(function(data) {
+    }).done(function (data) {
         displayDetails(data, contentObject, objectId);
     });
-}
-function displayDetails(data, contentObject, objectId) {
+};
+window.displayDetails = function (data, contentObject, objectId) {
     contentObject.removeClass('loading').html('');
-    $.each(data.objects[objectId], function(key, value) {
+    $.each(data.objects[objectId], function (key, value) {
         var schema = mem.schema[key];
-        if(!schema.visible) return;
+        if (!schema.visible) return;
         var item = $(detailItem).appendTo(contentObject);
         item.find('.key').text(schema.name);
         item.find('.value').text(value);
     });
     var tagList = $(detailItem).addClass('tags').appendTo(contentObject);
     tagList.html('');
-    $.each(data.tags, function() {
+    $.each(data.tags, function () {
         $('<span class="type"></span>').text(this).appendTo(tagList);
     });
-}
+};

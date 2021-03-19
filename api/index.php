@@ -15,7 +15,7 @@ ini_set('display_errors', 1);
 $singlePointEntry = true;
 $prettyPrintIfRequested = 0;
 header('phonebook-api-created-by: Dylan Bickerstaff');
-header('phonebook-api-version: 2.2');
+header('phonebook-api-version: 2.4');
 ob_start();
 define('SCHEMA', json_decode(file_get_contents(__DIR__.'/schema.cfg.json'), true));
 if(isset($_POST['api']) && !empty($_POST['api'])) {
