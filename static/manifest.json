@@ -39,6 +39,6 @@
   "display": "standalone",
   "scope": "../",
   "theme_color": "#ffffff",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "orientation": "portrait-primary"
 }

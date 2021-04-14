@@ -25,7 +25,12 @@ window.mem = {
     offline: false,
     waitingOnPing: false,
     schema: {},
-    objectsFromLastCall: []
+    objectsFromLastCall: [],
+    searchAttributes: [
+        'number',
+        'description',
+        'type'
+    ]
 };
 var printRows = 30;
 var firstLoad = true;
@@ -368,11 +373,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                         'OPTIONS': [
                             'showAvailableTags'
                         ],
-                        'ATTRIBUTES': [
-                            'number',
-                            'description',
-                            'type'
-                        ]
+                        'ATTRIBUTES': mem.searchAttributes
                     }
                 })
             },
