@@ -32,7 +32,8 @@
             "Business",
             "Fax",
             "Location",
-            "Person"
+            "Person",
+            "Shared"
         ],
         "export": true,
         "length": 10,
@@ -87,6 +88,15 @@
         "export": true,
         "length": 100,
         "name": "Last Name",
+        "print": false,
+        "tagged": true,
+        "visible": true,
+        "sortable": true
+    },
+    "location": {
+        "export": true,
+        "length": 100,
+        "name": "Location",
         "print": false,
         "tagged": true,
         "visible": true,
