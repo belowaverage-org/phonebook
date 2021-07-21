@@ -7,11 +7,11 @@
 ### How to use this image:
 Pulling the image:
 ```
-docker pull belowaverageorg/phonebook
+docker pull ghcr.io/belowaverage-org/phonebook:latest
 ```
 Running the image:
 ```
-docker run -p 8081:80 -l PhoneBook -d belowaverageorg/phonebook
+docker run -p 8081:80 -l PhoneBook -d ghcr.io/belowaverage-org/phonebook:latest
 ```
 Paths to mount for persistence:
 * /var/www/html/data

@@ -473,6 +473,11 @@ input[type=text] {
     background-size: 30px;
 }
 
+#numbers [type=Shared] .tn-image {
+    background-image: url('../img/people.svg');
+    background-size: 24px;
+}
+
 #numbers [type=Location] .tn-image {
     background-image: url('../img/location.svg');
     background-size: 24px;

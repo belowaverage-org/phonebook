@@ -10,7 +10,7 @@
     .LINK
         https://github.com/belowaverage-org/phonebook/blob/master/scripts/Enter-PhoneBookAdmin.ps1
 #>
-$Global:PhoneBookAPI = "https://cpit/phonebook/api/" 
+$Global:PhoneBookAPI = "https://cp-web5/cpit/pb2/api/" 
 class PBNumber {
     [System.Int64]$Number
     [System.String]$Description
@@ -19,6 +19,7 @@ class PBNumber {
     [System.DateTimeOffset]$Created
     [System.DateTimeOffset]$Modified
     [System.String]$Type
+    [System.String]$Location
     [System.String]$Username
     [System.String]$Email
     [System.Int64]$EmployeeID
@@ -60,7 +61,7 @@ function Global:Search-PBNumber([Parameter(Mandatory)][System.String]$Query) {
             }
             OUTPUT = @{
                 OPTIONS = @("showObjectTags")
-                ATTRIBUTES = "created","modified","number","description","type","email","employeeid","firstname","lastname","username","importsource"
+                ATTRIBUTES = "created","modified","number","description","type","email","employeeid","firstname","lastname","location","username","importsource"
             }
         }
     }
@@ -75,6 +76,7 @@ function Global:Search-PBNumber([Parameter(Mandatory)][System.String]$Query) {
         $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created).ToLocalTime()
         $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified).ToLocalTime()
         $pbNumber.Type = $number.type
+        $pbNumber.Location = $number.location
         $pbNumber.Username = $number.username
         $pbNumber.Email = $number.email
         $pbNumber.EmployeeID = $number.employeeid
@@ -98,7 +100,7 @@ function Global:Get-PBNumber([Parameter(Mandatory)][string]$ObjectID) {
             }
             OUTPUT = @{
                 OPTIONS = @("showObjectTags")
-                ATTRIBUTES = "created","modified","number","description","type","email","employeeid","firstname","lastname","username","importsource"
+                ATTRIBUTES = "created","modified","number","description","type","email","employeeid","firstname","lastname","location","username","importsource"
             }
         }
     }
@@ -115,6 +117,7 @@ function Global:Get-PBNumber([Parameter(Mandatory)][string]$ObjectID) {
     $pbNumber.Created = [System.DateTimeOffset]::FromUnixTimeSeconds($number.created).ToLocalTime()
     $pbNumber.Modified = [System.DateTimeOffset]::FromUnixTimeSeconds($number.modified).ToLocalTime()
     $pbNumber.Type = $number.type
+    $pbNumber.Location = $number.location
     $pbNumber.Username = $number.username
     $pbNumber.Email = $number.email
     $pbNumber.EmployeeID = $number.employeeid
@@ -123,7 +126,7 @@ function Global:Get-PBNumber([Parameter(Mandatory)][string]$ObjectID) {
     $pbNumber.ObjectID = $results.objects.psobject.Properties.Name
     return $pbNumber
 }
-function Global:New-PBNumber([Parameter(Mandatory)][long]$Number, [Parameter(Mandatory)][string]$Description, [string]$FirstName, [string]$LastName, [string]$Type, [string]$Username, [string]$Email, [long]$EmployeeID, [string]$ImportSource = "Enter-PhoneBookAdmin", [string[]]$Tags) {
+function Global:New-PBNumber([Parameter(Mandatory)][long]$Number, [Parameter(Mandatory)][string]$Description, [string]$FirstName, [string]$LastName, [string]$Type, [string]$Location, [string]$Username, [string]$Email, [long]$EmployeeID, [string]$ImportSource = "Enter-PhoneBookAdmin", [string[]]$Tags) {
     <#
         .SYNOPSIS
             This command creates a new PBNumber object. To commit this new object to the database, pipe this command into Set-PBNumber.
@@ -134,6 +137,7 @@ function Global:New-PBNumber([Parameter(Mandatory)][long]$Number, [Parameter(Man
     $pbNumber.FirstName = $FirstName
     $pbNumber.LastName = $LastName
     $pbNumber.Type = $Type
+    $pbNumber.Location = $Location
     $pbNumber.Username = $Username
     $pbNumber.Email = $Email
     $pbNumber.EmployeeID = $EmployeeID
@@ -156,6 +160,7 @@ function Global:Set-PBNumber([Parameter(ValueFromPipeline)][PBNumber]$InputObjec
                     firstname = $InputObject.FirstName
                     lastname = $InputObject.LastName
                     type = $InputObject.Type
+                    location = $InputObject.Location
                     username = $InputObject.Username
                     email = $InputObject.Email
                     employeeid = $InputObject.EmployeeID
@@ -174,6 +179,7 @@ function Global:Set-PBNumber([Parameter(ValueFromPipeline)][PBNumber]$InputObjec
                     firstname = $InputObject.FirstName
                     lastname = $InputObject.LastName
                     type = $InputObject.Type
+                    location = $InputObject.Location
                     username = $InputObject.Username
                     email = $InputObject.Email
                     employeeid = $InputObject.EmployeeID
