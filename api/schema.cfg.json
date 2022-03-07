@@ -27,6 +27,15 @@
         "visible": true,
         "sortable": true
     },
+    "callerid": {
+        "export": true,
+        "length": 1000,
+        "name": "Caller ID",
+        "print": true,
+        "tagged": true,
+        "visible": true,
+        "sortable": true
+    },
     "type": {
         "choices": [
             "Business",
