@@ -23,6 +23,10 @@ window.mem = {
     lastSearchSpeed: 0,
     scrollPageEnd: false,
     offline: false,
+    orderby: {
+        attribute: 'number',
+        direction: 'ASC'
+    },
     waitingOnPing: false,
     schema: {},
     objectsFromLastCall: [],
@@ -307,7 +311,7 @@ function searchTagsRaw(callback, attributes) {
                 'SEARCH': {
                     'TAGS': getSearchTags(),
                     'ORDER': {
-                        'number': 'ASC'
+                        [mem.orderby.attribute]: mem.orderby.direction
                     }
                 },
                 'OUTPUT': {
@@ -362,7 +366,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                     'SEARCH': {
                         'TAGS': tags,
                         'ORDER': {
-                            'number': 'ASC'
+                            'mem.asdf': mem.asdf
                         },
                         'LIMIT': [
                             mem.scrollPageOffset,
@@ -615,6 +619,13 @@ $(document).on('bsloaded', function() {
         }
     });
     autoFillTag(); //Initiate Application
+    $.each(mem.schema, function(k, v) { //Apply the sort by direction from the schema.
+        if (v.orderby !== undefined) {
+            mem.orderby.attribute = k;
+            mem.orderby.direction = v.orderby;
+            return;
+        }
+    });
 });
 //Keypress action
 $(document).on('keydown', function (e) {
