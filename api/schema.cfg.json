@@ -63,7 +63,8 @@
         "type": "number",
         "unique": true,
         "visible": true,
-        "sortable": true
+        "sortable": true,
+        "orderby": "ASC"
     },
     "email": {
         "export": true,
