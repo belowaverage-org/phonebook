@@ -366,7 +366,7 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
                     'SEARCH': {
                         'TAGS': tags,
                         'ORDER': {
-                            'mem.asdf': mem.asdf
+                            [mem.orderby.attribute]: mem.orderby.direction
                         },
                         'LIMIT': [
                             mem.scrollPageOffset,
