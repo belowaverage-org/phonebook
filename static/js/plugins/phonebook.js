@@ -80,6 +80,7 @@ function autoFillTag(term) { //Returns rest of tag
                     firstLoad = false;
                     $.getJSON(apiURI + 'schema.cfg.json', function(schema) {
                         mem.schema = schema;
+                        setOrderBy();
                         $('#loading').addClass('hidden');
                         $(blurToggle).removeClass('blur');
                     });
@@ -422,6 +423,15 @@ function searchTags(arg1, arg2) { //grab all tags and search the database and re
         });
     }
 }
+function setOrderBy() {
+    $.each(mem.schema, function(k, v) { //Apply the sort by direction from the schema.
+        if (v.orderby !== undefined) {
+            mem.orderby.attribute = k;
+            mem.orderby.direction = v.orderby;
+            return;
+        }
+    });
+}
 function toggleHamburger() {
     $('#hamburger').toggleClass('hidden');
     $('#main').toggleClass('hamburger');
@@ -619,13 +629,6 @@ $(document).on('bsloaded', function() {
         }
     });
     autoFillTag(); //Initiate Application
-    $.each(mem.schema, function(k, v) { //Apply the sort by direction from the schema.
-        if (v.orderby !== undefined) {
-            mem.orderby.attribute = k;
-            mem.orderby.direction = v.orderby;
-            return;
-        }
-    });
 });
 //Keypress action
 $(document).on('keydown', function (e) {
